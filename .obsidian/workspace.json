@@ -11,8 +11,12 @@
             "id": "587f2eb9f69a817b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -72,7 +76,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "README.md"
+              }
             }
           }
         ]
@@ -103,6 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,6 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -159,7 +167,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -178,8 +187,14 @@
       "obsidian-day-planner:Timeline": false
     }
   },
-  "active": "587f2eb9f69a817b",
+  "active": "e8953e83280e53b3",
   "lastOpenFiles": [
+    "hello",
+    "HelloWorld/Welcome.md",
+    "hello/Welcome.md",
+    "README.md",
+    "HelloWorld",
+    "LICENSE",
     "实习/demo.md",
     "毕设/工作记录.md",
     "2024-05-07.md",
@@ -201,7 +216,6 @@
     "Pasted image 20240313112910.png",
     "Pasted image 20240306170529.png",
     "Pasted image 20240306170431.png",
-    "README.md",
     "jenkins.sit.tes.police.gov.hk.md",
     "assets/仿百度网盘",
     "assets",
@@ -215,17 +229,12 @@
     "实习/picture/repositoryInterface.png",
     "webLab/Week1.md",
     "Spring 全家桶学习/Spirng.md",
-    "Spring 全家桶学习/开发框架.md",
-    "实习/4. sql 索引优化.md",
-    "毕设/app.conf.md",
     "毕设/app.conf",
     "Spring 全家桶学习",
     "毕设",
     "一点小技巧",
     "Pasted image 20240227163827.png",
     "实习/picture",
-    "Pasted image 20240222171452.png",
-    "实习",
-    "webLab"
+    "Pasted image 20240222171452.png"
   ]
 }
