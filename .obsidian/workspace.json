@@ -152,6 +152,20 @@
             }
           }
         ]
+      },
+      {
+        "id": "fb5d253e60816797",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "615084ce453247bb",
+            "type": "leaf",
+            "state": {
+              "type": "timeline",
+              "state": {}
+            }
+          }
+        ]
       }
     ],
     "direction": "horizontal",
@@ -159,18 +173,18 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "table-editor-obsidian:Advanced Tables Toolbar": false,
-      "oz-clear-unused-images:Clear Unused Images": false,
       "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
       "canvas:新建白板": false,
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
-      "graph:查看关系图谱": false,
       "command-palette:打开命令面板": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "oz-clear-unused-images:Clear Unused Images": false,
       "obsidian-day-planner:Timeline": false
     }
   },
-  "active": "57ead1a6c3c5a50f",
+  "active": "e8efccdf81978c97",
   "lastOpenFiles": [
     "2024-06-20.md",
     "未命名.canvas",

@@ -3,9 +3,9 @@
   "table-editor-obsidian",
   "calendar",
   "obsidian-day-planner",
-  "dataview",
   "obsidian-style-settings",
   "oz-clear-unused-images",
   "obsidian-custom-attachment-location",
-  "obsidian-tasks-plugin"
+  "obsidian-tasks-plugin",
+  "dataview"
 ]
