@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "hello/Welcome.md",
+                "file": "2024-06-20.md",
                 "mode": "source",
                 "source": false
               }
@@ -77,7 +77,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "hello/Welcome.md"
+                "file": "2024-06-20.md"
               }
             }
           }
@@ -109,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "hello/Welcome.md",
+                "file": "2024-06-20.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -126,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "hello/Welcome.md",
+                "file": "2024-06-20.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -151,7 +151,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 4
       },
       {
         "id": "fb5d253e60816797",
@@ -184,11 +185,11 @@
       "obsidian-day-planner:Timeline": false
     }
   },
-  "active": "e8efccdf81978c97",
+  "active": "978e3019a26bd00e",
   "lastOpenFiles": [
+    "hello/Welcome.md",
     "2024-06-20.md",
     "未命名.canvas",
-    "README.md",
-    "hello/Welcome.md"
+    "README.md"
   ]
 }
