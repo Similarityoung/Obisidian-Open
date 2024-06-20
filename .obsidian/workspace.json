@@ -4,15 +4,19 @@
     "type": "split",
     "children": [
       {
-        "id": "ccf67454e05c32d7",
+        "id": "768ed7e088c2ba3d",
         "type": "tabs",
         "children": [
           {
-            "id": "4e008ab4ca3b7262",
+            "id": "978e3019a26bd00e",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "hello/Welcome.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -62,6 +66,22 @@
             }
           }
         ]
+      },
+      {
+        "id": "ca9cb843745ab635",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3e567738701af899",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "hello/Welcome.md"
+              }
+            }
+          }
+        ]
       }
     ],
     "direction": "horizontal",
@@ -89,6 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "hello/Welcome.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,6 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "hello/Welcome.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -122,10 +144,10 @@
             }
           },
           {
-            "id": "3e567738701af899",
+            "id": "e1686ce09175e198",
             "type": "leaf",
             "state": {
-              "type": "outline",
+              "type": "advanced-tables-toolbar",
               "state": {}
             }
           }
@@ -133,22 +155,26 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
       "table-editor-obsidian:Advanced Tables Toolbar": false,
-      "obsidian-day-planner:Timeline": false,
       "oz-clear-unused-images:Clear Unused Images": false,
       "switcher:打开快速切换": false,
-      "graph:查看关系图谱": false,
       "canvas:新建白板": false,
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
-      "command-palette:打开命令面板": false
+      "graph:查看关系图谱": false,
+      "command-palette:打开命令面板": false,
+      "obsidian-day-planner:Timeline": false
     }
   },
-  "active": "4e008ab4ca3b7262",
-  "lastOpenFiles": []
+  "active": "57ead1a6c3c5a50f",
+  "lastOpenFiles": [
+    "2024-06-20.md",
+    "未命名.canvas",
+    "README.md",
+    "hello/Welcome.md"
+  ]
 }
