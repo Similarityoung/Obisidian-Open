@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "hello/Welcome.md",
+                "file": "HelloWorld/Welcome.md",
                 "mode": "source",
                 "source": false
               }
@@ -77,7 +77,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "hello/Welcome.md"
+                "file": "HelloWorld/Welcome.md"
               }
             }
           }
@@ -109,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "hello/Welcome.md",
+                "file": "HelloWorld/Welcome.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -126,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "hello/Welcome.md",
+                "file": "HelloWorld/Welcome.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -184,10 +184,10 @@
       "obsidian-day-planner:Timeline": false
     }
   },
-  "active": "57ead1a6c3c5a50f",
+  "active": "e8efccdf81978c97",
   "lastOpenFiles": [
     "2024-06-20.md",
-    "hello/Welcome.md",
+    "HelloWorld/Welcome.md",
     "未命名.canvas",
     "README.md"
   ]
