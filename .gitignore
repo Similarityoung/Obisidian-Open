@@ -29,6 +29,8 @@ hs_err_pid*
 # Mac
 **/.DS_Store
 
-.trash
+.trash/
+
+.obsidian/workspace.json   #不同步工作区
 
 target
