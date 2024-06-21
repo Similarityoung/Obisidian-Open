@@ -61,8 +61,7 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 2
+        ]
       },
       {
         "id": "ca9cb843745ab635",
@@ -137,6 +136,14 @@
             }
           },
           {
+            "id": "7b1af4d8f5a27c27",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {}
+            }
+          },
+          {
             "id": "e1686ce09175e198",
             "type": "leaf",
             "state": {
@@ -144,7 +151,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 4
       },
       {
         "id": "7c246079a9e54b9b",
@@ -174,10 +182,11 @@
       "command-palette:打开命令面板": false,
       "table-editor-obsidian:Advanced Tables Toolbar": false,
       "obsidian-day-planner:Timeline": false,
-      "oz-clear-unused-images:Clear Unused Images": false
+      "oz-clear-unused-images:Clear Unused Images": false,
+      "cmdr:Git: Open source control view": false
     }
   },
-  "active": "331d60e22e45648a",
+  "active": "e8efccdf81978c97",
   "lastOpenFiles": [
     "未命名.canvas",
     "HelloWorld/Welcome.md",
