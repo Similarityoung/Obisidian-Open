@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "768ed7e088c2ba3d",
+        "id": "04dd915c65259f8f",
         "type": "tabs",
         "children": [
           {
-            "id": "978e3019a26bd00e",
+            "id": "4f311c415f9416d3",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "HelloWorld/Welcome.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -76,9 +72,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "HelloWorld/Welcome.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -109,7 +103,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "HelloWorld/Welcome.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -126,7 +119,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "HelloWorld/Welcome.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -184,11 +176,11 @@
       "oz-clear-unused-images:Clear Unused Images": false
     }
   },
-  "active": "57ead1a6c3c5a50f",
+  "active": "e8efccdf81978c97",
   "lastOpenFiles": [
-    "2024-06-20.md",
-    "HelloWorld/Welcome.md",
     "未命名.canvas",
+    "HelloWorld/Welcome.md",
+    "2024-06-20.md",
     "README.md"
   ]
 }
