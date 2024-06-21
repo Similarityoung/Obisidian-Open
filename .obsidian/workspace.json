@@ -61,7 +61,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 2
       },
       {
         "id": "ca9cb843745ab635",
@@ -176,7 +177,7 @@
       "oz-clear-unused-images:Clear Unused Images": false
     }
   },
-  "active": "e8efccdf81978c97",
+  "active": "331d60e22e45648a",
   "lastOpenFiles": [
     "未命名.canvas",
     "HelloWorld/Welcome.md",

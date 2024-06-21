@@ -1,5 +1,4 @@
 [
-  "obsidian-git",
   "table-editor-obsidian",
   "calendar",
   "obsidian-day-planner",
@@ -7,5 +6,6 @@
   "oz-clear-unused-images",
   "obsidian-custom-attachment-location",
   "obsidian-tasks-plugin",
-  "dataview"
+  "dataview",
+  "obsidian-git"
 ]
