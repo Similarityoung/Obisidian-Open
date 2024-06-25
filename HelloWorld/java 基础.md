@@ -130,3 +130,5 @@ public class GenericsDemo24{
     }  
 }  
 ```
+
+郁闷
