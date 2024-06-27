@@ -193,10 +193,11 @@
       "cmdr:Git: Open source control view": false
     }
   },
-  "active": "57ead1a6c3c5a50f",
+  "active": "e8efccdf81978c97",
   "lastOpenFiles": [
     "HelloWorld/java 基础.md",
     "HelloWorld/java 集成 rabbitmq.md",
+    "HelloWorld/Front",
     "README.md",
     "hello/Welcome.md",
     "hello",
