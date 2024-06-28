@@ -27,7 +27,7 @@
               "state": {
                 "file": "HelloWorld/Front/Html.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           }
@@ -206,7 +206,7 @@
       "cmdr:Git: Open source control view": false
     }
   },
-  "active": "57ead1a6c3c5a50f",
+  "active": "bc3d5986c86b5c44",
   "lastOpenFiles": [
     "HelloWorld/Java/java 集成 rabbitmq.md",
     "HelloWorld/Front/Html.md",
