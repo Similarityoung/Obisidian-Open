@@ -172,8 +172,7 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 4
+        ]
       },
       {
         "id": "7c246079a9e54b9b",
@@ -207,7 +206,7 @@
       "cmdr:Git: Open source control view": false
     }
   },
-  "active": "bc3d5986c86b5c44",
+  "active": "57ead1a6c3c5a50f",
   "lastOpenFiles": [
     "HelloWorld/Java/java 集成 rabbitmq.md",
     "HelloWorld/Front/Html.md",
