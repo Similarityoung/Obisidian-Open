@@ -132,3 +132,11 @@ span也是表达“小区域、小跨度”的标签，但只是一个**文本�
 - `height=“150`：高度
 - `scrolling="no"`：是否需要滚动条。默认值是true。
 - `name="mainFrame"`：窗口名称。公有属性。
+
+标准的div+css页面，只会用到种类很少的标签：
+
+```html
+div  p  h1  span   a   img   ul   ol    dl    input
+```
+
+知道每个标签的特殊用法、属性。比如a标签，img的属性
