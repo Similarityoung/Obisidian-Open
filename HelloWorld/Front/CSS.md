@@ -113,3 +113,26 @@ p{ font-size:14px; }
 ```
 
 ### 高级选择器
+
+#### 后代选择器
+
+- 定义的时候用空格隔开
+
+```html
+<style type="text/css">
+    .div1 p {
+        color: red;
+    }
+</style>
+```
+
+#### 交集选择器
+
+- 定义的时候紧密相连
+
+```css
+h3.special {
+    color: red;
+}
+```
+
