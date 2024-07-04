@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HelloWorld/Front/CSS.md",
+                "file": "HelloWorld/Front/2. CSS.md",
                 "mode": "source",
                 "source": false
               }
@@ -90,7 +90,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "HelloWorld/Front/CSS.md"
+                "file": "HelloWorld/Front/2. CSS.md"
               }
             }
           }
@@ -122,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "HelloWorld/Front/CSS.md",
+                "file": "HelloWorld/Front/2. CSS.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -139,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "HelloWorld/Front/CSS.md",
+                "file": "HelloWorld/Front/2. CSS.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -208,8 +208,8 @@
   },
   "active": "bc3d5986c86b5c44",
   "lastOpenFiles": [
-    "HelloWorld/Front/HTML.md",
-    "HelloWorld/Front/CSS.md",
+    "HelloWorld/Front/1. HTML.md",
+    "HelloWorld/Front/2. CSS.md",
     "HelloWorld/Front/CSS",
     "HelloWorld/Java/java 集成 rabbitmq.md",
     "README.md",
