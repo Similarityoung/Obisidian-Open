@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HelloWorld/Front/3. JavaScript.md",
+                "file": "HelloWorld/Java/java 基础.md",
                 "mode": "source",
                 "source": false
               }
@@ -90,7 +90,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "HelloWorld/Front/3. JavaScript.md"
+                "file": "HelloWorld/Java/java 基础.md"
               }
             }
           }
@@ -122,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "HelloWorld/Front/3. JavaScript.md",
+                "file": "HelloWorld/Java/java 基础.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -139,7 +139,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "HelloWorld/Front/3. JavaScript.md",
+                "file": "HelloWorld/Java/java 基础.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -208,14 +208,14 @@
   },
   "active": "bc3d5986c86b5c44",
   "lastOpenFiles": [
+    "HelloWorld/Java/java 集成 rabbitmq.md",
+    "HelloWorld/Java/java 基础.md",
+    "HelloWorld/Front/3. JavaScript.md",
     "HelloWorld/Front/2. CSS.md",
     "HelloWorld/Front/1. HTML.md",
-    "HelloWorld/Front/3. JavaScript.md",
     "HelloWorld/Front/CSS",
-    "HelloWorld/Java/java 集成 rabbitmq.md",
     "README.md",
     "未命名",
-    "HelloWorld/Java/java 基础.md",
     "HelloWorld/Java",
     "HelloWorld/Front",
     "hello/Welcome.md",
