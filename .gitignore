@@ -34,4 +34,7 @@ hs_err_pid*
 #不同步工作区
 .obsidian/workspace.json   
 
+
+.obsidian/app.json
+
 target
