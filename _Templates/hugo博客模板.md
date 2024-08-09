@@ -4,5 +4,4 @@ tags: [{{VALUE:tag}}]
 categories: [{{VALUE:category}}]
 date: {{DATE:YYYY-MM-DDTHH:mm:ssZ}}
 draft: true
-isTop: false
 ---
