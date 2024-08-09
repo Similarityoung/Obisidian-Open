@@ -5,15 +5,15 @@
       "name": "hugo博客模板",
       "type": "Template",
       "command": false,
-      "templatePath": "",
+      "templatePath": "_Templates/hugo博客模板.md",
       "fileNameFormat": {
-        "enabled": false,
-        "format": ""
+        "enabled": true,
+        "format": "{{VALUE}}"
       },
       "folder": {
-        "enabled": false,
+        "enabled": true,
         "folders": [],
-        "chooseWhenCreatingNote": false,
+        "chooseWhenCreatingNote": true,
         "createInSameFolderAsActiveFile": false,
         "chooseFromSubfolders": false
       },
