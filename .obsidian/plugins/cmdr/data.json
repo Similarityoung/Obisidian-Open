@@ -3,7 +3,14 @@
   "showAddCommand": true,
   "debug": false,
   "editorMenu": [],
-  "fileMenu": [],
+  "fileMenu": [
+    {
+      "id": "quickadd:runQuickAdd",
+      "icon": "activity",
+      "name": "QuickAdd: Run QuickAdd",
+      "mode": "any"
+    }
+  ],
   "leftRibbon": [
     {
       "id": "obsidian-git:open-git-view",
