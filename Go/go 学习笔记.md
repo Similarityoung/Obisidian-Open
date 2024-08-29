@@ -52,3 +52,28 @@ func main() {
 }
 ```
 
+#### 常量声明
+
+```go
+package main
+import "unsafe" 
+const ( a = "abc" b = len(a) c = unsafe.Sizeof(a) ) 
+func main(){
+println(a, b, c) 
+}
+```
+
+可以使用关键字`iota`在 const() 里，用来进行累加的
+
+```go
+const (
+
+Apple, Banana = iota + 1, iota + 2
+
+Cherimoya, Durian
+
+Elderberry, Fig
+
+)
+```
+
