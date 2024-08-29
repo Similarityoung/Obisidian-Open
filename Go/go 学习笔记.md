@@ -5,7 +5,7 @@ categories: [Back]
 date: 2024-08-29T14:09:53+08:00
 draft: true
 ---
-### go语法
+### GoLang语法新奇
 
 golang 中的表达式，加";"与不加都可以，建议不加
 
