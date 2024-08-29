@@ -77,3 +77,58 @@ Elderberry, Fig
 )
 ```
 
+#### 函数返回值
+
+```go
+package main  
+  
+import "fmt"  
+  
+func foo1(a string, b int) int {  
+    fmt.Println("a:", a, "b:", b)  
+  
+    c := 1024  
+  
+    return c  
+}  
+  
+// 可以返回多个返回值，匿名  
+func foo2(a string, b int) (int, int) {  
+    fmt.Println("a:", a, "b:", b)  
+  
+    c := 1024  
+  
+    return c, c  
+}  
+  
+// 可以返回多个返回值，有形参名称  
+func foo3(a string, b int) (r1 int, r2 int) {  
+    fmt.Println("a:", a, "b:", b)  
+  
+    c := 1024  
+  
+    r1 = c  
+    r2 = c * 2  
+  
+    return  
+}  
+  
+// 形参名称可以一起定义，都有默认值 0func foo4() (r1, r2 int) {  
+    r1 = 1  
+    r2 = 2  
+    return  
+}  
+  
+func main() {  
+  
+    c := foo1("hello", 100)  
+    fmt.Println(c)  
+  
+    ret1, ret2 := foo2("hello", 100)  
+    fmt.Println("ret1:", ret1, "ret2:", ret2)  
+  
+    ret1, ret2 = foo3("hello", 100)  
+    fmt.Println("ret1:", ret1, "ret2:", ret2)  
+}
+```
+
