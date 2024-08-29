@@ -21,6 +21,17 @@ import "fmt"
 /*  
 四种变量声明方式  
 */  
+
+
+var x, y int
+
+var ( //这种分解的写法,一般用于声明全局变量
+
+a int
+
+b bool
+
+)
   
 func main() {  
     //声明变量 默认为 0    var a int  
