@@ -217,7 +217,11 @@ make([]T, length, capacity)
 ```go
 // 判断 slice 是否为空
 if slice == nil {
-	fmt
-
+	fmt.Println("slice is empty")
+} else {
+	fmt.Println("slice is not empty")
 }
 ```
+
+好奇怪，在 go 里这个关键字叫 `nil`
+
