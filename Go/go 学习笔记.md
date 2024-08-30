@@ -228,6 +228,18 @@ if slice == nil {
 ##### 切片的截取
 
 ```go
-
-
+s1 := s[0:2] // 是左闭右开的区间，不写就默认头或尾
 ```
+
+这些只是浅拷贝，如果原数组内的值更改，则截取原数组的数组内的值也会进行改变，如果不想出现这种情况则需要**深拷贝** `copy`
+
+```go
+/* 创建切片 numbers1 是之前切片的两倍容量*/
+
+numbers1 := make([]int, len(numbers), (cap(numbers))*2)
+
+/* 拷贝 numbers 的内容到 numbers1 */
+
+copy(numbers1,numbers)
+```
+
