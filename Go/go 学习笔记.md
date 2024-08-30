@@ -225,6 +225,33 @@ if slice == nil {
 
 好奇怪，在 go 里这个关键字叫 `nil`
 
+##### 切片的添加
+
+使用 `append` 方法
+
+```go
+var numbers []int
+
+printSlice(numbers)
+
+/* 允许追加空切片 */
+
+numbers = append(numbers, 0)
+
+printSlice(numbers)
+
+/* 向切片添加一个元素 */
+
+numbers = append(numbers, 1)
+
+printSlice(numbers)
+
+/* 同时添加多个元素 */
+
+numbers = append(numbers, 2,3,4)
+
+printSlice(numbers)
+```
 ##### 切片的截取
 
 ```go
@@ -242,4 +269,6 @@ numbers1 := make([]int, len(numbers), (cap(numbers))*2)
 
 copy(numbers1,numbers)
 ```
+
+#### map
 
