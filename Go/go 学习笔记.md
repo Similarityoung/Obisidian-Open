@@ -318,3 +318,44 @@ test3 := map[string]string{
 fmt.Println(test3) //map[one:php two:golang three:java]
 ```
 
+##### map 的操作
+
+```go
+language := make(map[string]map[string]string)
+
+language["php"] = make(map[string]string, 2)
+
+language["php"]["id"] = "1"
+
+language["php"]["desc"] = "php是世界上最美的语言"
+
+language["golang"] = make(map[string]string, 2)
+
+language["golang"]["id"] = "2"
+
+language["golang"]["desc"] = "golang抗并发非常good"
+
+fmt.Println(language) //map[php:map[id:1 desc:php是世界上最美的语言] golang:map[id:2 desc:golang抗并发非常good]]
+
+//增删改查
+
+val, key := language["php"] //查找是否有php这个子元素
+
+if key {
+
+	fmt.Printf("%v", val)
+
+} else {
+
+	fmt.Printf("no");
+
+}
+
+language["php"]["id"] = "3" //修改了php子元素的id值
+
+language["php"]["nickname"] = "啪啪啪" //增加php元素里的nickname值
+
+delete(language, "php") //删除了php子元素
+
+fmt.Println(language)
+```
