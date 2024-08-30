@@ -158,4 +158,6 @@ go程序会自动调用init()和main()，所以你不需要在任何地方调用
 
 `import aa "fmt"`给 `fmt` 包起别名aa， `fmt.Println` 可以直接用 `aa.Println` 代替
 
-`import . "fmt"`给 `fmt` 包起别名aa， `fmt.Println` 可以直接用 `aa.Println` 代替
+`import . "fmt"`将当前fmt 包中的全部方法，导入到当前本包中，fmt 包中的所有方法可以直接使用 API 进行调用，无需使用 `fmt.API` 的形式
+
+
