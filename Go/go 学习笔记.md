@@ -200,23 +200,24 @@ var slice1 []type = make([]type, len)
 
 也可以简写为
 
-  
-
-  
-
+```go
 slice1 := make([]type, len)
+```
 
-  
 也可以指定容量，其中capacity为可选参数。  
-  
 
-Go
-
-复制代码
-
-1
-
+```go
 make([]T, length, capacity)
+```
 
-  
 这里 len 是数组的长度并且也是切片的初始长度。
+
+##### 判断是否为空
+
+```go
+// 判断 slice 是否为空
+if slice == nil {
+	fmt
+
+}
+```
