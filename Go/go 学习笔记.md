@@ -204,7 +204,7 @@ var slice1 []type = make([]type, len)
 slice1 := make([]type, len)
 ```
 
-也可以指定容量，其中capacity为可选参数。  
+也可以指定容量，其中capacity为可选参数。 （数组的最大长度）
 
 ```go
 make([]T, length, capacity)
