@@ -272,3 +272,49 @@ copy(numbers1,numbers)
 
 #### map
 
+##### map 的声明
+
+```go
+//第一种声明,key 是 string, value 也是 string
+
+var test1 map[string]string
+
+//在使用map前，需要先make，make的作用就是给map分配数据空间
+
+test1 = make(map[string]string, 10)
+
+test1["one"] = "php"
+
+test1["two"] = "golang"
+
+test1["three"] = "java"
+
+fmt.Println(test1) //map[two:golang three:java one:php]
+
+//第二种声明
+
+test2 := make(map[string]string)
+
+test2["one"] = "php"
+
+test2["two"] = "golang"
+
+test2["three"] = "java"
+
+fmt.Println(test2) //map[one:php two:golang three:java]  
+
+//第三种声明
+
+test3 := map[string]string{
+
+"one" : "php",
+
+"two" : "golang",
+
+"three" : "java",
+
+}
+
+fmt.Println(test3) //map[one:php two:golang three:java]
+```
+
