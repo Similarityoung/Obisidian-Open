@@ -204,7 +204,7 @@ var slice1 []type = make([]type, len)
 slice1 := make([]type, len)
 ```
 
-也可以指定容量，其中capacity为可选参数。 （数组的最大长度）
+也可以指定容量，其中capacity为可选参数。 意为数组的当前的最大长度，如果数组的 `len` 比 `cap` 要大，则 `cap *= 2` ，进行扩容，若不指定，则初始的 `cap = len`
 
 ```go
 make([]T, length, capacity)
@@ -225,3 +225,9 @@ if slice == nil {
 
 好奇怪，在 go 里这个关键字叫 `nil`
 
+##### 切片的截取
+
+```go
+
+
+```
