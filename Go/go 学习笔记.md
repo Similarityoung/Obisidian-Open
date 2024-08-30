@@ -154,6 +154,8 @@ go程序会自动调用init()和main()，所以你不需要在任何地方调用
 
 导入时候的记得要加路径，从项目最开始的地方开始
 
-`import _"fmt"`给 `fmt` 包起别名，匿名，无法使用当前包的方法，但是会执行当前包内部的`init()` 方法
+`import _ "fmt"`给 `fmt` 包起别名，匿名，无法使用当前包的方法，但是会执行当前包内部的`init()` 方法
 
-`import aa "fmt"`给 `fmt` 包起别名，匿名，无法使用当前包的方法，但是会执行当前包内部的`init()` 方法
+`import aa "fmt"`给 `fmt` 包起别名aa， `fmt.Println` 可以直接用 `aa.Println` 代替
+
+`import . "fmt"`给 `fmt` 包起别名aa， `fmt.Println` 可以直接用 `aa.Println` 代替
