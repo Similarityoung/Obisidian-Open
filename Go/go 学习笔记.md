@@ -366,3 +366,10 @@ for key, value := range language {
 
 map存储是无序的，遍历 Map 时返回的键值对的顺序是不确定
 
+#### 结构体 struct
+
+结构体的样式和 c 很像，类似于
+
+```go
+
+```
