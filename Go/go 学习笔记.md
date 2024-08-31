@@ -371,5 +371,12 @@ map存储是无序的，遍历 Map 时返回的键值对的顺序是不确定
 结构体的样式和 c 很像，类似于
 
 ```go
+type Book sturct {
+	title string
+	auth string
+} 
 
+// 创建新对象
+var book1 Book
 ```
+
