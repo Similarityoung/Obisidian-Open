@@ -437,5 +437,9 @@ func (this *Cat) GetType() string {
 ```go
 var animal Animal // 接口的数据类型，父类指针，注意是指针！
 animal = &Cat{"Green"} 
-animal.Sleep() 
+animal.Sleep() // 这里调用的将会是 Cat 的 Sleep() 方法，多态的体现了，因为本身是 Animal 类
 ```
+
+##### interface() 空接口
+
+
