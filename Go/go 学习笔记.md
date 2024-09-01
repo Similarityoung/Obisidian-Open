@@ -422,4 +422,8 @@ type Cat struct {
 func (this *Cat) Sleep() {
 	fmt.Println("this cat is sleep")
 }
+
+func (this *Cat) GetColor() string {
+	return this.color
+}
 ```
