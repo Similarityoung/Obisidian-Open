@@ -387,7 +387,16 @@ var book1 Book
 ```go
 func funcName(a interface{}) string {
 
-return string(a)
+	return string(a)
 
 }
 ```
+
+编译器会返回
+
+```go
+cannot convert a (type interface{}) to type string: need type assertion
+```
+
+此时，意味着整个转化的过程需要类型断言。
+
