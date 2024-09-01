@@ -435,6 +435,7 @@ func (this *Cat) GetType() string {
 只要实现了所有的方法，那么这个子类就相当于父类的继承，类似于
 
 ```go
-var animal Animal // 接口的
+var animal Animal // 接口的数据类型，父类指针，注意是指针！
 animal = &Cat{"Green"} 
+animal.Sleep() 
 ```
