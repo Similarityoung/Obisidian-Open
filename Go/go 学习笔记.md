@@ -400,3 +400,15 @@ cannot convert a (type interface{}) to type string: need type assertion
 
 此时，意味着整个转化的过程需要类型断言。
 
+##### interface接口的使用/多态
+
+接口的创建方式（父类）
+
+```go
+type Animal interface {
+	Sleep()
+	GetColor() string
+	GetType() string
+}
+```
+
