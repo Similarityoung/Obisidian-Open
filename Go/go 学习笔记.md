@@ -412,4 +412,14 @@ type Animal interface {
 }
 ```
 
+子类（直接实现父类的全部借口）
 
+```go
+type Cat struct {
+	color string
+}
+
+func (this *Cat) Sleep() {
+	fmt.Println("this cat is sleep")
+}
+```
