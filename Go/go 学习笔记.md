@@ -408,7 +408,8 @@ cannot convert a (type interface{}) to type string: need type assertion
 type Animal interface {
 	Sleep()
 	GetColor() string
-	GetType() string
+	GetType()  string
 }
 ```
+
 
