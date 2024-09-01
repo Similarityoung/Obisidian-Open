@@ -380,3 +380,14 @@ type Book sturct {
 var book1 Book
 ```
 
+#### interface与类型断言
+
+>Golang的语言中提供了断言的功能。golang中的所有程序都实现了interface{}的接口，这意味着，所有的类型如string,int,int64甚至是自定义的struct类型都就此拥有了interface{}的接口，这种做法和java中的Object类型比较类似。那么在一个数据通过func funcName(interface{})的方式传进来的时候，也就意味着这个参数被自动的转为interface{}的类型。
+
+```go
+func funcName(a interface{}) string {
+
+return string(a)
+
+}
+```
