@@ -480,3 +480,5 @@ value, ok := a.(string) //前面是接受接口的值，后面是判断类型是
 其中 `type` 可以分为 `static type` 和 `concrete type`，前者是基本的类型，比如 int，string，后者是具体的数据类型，虽然我并不是很清楚什么是具体（具体创造的类？）
 
  断言有两步：得到动态类型 type，判断 type 是否实现了目标接口。 
+
+j
