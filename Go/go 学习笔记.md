@@ -481,4 +481,5 @@ value, ok := a.(string) //前面是接受接口的值，后面是判断类型是
 
  断言有两步：得到动态类型 type，判断 type 是否实现了目标接口。 
 
-j
+反射的原理就是基于interface 的 **pair** 来实现的
+jreflect.Value是通过reflect.ValueOf(X)获得的，只有当X是指针的时候，才可以通过reflec.Value修改实际变量X的值，即：要修改反射类型的对象就一定要保证其值是“addressable”的。
