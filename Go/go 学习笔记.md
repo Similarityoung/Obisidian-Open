@@ -448,3 +448,18 @@ animal.Sleep() // 这里调用的将会是 Cat 的 Sleep() 方法，多态的体
 
 泛型，object？
 
+```go
+func muFunc(arg interface{}) {
+	fmt.Println("myFunc is called")
+	fmt.Println(arg)
+}
+
+func main() {
+	myFunc(100)
+	myFunc("abc")
+	myFunc(3.14)
+}
+```
+
+这些都能够成功输出，所以这个函数的入参什么都可以
+
