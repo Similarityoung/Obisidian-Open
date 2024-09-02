@@ -471,3 +471,11 @@ var a interface{}
 value, ok := a.(string) //前面是接受接口的值，后面是判断类型是否正确，是 bool
 ```
 
+#### 反射reflect
+
+##### 变量的结构
+
+`type` 和 `value` 组成的` pair` 是变量的结构
+
+其中 `type` 可以分为 `static type` 和 `concrete type`，前者是基本的类型，比如 int，string，后者是具体的数据类型，虽然我并不是很清楚什么是具体//todo
+
