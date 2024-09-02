@@ -385,8 +385,43 @@ var book1 Book
 在结构体标签中，有类似于文档注释的东西，方便你了解怎么使用
 
 ```go
+package main
 
+import (
+	"fmt"
+	"reflect"
+)
+
+type resume struct {
+	Name string `json:"name" doc:"我的名字"` //注意是反引号
+}
+
+func findDoc(stru interface{}) map[string]string {
+
+	t := reflect.TypeOf(stru).Elem()
+	doc := make(map[string]string)
+
+	for i := 0; i < t.NumField(); i++ {
+
+	//这里就是通过标签来获得值
+	doc[t.Field(i).Tag.Get("json")] = t.Field(i).Tag.Get("doc")
+
+	}
+	return doc
+}
+
+  
+
+func main() {
+
+	var stru resume
+	doc := findDoc(&stru)
+	fmt.Printf("name字段为：%s\n", doc["name"])
+
+}
 ```
+
+
 #### interface与类型断言
 
 ##### interface接口的使用/多态
