@@ -446,3 +446,5 @@ animal.Sleep() // 这里调用的将会是 Cat 的 Sleep() 方法，多态的体
 
  int、string、float32、float64、struct 都实现了 interface()
 
+泛型，object？
+
