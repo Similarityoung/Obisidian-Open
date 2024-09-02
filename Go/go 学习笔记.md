@@ -507,21 +507,13 @@ func main() {
 	fmt.Println("type of pointer:", newValue.Type())
 	fmt.Println("settability of pointer:", newValue.CanSet())
 
-  
+	// 重新赋值
+	newValue.SetFloat(77)
+	fmt.Println("new value of pointer:", num)
 
-// 重新赋值
+	// 如果reflect.ValueOf的参数不是指针，会如何？
 
-newValue.SetFloat(77)
-
-fmt.Println("new value of pointer:", num)
-
-  
-
-////////////////////
-
-// 如果reflect.ValueOf的参数不是指针，会如何？
-
-pointer = reflect.ValueOf(num)
+	pointer = reflect.ValueOf(num)
 
 //newValue = pointer.Elem() // 如果非指针，这里直接panic，“panic: reflect: call of reflect.Value.Elem on float64 Value”
 
