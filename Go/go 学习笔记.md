@@ -485,3 +485,57 @@ value, ok := a.(string) //前面是接受接口的值，后面是判断类型是
 
 jreflect.Value是通过reflect.ValueOf(X)获得的，只有当X是指针的时候，才可以通过reflec.Value修改实际变量X的值，即：要修改反射类型的对象就一定要保证其值是“addressable”的。
 
+```go
+package main
+
+import (
+
+"fmt"
+
+"reflect"
+
+)
+
+func main() {
+
+	var num float64 = 1.2345
+	fmt.Println("old value of pointer:", num)
+	// 通过reflect.ValueOf获取num中的reflect.Value，注意，参数必须是指针才能修改其值
+	pointer := reflect.ValueOf(&num)
+	newValue := pointer.Elem()
+
+	fmt.Println("type of pointer:", newValue.Type())
+	fmt.Println("settability of pointer:", newValue.CanSet())
+
+  
+
+// 重新赋值
+
+newValue.SetFloat(77)
+
+fmt.Println("new value of pointer:", num)
+
+  
+
+////////////////////
+
+// 如果reflect.ValueOf的参数不是指针，会如何？
+
+pointer = reflect.ValueOf(num)
+
+//newValue = pointer.Elem() // 如果非指针，这里直接panic，“panic: reflect: call of reflect.Value.Elem on float64 Value”
+
+}
+
+  
+
+运行结果：
+
+old value of pointer: 1.2345
+
+type of pointer: float64
+
+settability of pointer: true
+
+new value of pointer: 77
+```
