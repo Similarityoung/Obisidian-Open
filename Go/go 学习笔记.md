@@ -465,3 +465,9 @@ cannot convert a (type interface{}) to type string: need type assertion
 
 此时，意味着整个转化的过程需要类型断言。
 
+```go
+var a interface{}
+
+value, ok := a.(string) //前面是接受接口的值，后面是判断类型是否正确，是 bool
+```
+
