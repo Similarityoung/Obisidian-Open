@@ -515,7 +515,8 @@ func main() {
 
 	pointer = reflect.ValueOf(num)
 
-//newValue = pointer.Elem() // 如果非指针，这里直接panic，“panic: reflect: call of reflect.Value.Elem on float64 Value”
+	//newValue = pointer.Elem() 
+	// 如果非指针，这里直接panic，“panic: reflect: call of reflect.Value.Elem on float64 Value”
 
 }
 
@@ -531,3 +532,4 @@ settability of pointer: true
 
 new value of pointer: 77
 ```
+
