@@ -442,4 +442,6 @@ animal.Sleep() // 这里调用的将会是 Cat 的 Sleep() 方法，多态的体
 
 ##### interface() 空接口
 
+这是一个通用万能类型
+
 
