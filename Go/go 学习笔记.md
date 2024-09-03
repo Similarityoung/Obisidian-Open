@@ -421,11 +421,13 @@ func main() {
 }
 ```
 
-##### 结构体与 json 的联动
+##### 结构体标签应用
 
 在标签处添加 json 编解码
 
+orm 映射关系
 
+这些需要时再去了解
 #### interface与类型断言
 
 ##### interface接口的使用/多态
@@ -581,4 +583,6 @@ settability of pointer: true
 
 new value of pointer: 77
 ```
+
+### GoLang 高阶
 
