@@ -626,6 +626,8 @@ goroutine是Go语言并行设计的核心，有人称之为go程。 Goroutine从
 
 在并发编程中，我们通常想将一个过程切分成几块，然后让每个 `goroutine` 各自负责一块工作，当一个程序启动时，主函数在一个单独的 `goroutine` 中运行，我们叫它`main goroutine `。新的 `goroutine` 会用 `go` 语句来创建。而go语言的并发设计，让我们很轻松就可以达成这一目的。
 
+具体用法如下：
+
 ```go
 func newTask() {
 
@@ -641,21 +643,14 @@ func main() {
 
 //创建一个 goroutine，启动另外一个任务
 
-go newTask()
-
-i := 0
-
-//main goroutine 循环打印
-
-for {
-
-i++
-
-fmt.Printf("main goroutine: i = %d\n", i)
-
-time.Sleep(1 * time.Second) //延时1s
-
-}
-
+	go newTask()
+	i := 0
+	//main goroutine 循环打印
+	for {
+		i++
+		fmt.Printf("main goroutine: i = %d\n", i)
+		time.Sleep(1 * time.Second) //延时1s
+	}
 }
 ```
+
