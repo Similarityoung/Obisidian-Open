@@ -753,4 +753,46 @@ var ch2 chan<- float64 // ch2是单向channel，只用于写float64数据
 var ch3 <-chan int // ch3是单向channel，只用于读int数据
 ```
 
-这么看我觉得挺抽象的，我感觉得看下面这个，具体语法就是 进去的shi
+这么看我觉得挺抽象的，我感觉得看下面这个，具体语法就是 进去的是输入 `chan<- ` ，出来的是输出 `<-chan` 
+
+```go
+c := make(chan int, 3)
+var send chan<- int = c // send-only
+var recv <-chan int = c // receive-only
+
+send <- 1
+//<-send //invalid operation: <-send (receive from send-only type chan<- int)
+
+<-recv
+//recv <- 2 //invalid operation: recv <- 2 (send to receive-only type <-chan int)
+
+//不能将单向 channel 转换为普通 channel
+d1 := (chan int)(send) //cannot convert send (type chan<- int) to type chan int
+d2 := (chan int)(recv) //cannot convert recv (type <-chan int) to type chan int
+```
+
+```go
+// chan<- //只写
+func counter(out chan<- int) {
+	defer close(out)
+	for i := 0; i < 5; i++ {
+		out <- i //如果对方不读 会阻塞
+	}
+}
+
+// <-chan //只读
+
+func printer(in <-chan int) {
+	for num := range in {
+		fmt.Println(num)
+	}
+}
+
+func main() {
+	c := make(chan int) // chan //读写
+	go counter(c) //生产者
+	printer(c) //消费者
+	fmt.Println("done")
+}
+```
+
