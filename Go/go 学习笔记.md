@@ -668,3 +668,20 @@ goroutine运行在相同的地址空间，因此访问共享内存必须做好�
   
 引⽤类型 channel可用于多个 goroutine 通讯。其内部实现了同步，确保并发安全。
 
+#### 定义 channel 变量
+
+和 `map` 类似，`channel` 也一个对应 `make` 创建的底层数据结构的引用。  
+  
+当我们复制一个 `channel` 或用于函数参数传递时，我们只是拷贝了一个 `channel` **引用**，因此调用者和被调用者将引用同一个 `channel` 对象。和其它的引用类型一样，`channel` 的零值也是 `nil` 。  
+  
+定义一个 `channel` 时，也需要定义发送到 `channel` 的值的类型。`channel` 可以使用内置的 `make()` 函数来创建：  
+  
+`chan` 是创建 `channel` 所需使用的关键字。`Type` 代表指定 `channel` 收发数据的类型。
+
+```go
+make(chan Type) //等价于make(chan Type, 0)
+
+make(chan Type, capacity)
+```
+
+当 参数capacity= 0 时，channel 是`无缓冲阻塞`读写的；当capacity > 0 时，channel 有`缓冲、是非阻塞`的，直到写`满` `capacity` 个元素才阻塞写入。
