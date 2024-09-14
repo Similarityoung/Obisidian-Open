@@ -668,7 +668,7 @@ goroutine运行在相同的地址空间，因此访问共享内存必须做好�
   
 引⽤类型 channel可用于多个 goroutine 通讯。其内部实现了同步，确保并发安全。
 
-#### 定义 channel 变量
+##### 定义 channel 变量
 
 和 `map` 类似，`channel` 也一个对应 `make` 创建的底层数据结构的引用。  
   
@@ -685,3 +685,19 @@ make(chan Type, capacity)
 ```
 
 当 参数capacity= 0 时，channel 是`无缓冲阻塞`读写的；当capacity > 0 时，channel 有`缓冲、是非阻塞`的，直到写`满` `capacity` 个元素才阻塞写入。
+
+> 我个人的理解就是，类似于信号量对于线程之间的进行互斥和同步的操作。
+
+##### channel 的通信
+
+channel非常像生活中的管道，一边可以存放东西，另一边可以取出东西。channel通过操作符 <- 来接收和发送数据，发送和接收数据语法：
+
+```go
+channel <- value //发送value到channel
+<-channel //接收并将其丢弃
+x := <-channel //从channel中接收数据，并赋值给x
+x, ok := <-channel //功能同上，同时检查通道是否已关闭或者是否为空
+```
+
+当 `capacity` 为 0 时，很明显，这就是一个互斥锁，用来支持同步的`
+
