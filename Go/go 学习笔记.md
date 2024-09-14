@@ -743,3 +743,14 @@ c := make(chan int) // 创建 channel
 close(c) // 关闭 channel
 ```
 
+##### 单向 channel
+
+单向channel变量的声明非常简单，如下：
+
+```go
+var ch1 chan int // ch1是一个正常的channel，是双向的
+var ch2 chan<- float64 // ch2是单向channel，只用于写float64数据
+var ch3 <-chan int // ch3是单向channel，只用于读int数据
+```
+
+这么看我觉得挺抽象的，我感觉得看下面这个，具体语法就是 进去的shi
