@@ -654,3 +654,11 @@ func main() {
 }
 ```
 
+主 `goroutine` 退出后，其它的工作 `goroutine` 也会自动退出
+
+#### Channel
+
+##### channel 的定义
+
+
+
