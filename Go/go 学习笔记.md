@@ -874,3 +874,25 @@ GONOSUMDB="" GOPRIVATE=""
 ...
 ```
 
+##### GOPROXY  
+  
+这个环境变量主要是用于设置 Go 模块代理（Go module proxy）,其作用是用于使 Go 在后续拉取模块版本时直接通过镜像站点来快速拉取。  
+  
+GOPROXY 的默认值是：https://proxy.golang.org,direct  
+  
+proxy.golang.org国内访问不了,需要设置国内的代理.  
+  
+- 阿里云 [https://mirrors.aliyun.com/goproxy/](https://mirrors.aliyun.com/goproxy/)  
+
+- 七牛云 [https://goproxy.cn](https://goproxy.cn/),direct
+
+而在刚刚设置的值中，我们可以发现值列表中有 “direct” 标识，它又有什么作用呢？  
+  
+实际上 “direct” 是一个特殊指示符，用于指示 Go 回源到模块版本的源地址去抓取（比如 GitHub 等），场景如下：当值列表中上一个 Go 模块代理返回 404 或 410 错误时，Go 自动尝试列表中的下一个，遇见 “direct” 时回源，也就是回到源地址去抓取，而遇见 EOF 时终止并抛出类似 “invalid version: unknown revision...” 的错误。
+
+##### GOSUMDB
+
+它的值是一个 Go checksum database，用于在拉取模块版本时（无论是从源站拉取还是通过 Go module proxy 拉取）保证拉取到的模块版本数据未经过篡改，若发现不一致，也就是可能存在篡改，将会立即中止。
+
+##### GONOPROXY/GONOSUMDB/GOPRIVATE
+
