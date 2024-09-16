@@ -849,3 +849,28 @@ select {
 
 #### Go Modules
 
+##### go mod 命令
+
+| 命令            | 作用                             |
+| --------------- | -------------------------------- |
+| go mod init     | 生成 go.mod 文件                 |
+| go mod download | 下载 go.mod 文件中指明的所有依赖 |
+| go mod tidy     | 整理现有的依赖                   |
+| go mod graph    | 查看现有的依赖结构               |
+| go mod edit     | 编辑 go.mod 文件                 |
+| go mod vendor   | 导出项目所有的依赖到vendor目录   |
+| go mod verify   | 校验一个模块是否被篡改过         |
+| go mod why      | 查看为什么需要依赖某模块         |
+
+##### go mod环境变量
+
+可以通过 `go env` 命令来进行查看
+
+```bash
+$ go env GO111MODULE="auto"
+GOPROXY="https://proxy.golang.org,direct"
+GONOPROXY="" GOSUMDB="sum.golang.org" 
+GONOSUMDB="" GOPRIVATE="" 
+...
+```
+
