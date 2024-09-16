@@ -710,12 +710,22 @@ x, ok := <-channel //功能同上，同时检查通道是否已关闭或者是�
 >
 >当通道 **关闭并且没有数据** 时， `ok` 返回 `false`
 
-通过循环读取 channel 中的值时，语法可以这么写：
+通过循环读取 channel 中的值时，语法可以使用 `range` 这么写：
 
 ```go
 for {
-	if data, ok := 
+	if data, ok := <-c; ok {
+		fmt.PrintLn(data)
+	} else {
+		break
+	}
 }
+
+// 也可以使用 range 直接来实现
+for data := range c {
+	fmt.Println(data)
+}
+fmt.Println("Main finished..")
 ```
 
 **当 `capacity` 为 0 时
