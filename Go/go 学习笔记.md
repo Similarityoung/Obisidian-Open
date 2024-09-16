@@ -816,3 +816,13 @@ func main() {
 
 #### Select
 
+##### select作用
+
+Go里面提供了一个关键字select，通过select可以监听channel上的数据流动。  
+  
+有时候我们希望能够借助channel发送或接收数据，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。  
+  
+select的用法与switch语言非常类似，由select开始一个新的选择块，每个选择条件由case语句来描述。  
+  
+与switch语句相比，select有比较多的限制，其中最大的一条限制就是每个case语句里必须是一个IO操作，大致的结构如下：
+
