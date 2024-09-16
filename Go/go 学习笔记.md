@@ -896,3 +896,5 @@ proxy.golang.org国内访问不了,需要设置国内的代理.
 
 ##### GONOPROXY/GONOSUMDB/GOPRIVATE
 
+这三个环境变量都是用在当前项目依赖了私有模块，例如像是你公司的私有 git 仓库，又或是 github 中的私有库，都是属于私有模块，都是要进行设置的，否则会拉取失败。
+
