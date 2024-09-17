@@ -442,13 +442,14 @@ type Animal interface {
 }
 ```
 
-子类（直接实现父类的全部接口）
+子类（直接实现父类的全部接口），注意，在结构体中的函数，好像基本上都需要加上(结构体名称 * 结构体类型)，这样是为了方便在 new 完的对象后直接使用方法？
 
 ```go
 type Cat struct {
 	color string
 }
 
+// 这里 (this *Cat) 就是对象的方法
 func (this *Cat) Sleep() {
 	fmt.Println("this cat is sleep")
 }
