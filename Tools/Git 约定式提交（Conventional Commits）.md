@@ -14,9 +14,9 @@ draft: true
 
 ```git
 <类型>(<范围>): <描述> 
-<空行> 
+
 <主体> 
-<空行> 
+
 <footer>
 ```
 
@@ -46,10 +46,9 @@ draft: true
 
 5. **脚注（footer）**：可选项，用于说明重大变更，或者关联的issue。例如：
 
+- `BREAKING CHANGE`：说明重大变更
 
-- • `BREAKING CHANGE`：说明重大变更
-
-- • `Closes #123`：关闭issue
+- `Closes #123`：关闭issue
 
 
 ### 示例
