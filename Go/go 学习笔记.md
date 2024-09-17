@@ -442,7 +442,7 @@ type Animal interface {
 }
 ```
 
-子类（直接实现父类的全部借口）
+子类（直接实现父类的全部接口）
 
 ```go
 type Cat struct {
