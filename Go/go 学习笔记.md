@@ -362,6 +362,11 @@ fmt.Println(language)
 for key, value := range language {
 
 }// 遍历
+
+// 如果其中 key 无需使用的话，可以写成
+for _, value := range language {
+
+}
 ```
 
 map存储是无序的，遍历 Map 时返回的键值对的顺序是不确定
