@@ -167,6 +167,24 @@ go程序会自动调用init()和main()，所以你不需要在任何地方调用
 
 跟 c 类似，这里就不做阐述
 
+##### panic
+
+`panic` 是 Go 的内置函数，用于触发一个运行时错误（称为 "panic"），它会立即中止当前函数的执行，开始进行错误处理流程，最终结束程序（除非通过 `recover` 捕获并处理该 panic）。
+
+使用 `panic` 可以确保在函数或方法的必要实现部分被遗忘时，程序不会在未完成的状态下静默运行，而是明确地失败。
+
+```go
+type MyInterface interface {
+    DoSomething()
+}
+
+type MyImplementation struct {}
+
+func (m MyImplementation) DoSomething() {
+    panic("implement me")
+}
+```
+
 #### defer
 
 > 相当于 Java 中的 `finally` ，用于最后执行的东西。
@@ -540,7 +558,6 @@ value, ok := a.(string) //前面是接受接口的值，后面是判断类型是
 
 反射的原理就是基于interface 的 **pair** 来实现的
 
-
 ##### 反射的应用
 
 jreflect.Value是通过reflect.ValueOf(X)获得的，只有当X是指针的时候，才可以通过reflec.Value修改实际变量X的值，即：要修改反射类型的对象就一定要保证其值是“addressable”的。
@@ -575,8 +592,9 @@ func main() {
 
 	pointer = reflect.ValueOf(num)
 
-	//newValue = pointer.Elem() 
-	// 如果非指针，这里直接panic，“panic: reflect: call of reflect.Value.Elem on float64 Value”
+	// newValue = pointer.Elem() 
+	// 如果非指针，这里直接panic，
+	// “panic: reflect: call of reflect.Value.Elem on float64 Value”
 
 }
 
