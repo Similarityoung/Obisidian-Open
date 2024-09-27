@@ -119,3 +119,7 @@ func main() {
 - `applyToStrings` 函数接受一个 `ProcessFunc` 和一个字符串数组，然后将该函数应用于数组中的每个字符串。
 
 最后，我们在 `main` 函数中调用 `applyToStrings` 两次，分别使用 `countCharacters` 和 `fixedValue` 作为参数。这演示了如何使用函数类型参数来提供不同的行为而不改变 `applyToStrings` 函数的代码结构。
+
+### go 单元测试
+
+Go 语言推荐测试文件和源代码文件放在一块，测试文件以 `_test.go` 结尾。比如，当前 package 有 `calc.go` 一个文件，我们想测试 `calc.go` 中的 `Add` 和 `Mul` 函数，那么应该新建 `calc_test.go` 作为测试文件。
