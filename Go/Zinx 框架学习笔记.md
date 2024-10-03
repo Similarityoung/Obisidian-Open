@@ -123,3 +123,20 @@ func main() {
 ### go 单元测试
 
 Go 语言推荐测试文件和源代码文件放在一块，测试文件以 `_test.go` 结尾。比如，当前 package 有 `calc.go` 一个文件，我们想测试 `calc.go` 中的 `Add` 和 `Mul` 函数，那么应该新建 `calc_test.go` 作为测试文件。
+
+### channel 数组的使用方法
+
+创建 `channel` 数组
+
+```go
+var workerPool = make([]chan ziface.IRequest, 10) // 创建一个包含10个通道的数组
+```
+
+给每个 `channel` 设置缓存大小
+
+```go
+for i := range workerPool {
+    workerPool[i] = make(chan ziface.IRequest, 5)  // 初始化每个通道，容量为5
+}
+```
+
