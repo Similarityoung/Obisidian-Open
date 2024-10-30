@@ -174,7 +174,9 @@ public class GenericsDemo24{
 **示例代码：**
 
 ```java
-List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<String> filteredNames = names.stream()                                   .filter(name -> name.startsWith("A"))                                   .collect(Collectors.toList()); // 结果：["Alice"]
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<String> filteredNames = names.stream()
+	.filter(name -> name.startsWith("A"))
+	.collect(Collectors.toList()); // 结果：["Alice"]
 ```
 
 ### 2. `collect`
@@ -184,8 +186,8 @@ List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<Stri
 **示例代码：**
 
 ```java
-	List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); 
-	String result = names.stream()                      
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); 
+String result = names.stream()                      
 	.filter(name -> name.length() > 3)
 	.collect(Collectors.joining(", ")); // 结果："Alice, Charlie, Dave"
 ```
@@ -195,61 +197,58 @@ List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<Stri
 除了 `filter` 和 `collect`，还有许多其他有用的 `Stream` 操作：
 
 - **`map`**（中间操作）: 对流中的每个元素应用一个函数，并将结果作为新的流元素。常用于转换元素。
-    
+
     ```java
-	List<Integer> lengths = names.stream()                              
+List<Integer> lengths = names.stream()                              
     .map(String::length)                              
     .collect(Collectors.toList()); // 将名字转换为它们的长度
     ```
-    
+
 - **`flatMap`**（中间操作）: 用于将流中的每个元素转换成一个流，然后将这些流“扁平化”为一个新的流。
-- 
+
     ```java
-    List<List<String>> listOfLists = Arrays.asList(Arrays.asList("a", "b"),Arrays.asList("c", "d")); 
-    List<String> flatList = listOfLists.stream()
+List<List<String>> listOfLists = Arrays.asList(Arrays.asList("a","b"),Arrays.asList("c", "d")); 
+List<String> flatList = listOfLists.stream()
     .flatMap(List::stream)
     .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]
     ```
-    
+
 - **`sorted`**（中间操作）: 对流中的元素进行排序。
-    
+
     ```java
-	List<String> sortedNames = names.stream()
+List<String> sortedNames = names.stream()
     .sorted()
     .collect(Collectors.toList());
     ```
-    
+
 - **`distinct`**（中间操作）: 返回一个包含唯一元素的流，按照遇到的顺序确定唯一性。
-    
+
     ```java
 List<String> uniqueItems = Stream.of("a", "b", "a", "c", "b", "d")
     .distinct()
     .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]
     ```
-    
+
 - **`limit`**（中间操作）: 截取流中的前N个元素。
-    
-    java
-    
-    复制代码
-    
-    `List<String> limited = names.stream()                             .limit(2)                             .collect(Collectors.toList()); // 结果：["Alice", "Bob"]`
-    
+
+    ```java
+List<String> limited = names.stream()
+    .limit(2)
+    .collect(Collectors.toList()); // 结果：["Alice", "Bob"]
+    ```
+
 - **`forEach`**（终端操作）: 对流中的每个元素执行一个操作，通常用于调用方法或打印。
-    
-    java
-    
-    复制代码
-    
-    `names.stream()      .forEach(System.out::println);`
-    
+
+```java
+names.stream()
+    .forEach(System.out::println);
+```
+
 - **`reduce`**（终端操作）: 将流中的元素组合起来，使用一个初始值，通过一个二元操作。
-    
-    java
-    
-    复制代码
-    
-    `int sum = Stream.of(1, 2, 3, 4)                 .reduce(0, (a, b) -> a + b); // 结果：10`
-    
+
+```java
+int sum = Stream.of(1, 2, 3, 4)
+	.reduce(0, (a, b) -> a + b); // 结果：10
+```
 
 `Stream` API 的强大之处在于这些操作可以以几乎无限的方式组合，提供了极大的灵活性和强大的数据处理能力。
