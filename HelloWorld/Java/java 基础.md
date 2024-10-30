@@ -173,8 +173,9 @@ public class GenericsDemo24{
 
 **示例代码：**
 
-`
-List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<String> filteredNames = names.stream()                                   .filter(name -> name.startsWith("A"))                                   .collect(Collectors.toList()); // 结果：["Alice"]`
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<String> filteredNames = names.stream()                                   .filter(name -> name.startsWith("A"))                                   .collect(Collectors.toList()); // 结果：["Alice"]
+```
 
 ### 2. `collect`
 
@@ -182,11 +183,12 @@ List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<Stri
 
 **示例代码：**
 
-java
-
-复制代码
-
-`List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); String result = names.stream()                      .filter(name -> name.length() > 3)                      .collect(Collectors.joining(", ")); // 结果："Alice, Charlie, Dave"`
+```java
+	List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); 
+	String result = names.stream()                      
+	.filter(name -> name.length() > 3)
+	.collect(Collectors.joining(", ")); // 结果："Alice, Charlie, Dave"
+```
 
 ### 其他常见的 `Stream` 操作
 
@@ -194,35 +196,36 @@ java
 
 - **`map`**（中间操作）: 对流中的每个元素应用一个函数，并将结果作为新的流元素。常用于转换元素。
     
-    java
-    
-    复制代码
-    
-    `List<Integer> lengths = names.stream()                              .map(String::length)                              .collect(Collectors.toList()); // 将名字转换为它们的长度`
+    ```java
+	List<Integer> lengths = names.stream()                              
+    .map(String::length)                              
+    .collect(Collectors.toList()); // 将名字转换为它们的长度
+    ```
     
 - **`flatMap`**（中间操作）: 用于将流中的每个元素转换成一个流，然后将这些流“扁平化”为一个新的流。
-    
-    java
-    
-    复制代码
-    
-    `List<List<String>> listOfLists = Arrays.asList(Arrays.asList("a", "b"), Arrays.asList("c", "d")); List<String> flatList = listOfLists.stream()                                    .flatMap(List::stream)                                    .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]`
+- 
+    ```java
+    List<List<String>> listOfLists = Arrays.asList(Arrays.asList("a", "b"),Arrays.asList("c", "d")); 
+    List<String> flatList = listOfLists.stream()
+    .flatMap(List::stream)
+    .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]
+    ```
     
 - **`sorted`**（中间操作）: 对流中的元素进行排序。
     
-    java
-    
-    复制代码
-    
-    `List<String> sortedNames = names.stream()                                 .sorted()                                 .collect(Collectors.toList());`
+    ```java
+	List<String> sortedNames = names.stream()
+    .sorted()
+    .collect(Collectors.toList());
+    ```
     
 - **`distinct`**（中间操作）: 返回一个包含唯一元素的流，按照遇到的顺序确定唯一性。
     
-    java
-    
-    复制代码
-    
-    `List<String> uniqueItems = Stream.of("a", "b", "a", "c", "b", "d")                                  .distinct()                                  .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]`
+    ```java
+List<String> uniqueItems = Stream.of("a", "b", "a", "c", "b", "d")
+    .distinct()
+    .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]
+    ```
     
 - **`limit`**（中间操作）: 截取流中的前N个元素。
     
