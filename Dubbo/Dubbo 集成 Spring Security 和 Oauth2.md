@@ -31,3 +31,6 @@ draft: true
 
 **使用 Filter 扩展**: 实现 `Filter` 接口和 `org.apache.dubbo.rpc.protocol.tri.rest.filter.RestExtension` 接口，然后注册SPI
 
+### 主要流程
+
+由于 `OAuth2` 需要
