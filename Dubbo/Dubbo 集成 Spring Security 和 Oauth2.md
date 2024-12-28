@@ -70,6 +70,11 @@ public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity h
     - `X-XSS-Protection`：启用浏览器的 XSS 过滤机制，帮助检测和阻止 XSS 攻击。
 
 ```java
+
+private static final String HOST = System.getProperty("authorization.address", "localhost");  
+  
+String issuer = "http://" + HOST + ":9000";
+
 @Bean  
 public RegisteredClientRepository registeredClientRepository() {  
     RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())  
@@ -86,6 +91,18 @@ public RegisteredClientRepository registeredClientRepository() {
   
     return new InMemoryRegisteredClientRepository(registeredClient);  
 }
+
+@Bean  
+public AuthorizationServerSettings authorizationServerSettings() {  
+    return AuthorizationServerSettings.builder()  
+            .issuer(issuer) // set the address of the authorization server  
+            .build();  
+}
 ```
 
-配置
+配置相关授权信息，并进行相关接口的暴露
+
+#### ResourceServer
+
+核心在 `OAuthFilter` 中
+
