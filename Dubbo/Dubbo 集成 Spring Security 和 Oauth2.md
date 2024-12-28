@@ -222,4 +222,88 @@ public int getPriority() {
 }
 ```
 
-通过公钥和
+资源服务器通过公钥和客户端发来的 `rest` 风格的请求中的 `header` 中的 `Authorization` 中的私钥进行匹配，成功后则可以进行对资源的访问，失败则进行拦截。
+
+#### 测试流程
+
+最初的参数配置
+
+```java
+private final String clientId = "49fd8518-12eb-422b-9264-2bae0ab89f66";  
+private final String clientSecret = "H3DTtm2fR3GRAdr4ls1mcg";  
+  
+private static final String OAUTH2HOST = System.getProperty("authorization.address", "localhost");  
+private static final String HOST = System.getProperty("resource.address", "localhost");  
+```
+
+使用令牌进行访问的测试
+
+```java
+@Test  
+    public void testGetUserEndpoint() {  
+        String credentials = clientId + ":" + clientSecret;  
+        String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());  
+  
+        // build RestClient request  
+        RestClient restClient = RestClient.builder().build();  
+        String url = "http://"+ OAUTH2HOST + ":9000/oauth2/token";  
+  
+        try {  
+            // make a post request  
+            String response = restClient.post()  
+                    .uri(url)  
+                    .header(HttpHeaders.AUTHORIZATION, "Basic " + encodedCredentials)  
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)  
+                    .body("grant_type=client_credentials&scope=read")  
+                    .retrieve()  
+                    .body(String.class);  
+  
+            ObjectMapper objectMapper = new ObjectMapper();  
+            JsonNode jsonNode = objectMapper.readTree(response);  
+            String accessToken = jsonNode.get("access_token").asText();  
+  
+            // Use the access token to authenticate the request to the /user endpoint  
+            assert accessToken != null;  
+            String userUrl = "http://" + HOST + ":50051/hello/sayHello/World";  
+            try {  
+                String userResponse = restClient.get()  
+                        .uri(userUrl)  
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)  
+                        .retrieve()  
+                        .body(String.class);  
+  
+                assertEquals("\"Hello, World\"", userResponse, "error");  
+            } catch (RestClientResponseException e) {  
+                System.err.println("Error Response: " + e.getResponseBodyAsString());  
+                Assertions.fail("Request failed with response: " + e.getResponseBodyAsString());  
+            }  
+  
+        } catch (JsonProcessingException e) {  
+            throw new RuntimeException(e);  
+        }  
+    }
+```
+
+不使用令牌进行访问测试
+
+```java
+@Test  
+public void testGetUserEndpointWithInvalidToken() {  
+    String invalidAccessToken = "invalid_token";  
+    RestClient restClient = RestClient.builder().build();  
+    String userUrl = "http://" + HOST + ":50051/hello/sayHello/World";  
+  
+    try {  
+        restClient.get()  
+                .uri(userUrl)  
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + invalidAccessToken)  
+                .retrieve()  
+                .body(String.class);  
+  
+        Assertions.fail("Request should have failed with an invalid token");  
+    } catch (RestClientResponseException e) {  
+        System.err.println("Error Response: " + e.getResponseBodyAsString());  
+        assertEquals(401, e.getStatusCode().value(), "Expected 401 Unauthorized status");  
+    }  
+}
+```
