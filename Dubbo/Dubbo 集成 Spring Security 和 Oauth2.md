@@ -69,7 +69,23 @@ public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity h
     - `X-Frame-Options`：防止页面被嵌入到其他页面的框架中，避免点击劫持攻击。
     - `X-XSS-Protection`：启用浏览器的 XSS 过滤机制，帮助检测和阻止 XSS 攻击。
 
-##### 4. 身份验证和授权相关配置
+```java
+@Bean  
+public RegisteredClientRepository registeredClientRepository() {  
+    RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())  
+            .clientId("49fd8518-12eb-422b-9264-2bae0ab89f66") //configure the client id  
+            .clientSecret("{noop}H3DTtm2fR3GRAdr4ls1mcg") // configure the client secret  
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)  
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)  
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)  
+            .redirectUri("http://localhost:9000/oauth2/token") // configure the redirect uri  
+            .scope("openid")  
+            .scope("read")  
+            .scope("write")  
+            .build();  
+  
+    return new InMemoryRegisteredClientRepository(registeredClient);  
+}
+```
 
-- 配置默认的身份验证管理器和用户详细信息服务，用于验证用户的身份和获取用户的相关信息，如角色和权限。
-- 定义默认的授权策略，例如哪些用户角色或权限可以访问特定的 OAuth2 端点。这有助于确保只有具有适当权限的用户或客户端才能执行相应的操作，如请求授权码或获取令牌。
+配置
