@@ -6,7 +6,7 @@ tags:
 categories:
   - Back
 date: 2024-09-24T15:13:40+08:00
-draft: true
+draft: false
 ---
 ### 函数返回接口而不是具体的结构体
 

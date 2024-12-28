@@ -1,3 +1,13 @@
+---
+title: java 基础
+tags:
+  - java
+categories:
+  - Back
+date: 2024-10-31T18:31:07+08:00
+draft: true
+---
+
 ### 参数传递
 
 Java 的参数是以值传递的形式传入方法中，而不是引用传递。

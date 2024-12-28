@@ -1,3 +1,13 @@
+---
+title: java 集成 rabbitmq
+tags:
+  - java
+categories:
+  - Back
+date: 2024-10-31T18:31:07+08:00
+draft: true
+---
+
 通常我们谈到队列服务, 会有三个概念： 发消息者、队列、收消息者，RabbitMQ 在这个基本概念之上, 多做了一层抽象, 在发消息者和 队列之间, 加入了交换器 (Exchange). 这样发消息者和队列就没有直接联系, 转而变成发消息者把消息给交换器, 交换器根据调度策略再把消息再给队列。
 
 ![img](https://netfilx.github.io/spring-boot/8.springboot-rabbitmq/1.png)

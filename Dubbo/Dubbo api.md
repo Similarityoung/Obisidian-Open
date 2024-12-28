@@ -1,7 +1,9 @@
 ---
 title: Dubbo api
-tags: [Dubbo、]
-categories: [Back]
+tags:
+  - Dubbo
+categories:
+  - Back
 date: 2024-11-07T21:04:46+08:00
 draft: true
 ---
