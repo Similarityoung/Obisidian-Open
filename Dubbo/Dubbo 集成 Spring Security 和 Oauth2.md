@@ -35,3 +35,15 @@ draft: true
 
 由于 `OAuth2` 需要授权服务器，资源服务器，客户端，为了简化案例，就写授权服务器和资源服务器。
 
+#### AuthorizationServer
+
+采用默认配置
+
+```java
+@Bean  
+public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {  
+    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);  
+  
+    return http.build();  
+}
+```
