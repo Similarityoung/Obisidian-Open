@@ -3,7 +3,7 @@ title: Dubbo 学习记录
 tags:
   - Dubbo
 categories:
-  - Back
+  - Dubbo
 date: 2024-10-30T11:28:05+08:00
 draft: true
 ---

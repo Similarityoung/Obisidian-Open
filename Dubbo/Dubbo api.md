@@ -3,7 +3,7 @@ title: Dubbo api
 tags:
   - Dubbo
 categories:
-  - Back
+  - Dubbo
 date: 2024-11-07T21:04:46+08:00
 draft: true
 ---

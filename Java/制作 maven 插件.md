@@ -1,7 +1,9 @@
 ---
 title: 制作 maven 插件
-tags: [maven]
-categories: [Back]
+tags:
+  - maven
+categories:
+  - Java
 date: 2024-10-31T18:31:07+08:00
 draft: true
 ---

@@ -6,7 +6,7 @@ tags:
 categories:
   - Tools
 date: 2024-09-17T16:57:35+08:00
-draft: true
+draft: false
 ---
 约定式提交（Conventional Commits）是一种用于写作提交消息的规范，它规定了一套标准化的提交消息格式，以使得项目的版本控制更加清晰和一致。采用这种规范的好处是能够帮助开发团队更好地理解代码的变更历史、生成变更日志（changelog），以及进行版本控制。
 

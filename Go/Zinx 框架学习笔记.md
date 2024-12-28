@@ -4,7 +4,7 @@ tags:
   - go
   - learn
 categories:
-  - Back
+  - Go
 date: 2024-09-24T15:13:40+08:00
 draft: false
 ---

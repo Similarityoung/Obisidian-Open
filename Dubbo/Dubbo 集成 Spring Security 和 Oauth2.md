@@ -3,7 +3,7 @@ title: Dubbo 集成 Spring Security 和 OAuth2
 tags:
   - Dubbo
 categories:
-  - Back
+  - Dubbo
 date: 2024-12-26T21:04:46+08:00
 draft: false
 ---
