@@ -104,5 +104,58 @@ public AuthorizationServerSettings authorizationServerSettings() {
 
 #### ResourceServer
 
-核心在 `OAuthFilter` 中
+核心在 `OAuthFilter` 中，实现了 'Filter, RestExtension' ，并通过 `@Activate` 来进行激活，在 `Dubbo` 里进行拦截，下面是对接口的实现
+
+```java
+@Override  
+public void init(FilterConfig filterConfig) {  
+    // Initialize the JwtDecoder and obtain the public key from the configured authorization server URL for decoding the JWT  
+    jwtDecoder = NimbusJwtDecoder.withIssuerLocation(issuer).build();  
+    // Initialize JwtAuthenticationConverter to convert JWT  
+    jwtAuthenticationConverter = new JwtAuthenticationConverter();  
+    JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();  
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);  
+}  
+  
+@Override  
+public String[] getPatterns() {  
+    return new String[] {"/**"}; // Intercept all requests  
+}  
+  
+@Override  
+public void doFilter(  
+        ServletRequest servletRequest,  
+        ServletResponse servletResponse,  
+        FilterChain filterChain) throws IOException {  
+    HttpServletRequest request = (HttpServletRequest) servletRequest;  
+    HttpServletResponse response = (HttpServletResponse) servletResponse;  
+    String authorization = request.getHeader("Authorization");  
+    if (authorization != null && authorization.startsWith("Bearer ")) {  
+        String jwtToken = authorization.substring("Bearer ".length());  
+        // Decode the JWT token  
+        try {  
+            Jwt jwt = jwtDecoder.decode(jwtToken);  
+            jwtAuthenticationConverter.convert(jwt);  
+            filterChain.doFilter(request, response);  
+        } catch (Exception e) {  
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");  
+        }  
+  
+    } else {  
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing JWT token");  
+    }  
+  
+}  
+  
+@Override  
+public int getPriority() {  
+    return -200;  
+}
+```
+
+在 `doFilter` 中对令牌进行权限校验，如果令牌正确，则放行，反之就拒绝访问。
+
+这里涉及到 有关
+
+
 
