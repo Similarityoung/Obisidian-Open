@@ -27,5 +27,7 @@ draft: true
 
 #### 与 `Dubbo` 的协同
 
+同时低版本 `javax` 和高版本 `jakarta servlet API` ，`jakarta API` 优先级更高，只需要引入jar即可使用`HttpServletRequest`和`HttpServletResponse`作为参数
 
+**使用 Filter 扩展**: 实现 `Filter` 接口和 `org.apache.dubbo.rpc.protocol.tri.rest.filter.RestExtension` 接口，然后注册SPI
 
