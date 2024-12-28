@@ -155,7 +155,71 @@ public int getPriority() {
 
 在 `doFilter` 中对令牌进行权限校验，如果令牌正确，则放行，反之就拒绝访问。
 
-这里涉及到 有关
+这里涉及到 有关 `jwt` 令牌的相关内容
 
+具体来说就是，授权服务器根据配置暴露在公网 json：
 
+```json
+// 20241228173022
+// http://localhost:9000/.well-known/oauth-authorization-server
 
+{
+  "issuer": "http://localhost:9000",
+  "authorization_endpoint": "http://localhost:9000/oauth2/authorize",
+  "device_authorization_endpoint": "http://localhost:9000/oauth2/device_authorization",
+  "token_endpoint": "http://localhost:9000/oauth2/token",
+  "token_endpoint_auth_methods_supported": [
+    "client_secret_basic",
+    "client_secret_post",
+    "client_secret_jwt",
+    "private_key_jwt"
+  ],
+  "jwks_uri": "http://localhost:9000/oauth2/jwks",
+  "response_types_supported": [
+    "code"
+  ],
+  "grant_types_supported": [
+    "authorization_code",
+    "client_credentials",
+    "refresh_token",
+    "urn:ietf:params:oauth:grant-type:device_code"
+  ],
+  "revocation_endpoint": "http://localhost:9000/oauth2/revoke",
+  "revocation_endpoint_auth_methods_supported": [
+    "client_secret_basic",
+    "client_secret_post",
+    "client_secret_jwt",
+    "private_key_jwt"
+  ],
+  "introspection_endpoint": "http://localhost:9000/oauth2/introspect",
+  "introspection_endpoint_auth_methods_supported": [
+    "client_secret_basic",
+    "client_secret_post",
+    "client_secret_jwt",
+    "private_key_jwt"
+  ],
+  "code_challenge_methods_supported": [
+    "S256"
+  ]
+}
+```
+
+这里包含了授权服务器的相关信息，资源服务器访问后获取 `jwks_uri` ,来获取公钥
+
+```json
+// 20241228173230
+// http://localhost:9000/oauth2/jwks
+
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "e": "AQAB",
+      "kid": "8e37caeb-1505-48b6-8fe2-2f49796b6a07",
+      "n": "ljHIB4ZEP8nxu5Wurn97Kf35SuwLzQE5WcASzXT7qUxQkRHNRTAqjVUxHpwiEh7_6h-dO8-VTEcAsoifSsSR3ry949V5iXUPqcw2RtOANkb2jcIYwKvGrJvFikNWsU5R9pTzNj8JL-UizRSqLfYfBEsfYx6CZowaALbTUUmx0LzBcXmnvOaxS2IgJ6pD5CDJWyTD62dQeZTBxMeGvBvJi8y7yhu_ANzivEkbnx-QogRCBzwSqpAzAe4DDbaU0iAbBrDZT17uynlSpiLbN0RnsyiD3X6RDSKr7PyG_2rI_wkqDfiV4RqoIvOYwQHH27zNzO5tC8k_sGeOVK1_ydAEuw"
+    }
+  ]
+}
+```
+
+通过公钥和
