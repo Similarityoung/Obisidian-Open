@@ -200,6 +200,8 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 #### 任务粒度与动态负载平衡
 
+**任务粒度**： 是指任务被划分的精细程度。在 `MapReduce` 中，通过将整个计算过程划分为映射（Map）和归约（Reduce）两个主要阶段，并进一步将这两个阶段细分，来控制任务粒度。将 `Map` 阶段细分为 `M` 个部分，`Reduce` 阶段细分为 `R` 个部分。这种细分使得每个部分成为一个相对独立的任务单元，这些任务单元的大小和数量决定了任务粒度。
+
 
 
 ### 4. 优化与扩展（Refinements）
