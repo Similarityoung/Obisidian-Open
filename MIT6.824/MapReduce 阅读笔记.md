@@ -154,7 +154,11 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 ##### 工作线程故障（Worker Failure）
 
-Master 会定期 ping 每个 worker。如果在一段时间内未收到 worker 的响应，则 master 会将该 worker 标记为失败。worker 完成的任何 map 任务都将重置回其初始空闲状态，因此有资格在其他 worker 上进行调度。同样，失败的工作程序上正在进行的任何 map 任务或 reduce 任务也会重置为 idle，并有资格重新安排。
+`Master` 会定期 `ping` 每个 `worker`。如果在一段时间内未收到 `worker` 的响应，则 `master` 会将该 `worker` 标记为失败。`worker` 完成的任何 `map` 任务都将重置回其初始空闲状态，因此有资格在其他 `worker` 上进行调度。同样，失败的工作程序上正在进行的任何 `map` 任务或 `reduce` 任务也会重置为 `idle` (空闲)，并有资格重新安排。
+
+已完成的映射任务在失败时重新执行，因为其输出存储在失败计算机的本地磁盘上，因此无法访问。已完成的 `reduce` 任务不需要重新执行，因为它们的输出存储在全局文件系统中。
+
+
 
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
