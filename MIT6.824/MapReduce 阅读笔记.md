@@ -190,9 +190,14 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 当一个归约（reduce）任务完成时，执行归约任务的工作节点（reduce worker）会以原子操作的方式将其临时输出文件重命名为最终输出文件。如果同一个归约任务在多台机器上执行（例如，由于节点故障等原因，导致该任务在不同机器上重试），那么对于同一个最终输出文件会执行多次重命名操作。我们依赖底层文件系统提供的原子重命名操作来确保最终的文件系统状态中只包含由一次归约任务执行所产生的数据。
 
+###### 较弱语意？
+
+~~并不是很清楚，下次再来看看~~
+
+#### 本地性优化（Data Locality）
 
 
-- 本地性优化（Data Locality）
+
 - 任务粒度与动态负载平衡
 
 ### 4. 优化与扩展（Refinements）
