@@ -158,7 +158,7 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 已完成的映射任务在失败时重新执行，因为其输出存储在失败计算机的本地磁盘上，因此无法访问。已完成的 `reduce` 任务不需要重新执行，因为它们的输出存储在全局文件系统中。
 
-
+当执行 `map` 任务的 `Worker A` 失败时，该任务由 `Worker B` 执行。正在执行的包含 `map` 的 `reduce` 程序需要重新执行，已经执行完的 reduce 程序可以不用执行了。
 
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
