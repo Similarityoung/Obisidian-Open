@@ -35,13 +35,18 @@ map(String key, String value):
 		EmitIntermediate(w, "1");  
 
 // key: a word  
-// values: a list of counts 
+// values: a list of counts 迭代器，用于遍历与该单词相关联的所有计数
 reduce(String key, Iterator values):   
 	int result = 0;  
 	for each v in values:  
 		result += ParseInt(v);  
 	Emit(AsString(result));
 ```
+
+`map`: 遍历文档内容中的每个单词`w`。对于每个单词，使用`EmitIntermediate(w, "1")`发出一个中间键值对，其中键是单词`w`，值是字符串`"1"`。这表示该单词在当前文档中出现了一次（以简单的计数为 1 来表示每次出现）。
+
+`reduce`: 遍历迭代器`values`中的每个值`v`。对于每个值，将`v`从字符串转换为整数并累加到`result`中。最终`result`将是该单词在所有文档中的总出现次数。
+
 
 
 - 数据流与工作流程的简述
