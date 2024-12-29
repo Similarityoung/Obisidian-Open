@@ -170,6 +170,10 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 ##### 故障存在时的语义（Semantics in the Presence of Failures）
 
+为了确保在分布式环境下 `MapReduce` 计算结果的正确性和一致性，即使存在故障也能得到与无故障顺序执行相同的输出，系统依赖于对 `Map` 和 `Reduce` 任务输出的原子提交（atomic commits）机制。
+
+
+
 
 
 - 本地性优化（Data Locality）
