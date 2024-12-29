@@ -47,9 +47,12 @@ reduce(String key, Iterator values):
 
 `reduce`: 遍历迭代器`values`中的每个值`v`。对于每个值，将`v`从字符串转换为整数并累加到`result`中。最终`result`将是该单词在所有文档中的总出现次数。
 
+键值对的域是指键和值所属的数据类型范围或集合。
+- 输入键值对的域（input keys and values domain）： 文档名和文档内容组成的键值对集合
+- 
 
+#### 数据流与工作流程的简述
 
-- 数据流与工作流程的简述
 
 ### 3. 实现细节（Implementation）
 
