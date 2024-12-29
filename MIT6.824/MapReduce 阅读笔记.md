@@ -166,6 +166,11 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 ##### 主站故障（Master Failure）
 
+很容易让主节点定期写入上述主数据结构的检查点。如果主节点任务失败，可以从最后一个检查点状态启动一个新副本。然而，鉴于只有一个主节点，其出现故障的可能性不大；因此，我们当前的实现是，如果主节点出现故障，则中止 MapReduce 计算。客户端可以检查这种情况，如果需要，可以重试 MapReduce 操作。
+
+##### 故障存在时的语义（Semantics in the Presence of Failures）
+
+
 
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
