@@ -28,20 +28,22 @@ Map 和 Reduce 函数共同构成了 MapReduce 编程模型的核心，通过这
 大型文档集合中每个单词的出现次数的问题
 
 ```
-map(String key, String value):  
 // key: document name  
 // value: document contents  
-for each word w in value:  
-EmitIntermediate(w, "1");  
+map(String key, String value):  
+	for each word w in value:  
+		EmitIntermediate(w, "1");  
 
-reduce(String key, Iterator values):  
 // key: a word  
-// values: a list of counts  
-int result = 0;  
-for each v in values:  
-result += ParseInt(v);  
-Emit(AsString(result));
+// values: a list of counts 
+reduce(String key, Iterator values):   
+	int result = 0;  
+	for each v in values:  
+		result += ParseInt(v);  
+	Emit(AsString(result));
 ```
+
+
 - 数据流与工作流程的简述
 
 ### 3. 实现细节（Implementation）
