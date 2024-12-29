@@ -164,6 +164,8 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 当执行 `map` 任务的 `Worker A` 失败时，该任务由 `Worker B` 执行。正在执行的包含 `map` 的 `reduce` 程序会收到 `map` 任务重新执行的通知（强调的是 `Reduce` 任务获取数据来源的调整，`即map` 任务输出的中间数据的存储位置的改变）。
 
+##### 主站故障（Master Failure）
+
 
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
