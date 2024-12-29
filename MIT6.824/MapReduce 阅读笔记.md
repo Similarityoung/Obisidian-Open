@@ -112,10 +112,18 @@ Figure 1: Execution overview
 
 ##### Master 和 Worker 的角色与任务分配
 
-`Master`: There are M map tasks and R reduce tasks to assign. The master picks idle workers and assigns each one a map task or a reduce task.有 M map 任务和 R reduce 任务要分配。master 选择空闲的 worker 并为每个 worker 分配一个 map 任务或一个 reduce 任务。
+`Master`: 
 
-`Worker`:  A worker who is assigned a map task reads the contents of the corresponding input split. It parses key/value pairs out of the input data and passes each pair to the user-defined $Map$ function. The intermediate key/value pairs produced by the Map function are buffered in memory.
+There are M map tasks and R reduce tasks to assign. The master picks idle workers and assigns each one a map task or a reduce task.
+有 M map 任务和 R reduce 任务要分配。master 选择空闲的 worker 并为每个 worker 分配一个 map 任务或一个 reduce 任务。
 
+`Worker`:  
+
+A worker who is assigned a map task reads the contents of the corresponding input split. It parses key/value pairs out of the input data and passes each pair to the user-defined $Map$ function. The intermediate key/value pairs produced by the Map function are buffered in memory.
+被分配了映射（map）任务的工作进程（worker）读取相应输入分片（input split）的内容。它从输入数据中解析出键/值对，并将每一对传递给用户定义的映射函数（$Map$ function）。由映射函数生成的中间键/值对被缓存在内存中。
+
+The reduce worker iterates over the sorted intermediate data and for each unique intermediate key encountered, it passes the key and the corresponding set of intermediate values to the user’s Reduce function. The output of the Reduce function is appended to a final output file for this reduce partition.
+执行归约（reduce）任务的工作进程（worker）会遍历已排序的中间数据，对于遇到的每个唯一的中间键（intermediate key），它会将该键以及相应的一组中间值传递给用户的归约函数（Reduce function）。归约函数的输出会被追加到这个归约分区的最终输出文件中。
 
 - 容错机制（如 Worker 和 Master 故障处理）
 - 本地性优化（Data Locality）
