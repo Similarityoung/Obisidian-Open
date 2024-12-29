@@ -23,9 +23,25 @@ draft: true
 
 Map 和 Reduce 函数共同构成了 MapReduce 编程模型的核心，通过这种分而治之的方式，能够在大规模集群上高效地处理海量数据。
 
+#### 典型使用案例（如单词计数、分布式 Grep）
 
+大型文档集合中每个单词的出现次数的问题
 
-- 典型使用案例（如单词计数、分布式 Grep）
+```
+map(String key, String value):  
+// key: document name  
+// value: document contents  
+for each word w in value:  
+EmitIntermediate(w, "1");  
+
+reduce(String key, Iterator values):  
+// key: a word  
+// values: a list of counts  
+int result = 0;  
+for each v in values:  
+result += ParseInt(v);  
+Emit(AsString(result));
+```
 - 数据流与工作流程的简述
 
 ### 3. 实现细节（Implementation）
