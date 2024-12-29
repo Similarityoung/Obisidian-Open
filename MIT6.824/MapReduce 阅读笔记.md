@@ -148,8 +148,13 @@ A worker who is assigned a map task reads the contents of the corresponding inpu
 The reduce worker iterates over the sorted intermediate data and for each unique intermediate key encountered, it passes the key and the corresponding set of intermediate values to the user’s Reduce function. The output of the Reduce function is appended to a final output file for this reduce partition.
 执行归约（reduce）任务的工作进程（worker）会遍历已排序的中间数据，对于遇到的每个唯一的中间键（intermediate key），它会将该键以及相应的一组中间值传递给用户的归约函数（Reduce function）。归约函数的输出会被追加到这个归约分区的最终输出文件中。
 
-#### 容错机制（如 Worker 和 Master 故障处理）
+#### 容错机制（Fault Tolerance）
 
+Since the MapReduce library is designed to help process very large amounts of data using hundreds or thousands of machines, the library must tolerate machine failures gracefully.
+
+##### 工作线程故障（Worker Failure）
+
+Master 会定期 ping 每个 worker。如果在一段时间内未收到 worker 的响应，则 master 会将该 worker 标记为失败。worker 完成的任何 map 任务都将重置回其初始空闲状态，因此有资格在其他 worker 上进行调度。同样，失败的工作程序上正在进行的任何 map 任务或 reduce 任务也会重置为 idle，并有资格重新安排。
 
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
