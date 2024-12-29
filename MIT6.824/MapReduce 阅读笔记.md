@@ -110,7 +110,13 @@ Figure 1: Execution overview
 
 整个流程通过`worker`进程之间的协作和数据交换，实现了大规模数据的并行处理和计算。`Master`进程负责协调和分配任务，确保整个作业的顺利进行。
 
-- Master 和 Worker 的角色与任务分配
+##### Master 和 Worker 的角色与任务分配
+
+`Master`: There are M map tasks and R reduce tasks to assign. The master picks idle workers and assigns each one a map task or a reduce task.有 M map 任务和 R reduce 任务要分配。master 选择空闲的 worker 并为每个 worker 分配一个 map 任务或一个 reduce 任务。
+
+`Worker`:  A worker who is assigned a map task reads the contents of the corresponding input split. It parses key/value pairs out of the input data and passes each pair to the user-defined $Map$ function. The intermediate key/value pairs produced by the Map function are buffered in memory.
+
+
 - 容错机制（如 Worker 和 Master 故障处理）
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
