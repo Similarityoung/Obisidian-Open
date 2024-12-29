@@ -79,41 +79,51 @@ Figure 1: Execution overview
     
     - 位于图的顶部，是整个流程的起点。用户程序启动并控制整个 MapReduce 作业。
     - 用户程序通过`fork`操作创建一个`Master`进程和多个`worker`进程。
+
 2. **Master（主进程）**：
 
     - Master 负责将输入数据分成多个`split`，并将`map`和`reduce`任务分配给各个`worker`。
+
      **主节点的信息传递角色**：
      
 	- 在`MapReduce`计算中，存在大量的中间数据。当`Map`任务处理完输入数据的一个分片后，会产生中间结果并存储为中间文件。这些中间文件可能分布在不同的节点上，而主节点就像是一个信息枢纽（conduit）。
 	- 它负责将这些中间文件的位置信息（例如在哪个节点的哪个磁盘路径下）从完成 `Map` 任务的节点传递到需要这些数据的 `Reduce` 任务所在的节点。这是因为 `Reduce` 任务需要知道从哪里获取与自己相关的中间数据来进行进一步处理。
+
      **主节点对Map任务信息的存储**： 
      
 	- 对于每个完成的 `Map` 任务，主节点会记录该任务产生的中间文件区域的相关信息。这里的“R个中间文件区域”表示根据用户指定的 `Reduce` 任务数量（R）， `Map` 任务会将中间数据分成R个部分（分区）存储。例如，如果R = 5，那么Map任务可能会将中间数据分成5个区域存储，每个区域对应一个 `Reduce` 任务可能需要处理的数据。
 	- 主节点存储这些区域的位置（如节点IP、磁盘路径等）和大小信息。这有助于主节点有效地管理和协调数据的传输，以及在 `Reduce` 任务需要数据时能够准确地提供信息。
+
      **信息更新与推送机制**： 
      
 	- 随着 `Map` 任务的逐步完成，主节点会不断收到关于新完成的 `Map` 任务的中间文件位置和大小的更新信息。这些更新是实时的，以便主节点能够及时掌握数据的分布情况。
 	- 一旦主节点获取到这些更新信息，它会将相关的中间文件位置信息推送给正在进行 `Reduce` 任务的工作节点。这种推送是增量式的（incrementally），即只推送与当前正在进行的 `Reduce` 任务相关的新完成的 `Map` 任务的信息，避免不必要的数据传输和节点资源浪费。这样， `Reduce` 任务所在的工作节点就能够准确地知道从哪里获取所需的中间数据，从而顺利进行后续的处理操作，最终实现整个 `MapReduce` 计算的高效执行。
-1. **Worker（工作进程）**：
+
+3. **Worker（工作进程）**：
     
     - 图中有多个`worker`进程，分布在图的中间和底部。
     - `worker`进程负责执行`map`和`reduce`任务。
+
 4. **Input Files（输入文件）**：
     
     - 位于图的左下角，代表原始输入数据。
     - 输入数据被分成多个`split`（数据分片），如`split 0`、`split 1`等。
+
 5. **Map Phase（映射阶段）**：
     
     - 每个`worker`读取一个`split`（通过`read`操作），然后执行`map`任务。
     - `map`任务的结果以中间文件（`Intermediate files`）的形式存储在本地磁盘上。
+
 6. **Intermediate Files（中间文件）**：
     
     - 位于图的中间偏右位置，代表`map`阶段的输出。
     - 这些中间文件存储在本地磁盘上，供`reduce`阶段使用。
+
 7. **Reduce Phase（归约阶段）**：
     
     - `worker`进程从本地磁盘上读取中间文件（通过`remote read`操作），然后执行`reduce`任务。
     - `reduce`任务的结果被写入`Output files`。
+
 8. **Output Files（输出文件）**：
     
     - 位于图的右下角，代表最终的输出结果。
@@ -138,7 +148,9 @@ A worker who is assigned a map task reads the contents of the corresponding inpu
 The reduce worker iterates over the sorted intermediate data and for each unique intermediate key encountered, it passes the key and the corresponding set of intermediate values to the user’s Reduce function. The output of the Reduce function is appended to a final output file for this reduce partition.
 执行归约（reduce）任务的工作进程（worker）会遍历已排序的中间数据，对于遇到的每个唯一的中间键（intermediate key），它会将该键以及相应的一组中间值传递给用户的归约函数（Reduce function）。归约函数的输出会被追加到这个归约分区的最终输出文件中。
 
-- 容错机制（如 Worker 和 Master 故障处理）
+#### 容错机制（如 Worker 和 Master 故障处理）
+
+
 - 本地性优化（Data Locality）
 - 任务粒度与动态负载平衡
 
