@@ -196,9 +196,11 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 #### 本地性优化（Data Locality）
 
+在计算环境中网络带宽稀缺，为节省带宽，利用由 `GFS` 管理、存储于集群机器本地磁盘的输入数据这一特性。 `GFS` 将文件分成64MB块，每块通常存3个副本于不同机器。 `MapReduce` 主节点考虑输入文件位置，优先将映射任务调度到含对应数据副本的机器，不行则调度到数据副本附近机器。在集群大量工作节点运行大型 `MapReduce` 操作时，多数输入数据可本地读取，不消耗网络带宽 。
+
+#### 任务粒度与动态负载平衡
 
 
-- 任务粒度与动态负载平衡
 
 ### 4. 优化与扩展（Refinements）
 
