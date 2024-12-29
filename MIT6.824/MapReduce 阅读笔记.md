@@ -109,6 +109,7 @@ Figure 1: Execution overview
     - 这些文件是`reduce`阶段的输出，包含了最终的计算结果。
 
 整个流程通过`worker`进程之间的协作和数据交换，实现了大规模数据的并行处理和计算。`Master`进程负责协调和分配任务，确保整个作业的顺利进行。
+
 - Master 和 Worker 的角色与任务分配
 - 容错机制（如 Worker 和 Master 故障处理）
 - 本地性优化（Data Locality）
