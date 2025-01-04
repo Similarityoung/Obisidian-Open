@@ -216,7 +216,11 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 **自定义分区函数**：在某些特定场景下，用户可能需要根据自己的需求自定义分区函数。例如，当输出键是 `URL` 时，如果希望同一个主机的所有条目都能被分到同一个输出文件中，就可以使用 “hash (Hostname (urlkey)) mod R” 这样的分区函数。通过自定义分区函数，用户可以更灵活地控制数据的分区方式，以适应不同的业务逻辑和数据处理要求。这使得 `MapReduce` 在处理各种类型的数据时更具通用性和适应性，能够满足多样化的实际应用场景。
 
- Combiner 的应用场景
+**顺序处理保证**：在 MapReduce 计算中，对于给定的分区（partition），中间键值对（intermediate key/value pairs）会按照键（key）的递增顺序进行处理。这意味着在每个分区内，数据在进一步处理时是有序的。
+
+#### Combiner 的应用场景
+
+
 
 - 输入输出类型与侧写效果
 - 跳过错误记录与本地调试支持
