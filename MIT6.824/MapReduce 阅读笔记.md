@@ -228,7 +228,7 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 #### 输入输出类型与侧写效果
 
-
+ 
 - 跳过错误记录与本地调试支持
 
 ### 5. 性能评估（Performance Evaluation）
