@@ -246,8 +246,6 @@ Since the MapReduce library is designed to help process very large amounts of da
 - **记录序号存储**：在调用用户的 Map 或 Reduce 操作之前，MapReduce 库将参数的序号存储在全局变量中。
 - **错误报告与记录标记**：如果用户代码产生信号，信号处理程序会发送包含序号的 “last gasp” UDP 数据包给主节点。主节点在看到特定记录多次失败后，会在下次重新执行相应的 Map 或 Reduce 任务时跳过该记录。通过这种方式，MapReduce 能够在遇到错误记录时尝试继续计算，而不是完全失败，提高了系统在面对部分错误数据时的容错性和计算的整体成功率，使得计算能够在一定程度上容忍错误并继续推进，对于一些对数据完整性要求不是绝对严格的场景非常有用。
 
-
-
 ### 5. 性能评估（Performance Evaluation）
 
 - 测试环境描述
