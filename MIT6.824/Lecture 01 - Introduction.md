@@ -51,5 +51,7 @@ draft: true
     
 - 考虑并发控制，比如`锁`。
 
+### 1.4 可扩展性（Scalability）
+
 
 
