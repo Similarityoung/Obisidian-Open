@@ -299,7 +299,8 @@ func (d *duplexHTTPCall) ResponseTrailer() http.Header {
 	return make(http.Header)
 }
 
-// SetError 设置错误状态。所有后续的 Read 调用都会返回该错误，所有后续的 Write 调用都会返回一个包装了 io.EOF 的错误。
+// SetError 设置错误状态。所有后续的 Read 调用都会返回该错误，
+// 所有后续的 Write 调用都会返回一个包装了 io.EOF 的错误。
 func (d *duplexHTTPCall) SetError(err error) {
 	d.errMu.Lock()
 	if d.err == nil {
