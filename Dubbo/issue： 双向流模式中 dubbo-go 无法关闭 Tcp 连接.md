@@ -385,3 +385,37 @@ func cloneURL(oldURL *url.URL) *url.URL {
 	return newURL
 }
 ```
+
+#### io.Pipe()
+
+`pipeReader, pipeWriter := io.Pipe()` 是 Go 语言中用于创建一个**同步的内存管道**的代码。这个管道可以用于在两个 `goroutine` 之间传递数据，其中一个 `goroutine` 负责写入数据（通过 `pipeWriter`），另一个 goroutine 负责读取数据（通过 `pipeReader`）。它的核心特点是**阻塞式读写**，即写入和读取操作是同步的，写入时会阻塞直到数据被读取，读取时也会阻塞直到有数据可读。
+
+##### 1. **`io.Pipe()` 的作用**
+
+`io.Pipe()` 返回一对 `*io.PipeReader` 和 `*io.PipeWriter`，它们分别代表管道的读端和写端。这两个对象是紧密关联的：
+
+- **`pipeWriter`**：用于向管道写入数据。
+    
+- **`pipeReader`**：用于从管道读取数据。
+    
+写入到 `pipeWriter` 的数据会立即被 `pipeReader` 读取，反之亦然。如果没有数据可读，`pipeReader` 会阻塞；如果没有空间可写，`pipeWriter` 也会阻塞。
+
+##### 2. **`io.Pipe()` 的特点**
+
+- **同步性**：`io.Pipe` 是同步的，写入和读取操作是阻塞的。写入操作会等待数据被读取，读取操作会等待数据被写入。
+    
+- **无缓冲**：`io.Pipe` 没有内部缓冲区，数据直接从写端传递到读端。
+    
+- **线程安全**：`io.Pipe` 是线程安全的，多个 goroutine 可以安全地并发读写。
+    
+- **单向流**：数据只能从 `pipeWriter` 流向 `pipeReader`，不能反向流动。
+    
+##### 3. **`io.Pipe()` 的典型使用场景**
+
+`io.Pipe` 通常用于以下场景：
+
+- **流式数据处理**：例如将一个流的数据实时传递给另一个流，而不需要中间存储。
+    
+- **HTTP 请求和响应**：例如在 HTTP 请求中将请求体数据流式写入，同时在另一个 goroutine 中读取响应数据。
+    
+- **测试和模拟**：在测试中模拟一个流式数据源或目标。
