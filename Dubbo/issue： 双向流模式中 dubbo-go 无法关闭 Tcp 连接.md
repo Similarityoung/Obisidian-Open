@@ -21,7 +21,7 @@ draft: true
 
 ### 源码分析
 
-```java
+```go
 func TestBiDiStream2(svc greet.GreetService) error {  
     fmt.Printf("start to test triple bidi stream 2\n")  
     stream, err := svc.GreetStream(context.Background())  
@@ -50,7 +50,7 @@ func TestBiDiStream2(svc greet.GreetService) error {
 
 在其中
 
-```java
+```go
 if err := stream.CloseRequest(); err != nil {  
        return err  
     }  
@@ -69,7 +69,7 @@ if err := stream.CloseRequest(); err != nil {
 
  `CloseRequest` 方法的作用：**关闭流的发送端**。在双向流通信中，流的发送端用于客户端向服务器发送数据，关闭发送端意味着客户端不再发送更多的数据。
 
-```java
+```go
 // CloseRequest closes the send side of the stream.
 func (b *BidiStreamForClient) CloseRequest() error {
 	if b.err != nil {
@@ -81,7 +81,7 @@ func (b *BidiStreamForClient) CloseRequest() error {
 
 步入 ` b.conn.CloseRequest()`
 
-```java
+```go
 func (cc *errorTranslatingClientConn) CloseRequest() error {  
     return cc.fromWire(cc.StreamingClientConn.CloseRequest())  
 }
@@ -98,6 +98,8 @@ func (cc *errorTranslatingClientConn) CloseRequest() error {
 这里有个疑问，我在 debug 的时候遇到了下面的变量：
 
 ```go
-StreamingClientConn = (triple_protocol.StreamingClientConn | *triple_protocol.grpcClientConn)
+StreamingClientConn = {triple_protocol.StreamingClientConn | *triple_protocol.grpcClientConn}
 ```
+
+**`triple` 协议和 `grpc` 有什么关系**
 
