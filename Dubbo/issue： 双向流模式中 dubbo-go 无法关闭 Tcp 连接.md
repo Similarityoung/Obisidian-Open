@@ -21,3 +21,49 @@ draft: true
 
 ### 源码分析
 
+```java
+func TestBiDiStream2(svc greet.GreetService) error {  
+    fmt.Printf("start to test triple bidi stream 2\n")  
+    stream, err := svc.GreetStream(context.Background())  
+    if err != nil {  
+       return err  
+    }  
+    if sendErr := stream.Send(&greet.GreetStreamRequest{Name: "stream client!"}); sendErr != nil {  
+       return err  
+    }  
+  
+    resp, err := stream.Recv()  
+    if err != nil {  
+       return err  
+    }  
+    fmt.Printf("triple bidi stream2 resp: %s\n", resp.Greeting)  
+    if err := stream.CloseRequest(); err != nil {  
+       return err  
+    }  
+    if err := stream.CloseResponse(); err != nil {  
+       return err  
+    }  
+    fmt.Printf("========>TestBiDiStream end, close stream...\n")  
+    return nil  
+}
+```
+
+在其中
+
+```java
+if err := stream.CloseRequest(); err != nil {  
+       return err  
+    }  
+    if err := stream.CloseResponse(); err != nil {  
+       return err  
+    } 
+```
+
+1. 客户端调用 `CloseRequest()` 关闭请求部分，表示不再发送更多的请求。
+    
+2. 客户端调用 `CloseResponse()` 关闭响应部分，表示不再接收更多的响应。
+
+下面从closeRequest( )开始进行源码分析
+
+### closeRequest( )
+
