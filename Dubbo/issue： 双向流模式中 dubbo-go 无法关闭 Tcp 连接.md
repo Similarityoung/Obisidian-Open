@@ -87,3 +87,11 @@ func (cc *errorTranslatingClientConn) CloseRequest() error {
 }
 ```
 
+这个结构体的作用：
+
+- 它是一个包装器（wrapper），用于包装 `StreamingClientConn`。
+    
+- 它的主要目的是确保从客户端返回的错误是经过编码的（coded errors），即错误信息是结构化的、可识别的，而不是原始的底层错误。
+    
+- 它通常用于协议实现中，可能是为了在协议层对错误进行统一处理。
+
