@@ -103,3 +103,285 @@ StreamingClientConn = {triple_protocol.StreamingClientConn | *triple_protocol.gr
 
 **`triple` 协议和 `grpc` 有什么关系**
 
+
+接着步入就来到了
+
+```go
+func (cc *grpcClientConn) CloseRequest() error {  
+    return cc.duplexCall.CloseWrite()  
+}
+```
+
+开始观察 `duplexCall` (双工通信)
+#### duplex_http_call.go
+
+```go
+package triple_protocol
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"sync"
+)
+
+// duplexHTTPCall 是一个全双工的 HTTP 调用，允许客户端和服务器之间双向通信。
+// 请求体是客户端到服务器的流，响应体是服务器到客户端的流。
+type duplexHTTPCall struct {
+	ctx              context.Context          // 上下文，用于控制调用的生命周期
+	httpClient       HTTPClient               // HTTP 客户端，用于发送请求
+	streamType       StreamType               // 流类型（如单向流、双向流等）
+	validateResponse func(*http.Response) *Error // 用于验证响应的函数
+
+	// 使用 io.Pipe 作为请求体。我们将读端交给 net/http，写端用于写入数据。
+	// 两端可以安全地并发使用。
+	requestBodyReader *io.PipeReader // 请求体的读端
+	requestBodyWriter *io.PipeWriter // 请求体的写端
+
+	sendRequestOnce sync.Once // 确保请求只发送一次
+	responseReady   chan struct{} // 用于通知响应已准备好
+	request         *http.Request // HTTP 请求
+	response        *http.Response // HTTP 响应
+
+	errMu sync.Mutex // 保护 err 的互斥锁
+	err   error      // 存储调用过程中发生的错误
+}
+
+// newDuplexHTTPCall 创建一个新的 duplexHTTPCall 实例。
+func newDuplexHTTPCall(
+	ctx context.Context,
+	httpClient HTTPClient,
+	url *url.URL,
+	spec Spec,
+	header http.Header,
+) *duplexHTTPCall {
+	// 复制 URL，避免外部修改影响内部逻辑
+	url = cloneURL(url)
+	// 创建一个 io.Pipe，用于请求体的读写
+	pipeReader, pipeWriter := io.Pipe()
+
+	// 创建一个 HTTP 请求，使用 POST 方法，并将请求体设置为 pipeReader
+	request := (&http.Request{
+		Method:     http.MethodPost, // 使用 POST 方法
+		URL:        url,             // 请求的 URL
+		Header:     header,          // 请求头
+		Proto:      "HTTP/1.1",      // 协议版本
+		ProtoMajor: 1,               // 主版本号
+		ProtoMinor: 1,               // 次版本号
+		Body:       pipeReader,      // 请求体
+		Host:       url.Host,        // 请求的主机
+	}).WithContext(ctx) // 将上下文绑定到请求
+
+	// 返回一个新的 duplexHTTPCall 实例
+	return &duplexHTTPCall{
+		ctx:               ctx,
+		httpClient:        httpClient,
+		streamType:        spec.StreamType,
+		requestBodyReader: pipeReader,
+		requestBodyWriter: pipeWriter,
+		request:           request,
+		responseReady:     make(chan struct{}), // 初始化 responseReady 通道
+	}
+}
+
+// Write 向请求体写入数据。如果 SetError 被调用，返回一个包装了 io.EOF 的错误。
+func (d *duplexHTTPCall) Write(data []byte) (int, error) {
+	// 确保请求已经发送
+	d.ensureRequestMade()
+	// 检查上下文是否已取消
+	if err := d.ctx.Err(); err != nil {
+		d.SetError(err) // 设置错误
+		return 0, wrapIfContextError(err) // 返回上下文错误
+	}
+	// 向请求体写入数据
+	bytesWritten, err := d.requestBodyWriter.Write(data)
+	if err != nil && errors.Is(err, io.ErrClosedPipe) {
+		// 如果管道已关闭，返回 io.EOF 而不是 io.ErrClosedPipe
+		return bytesWritten, io.EOF
+	}
+	return bytesWritten, err
+}
+
+// CloseWrite 关闭请求体的写端。在使用 HTTP/1.x 时，调用者必须在 Read 之前调用 CloseWrite。
+func (d *duplexHTTPCall) CloseWrite() error {
+	// 确保请求已经发送
+	d.ensureRequestMade()
+	// 关闭请求体的写端
+	return d.requestBodyWriter.Close()
+}
+
+// Header 返回 HTTP 请求头。
+func (d *duplexHTTPCall) Header() http.Header {
+	return d.request.Header
+}
+
+// Trailer 返回 HTTP 请求的 trailers。
+func (d *duplexHTTPCall) Trailer() http.Header {
+	return d.request.Trailer
+}
+
+// URL 返回请求的 URL。
+func (d *duplexHTTPCall) URL() *url.URL {
+	return d.request.URL
+}
+
+// SetMethod 设置请求的 HTTP 方法。
+func (d *duplexHTTPCall) SetMethod(method string) {
+	d.request.Method = method
+}
+
+// Read 从响应体读取数据。返回第一个通过 SetError 设置的错误。
+func (d *duplexHTTPCall) Read(data []byte) (int, error) {
+	// 等待响应准备好
+	d.BlockUntilResponseReady()
+	// 检查是否有错误
+	if err := d.getError(); err != nil {
+		return 0, err // 返回错误
+	}
+	// 检查上下文是否已取消
+	if err := d.ctx.Err(); err != nil {
+		d.SetError(err) // 设置错误
+		return 0, wrapIfContextError(err) // 返回上下文错误
+	}
+	if d.response == nil {
+		return 0, fmt.Errorf("nil response from %v", d.request.URL) // 返回错误
+	}
+	// 从响应体读取数据
+	n, err := d.response.Body.Read(data)
+	return n, wrapIfRSTError(err) // 返回读取结果
+}
+
+// CloseRead 关闭响应体的读端。
+func (d *duplexHTTPCall) CloseRead() error {
+	d.BlockUntilResponseReady()
+	if d.response == nil {
+		return nil
+	}
+	// 丢弃响应体的剩余数据
+	if err := discard(d.response.Body); err != nil {
+		return wrapIfRSTError(err)
+	}
+	// 如果上下文中设置了 outgoing 数据，将 trailers 存入 incoming 上下文
+	if ExtractFromOutgoingContext(d.ctx) != nil {
+		newIncomingContext(d.ctx, d.ResponseTrailer())
+	}
+	// 关闭响应体
+	return wrapIfRSTError(d.response.Body.Close())
+}
+
+// ResponseStatusCode 返回响应的 HTTP 状态码。
+func (d *duplexHTTPCall) ResponseStatusCode() (int, error) {
+	d.BlockUntilResponseReady()
+	if d.response == nil {
+		return 0, fmt.Errorf("nil response from %v", d.request.URL)
+	}
+	return d.response.StatusCode, nil
+}
+
+// ResponseHeader 返回响应的 HTTP 头。
+func (d *duplexHTTPCall) ResponseHeader() http.Header {
+	d.BlockUntilResponseReady()
+	if d.response != nil {
+		return d.response.Header
+	}
+	return make(http.Header)
+}
+
+// ResponseTrailer 返回响应的 HTTP trailers。
+func (d *duplexHTTPCall) ResponseTrailer() http.Header {
+	d.BlockUntilResponseReady()
+	if d.response != nil {
+		return d.response.Trailer
+	}
+	return make(http.Header)
+}
+
+// SetError 设置错误状态。所有后续的 Read 调用都会返回该错误，所有后续的 Write 调用都会返回一个包装了 io.EOF 的错误。
+func (d *duplexHTTPCall) SetError(err error) {
+	d.errMu.Lock()
+	if d.err == nil {
+		d.err = wrapIfContextError(err) // 包装上下文错误
+	}
+	d.errMu.Unlock()
+
+	// 关闭请求体的读端，停止写入
+	_ = d.requestBodyReader.Close()
+}
+
+// SetValidateResponse 设置响应验证函数。该函数在后台 goroutine 中运行。
+func (d *duplexHTTPCall) SetValidateResponse(validate func(*http.Response) *Error) {
+	d.validateResponse = validate
+}
+
+// BlockUntilResponseReady 阻塞直到响应准备好。
+func (d *duplexHTTPCall) BlockUntilResponseReady() {
+	<-d.responseReady
+}
+
+// ensureRequestMade 确保请求已发送。
+func (d *duplexHTTPCall) ensureRequestMade() {
+	d.sendRequestOnce.Do(func() {
+		go d.makeRequest() // 在后台发送请求
+	})
+}
+
+// makeRequest 发送 HTTP 请求并处理响应。
+func (d *duplexHTTPCall) makeRequest() {
+	defer close(d.responseReady) // 确保 responseReady 通道被关闭
+
+	// 发送请求并获取响应
+	response, err := d.httpClient.Do(d.request)
+	if err != nil {
+		// 处理错误
+		err = wrapIfContextError(err)
+		err = wrapIfLikelyH2CNotConfiguredError(d.request, err)
+		err = wrapIfLikelyWithGRPCNotUsedError(err)
+		err = wrapIfRSTError(err)
+		if _, ok := asError(err); !ok {
+			err = NewError(CodeUnavailable, err)
+		}
+		d.SetError(err) // 设置错误
+		return
+	}
+	d.response = response
+	// 验证响应
+	if err := d.validateResponse(response); err != nil {
+		d.SetError(err)
+		return
+	}
+	// 检查是否为双向流且 HTTP 版本低于 2
+	if (d.streamType&StreamTypeBidi) == StreamTypeBidi && response.ProtoMajor < 2 {
+		d.SetError(errorf(
+			CodeUnimplemented,
+			"response from %v is HTTP/%d.%d: bidi streams require at least HTTP/2",
+			d.request.URL,
+			response.ProtoMajor,
+			response.ProtoMinor,
+		))
+	}
+}
+
+// getError 返回当前的错误状态。
+func (d *duplexHTTPCall) getError() error {
+	d.errMu.Lock()
+	defer d.errMu.Unlock()
+	return d.err
+}
+
+// cloneURL 复制一个 url.URL 对象。
+func cloneURL(oldURL *url.URL) *url.URL {
+	if oldURL == nil {
+		return nil
+	}
+	newURL := new(url.URL)
+	*newURL = *oldURL
+	if oldURL.User != nil {
+		newURL.User = new(url.Userinfo)
+		*newURL.User = *oldURL.User
+	}
+	return newURL
+}
+```
