@@ -95,3 +95,9 @@ func (cc *errorTranslatingClientConn) CloseRequest() error {
     
 - 它通常用于协议实现中，可能是为了在协议层对错误进行统一处理。
 
+这里有个疑问，我在 debug 的时候遇到了下面的变量：
+
+```go
+StreamingClientConn = (triple_protocol.StreamingClientConn | *triple_protocol.grpcClientConn)
+```
+
