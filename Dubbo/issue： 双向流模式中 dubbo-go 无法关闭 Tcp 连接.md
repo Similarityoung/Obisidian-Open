@@ -67,3 +67,23 @@ if err := stream.CloseRequest(); err != nil {
 
 ### closeRequest( )
 
+ `CloseRequest` 方法的作用：**关闭流的发送端**。在双向流通信中，流的发送端用于客户端向服务器发送数据，关闭发送端意味着客户端不再发送更多的数据。
+
+```java
+// CloseRequest closes the send side of the stream.
+func (b *BidiStreamForClient) CloseRequest() error {
+	if b.err != nil {
+		return b.err
+	}
+	return b.conn.CloseRequest()
+}
+```
+
+步入 ` b.conn.CloseRequest()`
+
+```java
+func (cc *errorTranslatingClientConn) CloseRequest() error {  
+    return cc.fromWire(cc.StreamingClientConn.CloseRequest())  
+}
+```
+
