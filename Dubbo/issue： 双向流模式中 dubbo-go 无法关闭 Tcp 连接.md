@@ -412,6 +412,42 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 
 而 `d.ensureRequestMade()` 是 `httpClient` 用来读数据并发送请求的，这段代码在写数据前是因为， `pipe` 是无缓冲的通道，所以在读数据时会阻塞直到写入数据。
 
+##### 数据流动过程
+###### **步骤 1：初始化**
+
+- 创建 `duplexHTTPCall` 实例，初始化 `io.Pipe`。
+    
+- 将 `d.request.Body` 设置为 `pipeReader`。
+    
+###### **步骤 2：调用 `ensureRequestMade`**
+
+- 在 `Write` 方法中，首先调用 `d.ensureRequestMade()`。
+    
+- `ensureRequestMade` 通过 `sync.Once` 确保 `d.httpClient.Do(d.request)` 只调用一次。
+    
+- `d.httpClient.Do(d.request)` 开始执行，并尝试从 `pipeReader` 读取数据。
+    
+###### **步骤 3：写入数据**
+
+- 客户端调用 `Write` 方法，向 `pipeWriter` 写入数据。
+    
+- 写入的数据会立即被 `pipeReader` 读取，并作为请求体发送到服务器。
+    
+###### **步骤 4：HTTP 客户端发送请求**
+
+- HTTP 客户端从 `pipeReader` 读取数据，并将其封装到 HTTP 请求体中。
+    
+- 请求被发送到服务器。
+    
+###### **步骤 5：服务器处理请求**
+
+- 服务器从请求体中读取客户端发送的数据。
+    
+- 服务器处理数据后，通过响应体返回结果。
+    
+###### **步骤 6：客户端读取响应**
+
+- 客户端通过 `Read` 方法从响应体中读取服务器返回的数据。
 #### io.Pipe()
 
 `pipeReader, pipeWriter := io.Pipe()` 是 Go 语言中用于创建一个**同步的内存管道**的代码。这个管道可以用于在两个 `goroutine` 之间传递数据，其中一个 `goroutine` 负责写入数据（通过 `pipeWriter`），另一个 goroutine 负责读取数据（通过 `pipeReader`）。它的核心特点是**阻塞式读写**，即写入和读取操作是同步的，写入时会阻塞直到数据被读取，读取时也会阻塞直到有数据可读。
