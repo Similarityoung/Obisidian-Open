@@ -408,7 +408,10 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 }
 ```
 
-其中，`d.requestBodyWriter.Write(data)` 是给
+其中，`d.requestBodyWriter.Write(data)` 是给 `pipe` 写入数据。
+
+而 `d.ensureRequestMade()` 是 `httpClient` 用来读数据并发送请求的，这段代码在写数据前是因为， `pipe` 是无缓冲的通道，所以在读数据时会阻塞直到写入数据。
+
 #### io.Pipe()
 
 `pipeReader, pipeWriter := io.Pipe()` 是 Go 语言中用于创建一个**同步的内存管道**的代码。这个管道可以用于在两个 `goroutine` 之间传递数据，其中一个 `goroutine` 负责写入数据（通过 `pipeWriter`），另一个 goroutine 负责读取数据（通过 `pipeReader`）。它的核心特点是**阻塞式读写**，即写入和读取操作是同步的，写入时会阻塞直到数据被读取，读取时也会阻塞直到有数据可读。
