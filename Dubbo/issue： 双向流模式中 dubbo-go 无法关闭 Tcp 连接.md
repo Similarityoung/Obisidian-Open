@@ -387,7 +387,7 @@ func cloneURL(oldURL *url.URL) *url.URL {
 }
 ```
 
-
+分析方法 `Write(data []byte)` 来研究发送的步骤
 
 #### io.Pipe()
 
