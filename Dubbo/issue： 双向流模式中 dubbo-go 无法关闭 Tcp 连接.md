@@ -389,6 +389,26 @@ func cloneURL(oldURL *url.URL) *url.URL {
 
 分析方法 `Write(data []byte)` 来研究发送的实现
 
+```go
+func (d *duplexHTTPCall) Write(data []byte) (int, error) {  
+    // ensure stream has been initialized  
+    d.ensureRequestMade()  
+    // Before we send any data, check if the context has been canceled.  
+    if err := d.ctx.Err(); err != nil {  
+       d.SetError(err)  
+       return 0, wrapIfContextError(err)  
+    }  
+    // It's safe to write to this side of the pipe while net/http concurrently  
+    // reads from the other side.    
+    bytesWritten, err := d.requestBodyWriter.Write(data)  
+    if err != nil && errors.Is(err, io.ErrClosedPipe) {  
+	    return bytesWritten, io.EOF  
+    }  
+    return bytesWritten, err  
+}
+```
+
+其中，`d.requestBodyWriter.Write(data)` 是给
 #### io.Pipe()
 
 `pipeReader, pipeWriter := io.Pipe()` 是 Go 语言中用于创建一个**同步的内存管道**的代码。这个管道可以用于在两个 `goroutine` 之间传递数据，其中一个 `goroutine` 负责写入数据（通过 `pipeWriter`），另一个 goroutine 负责读取数据（通过 `pipeReader`）。它的核心特点是**阻塞式读写**，即写入和读取操作是同步的，写入时会阻塞直到数据被读取，读取时也会阻塞直到有数据可读。
