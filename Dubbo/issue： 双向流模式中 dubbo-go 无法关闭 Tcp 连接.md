@@ -481,3 +481,4 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 - **HTTP 请求和响应**：例如在 HTTP 请求中将请求体数据流式写入，同时在另一个 goroutine 中读取响应数据。
     
 - **测试和模拟**：在测试中模拟一个流式数据源或目标。
+
