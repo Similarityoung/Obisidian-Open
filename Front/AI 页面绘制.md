@@ -9,6 +9,14 @@ draft: true
 
 直接生成的 UI 太丑辣，我需要好点的 UI
 
-#### 使用常见UI组件库/风格 + 文字描述
+#### 常见UI组件库/风格 + 文字描述
 
-**UI 风格**： 苹果的 Apple Design，谷歌的 Material Design，适合企业用的 Ant Design，磨砂玻璃风的Glassmorphism，扁平风的 Flat Remix 等
+**UI 风格**： 苹果的 `Apple Design`，谷歌的 `Material Design`，适合企业用的 `Ant Design`，磨砂玻璃风的`Glassmorphism`，扁平风的 `Flat Remix` 等。
+
+**UI 组件库**：Element UI等等
+
+![image.png](https://img.simi.host/20250126163118.png)
+
+#### 参考图 + 具体描述
+
+注意要特别提到
