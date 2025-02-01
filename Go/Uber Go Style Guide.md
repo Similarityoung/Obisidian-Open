@@ -106,3 +106,5 @@ test(*m)//错误
 
 对于我的需求，其实test的参数只要是myinterface就可以了，只需要在传值的时候，传mystruct类型（也只能传mystruct类型）
 
+### Interface 合理性验证
+
