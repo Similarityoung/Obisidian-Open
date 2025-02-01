@@ -70,4 +70,39 @@ Go 语言不支持传统的方法重载（即同一作用域内同名方法的�
 
 即使它们逻辑上实现相同的功能，Go 语言也禁止这种“重载”，因为方法名和接收者类型必须唯一。
 
-##### 
+##### 方法接收者应该选择值类型还是指针类型？
+
+**应该选择指针类型接收者**，原因：
+
+1. 使用指针接收者意味着支持修改接收者指向的值
+2. 避免方法调用时，由值复制带来的内存&性能问题
+
+#### 永远不要使用指向interface的指针
+
+这个是没有意义的。在go语言中，接口本身就是引用类型，换句话说，接口类型本身就是一个指针。
+
+```go
+type myinterface interface{
+	print()
+}
+func test(value *myinterface){
+	//someting to do ...
+}
+
+type mystruct struct {
+	i int
+}
+//实现接口
+func (this *mystruct) print(){
+	fmt.Println(this.i)
+	this.i=1
+}
+func main(){
+m := &mystruct{0}
+test(m)//错误
+test(*m)//错误
+}
+```
+
+对于我的需求，其实test的参数只要是myinterface就可以了，只需要在传值的时候，传mystruct类型（也只能传mystruct类型）
+
