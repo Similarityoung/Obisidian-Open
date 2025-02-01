@@ -116,4 +116,16 @@ test(*m)//错误
 > 
 > 即使接口是正确的，这种检查也不会产生任何运行时开销。
 
+为了在编译时就验证接口是否被正确实现
 
+```go
+var _ http.Handler = (*Handler)(nil)
+```
+
+#### 编译时的显式检查分析：
+
+- `(*Handler)(nil)` 是一个 `nil` 的 `*Handler` 指针。
+
+- `var _ http.Handler = (*Handler)(nil)` 的作用是将 `*Handler` 赋值给一个 `http.Handler` 类型的变量。编译器会在这个赋值过程中检查 `*Handler` 是否实现了 `http.Handler` 接口。
+
+- 如果 `*Handler` 没有实现 `http.Handler`，编译器会在编译阶段直接报错，而不会等到运行时才发现问题。
