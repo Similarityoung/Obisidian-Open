@@ -1,7 +1,6 @@
 ---
 title: go 学习笔记
 tags:
-  - go
   - learn
 categories:
   - Go
@@ -11,7 +10,7 @@ draft: false
 ### go 学习路线
 
 ![image.png](https://img.simi.host/20241208220701.png)
-s
+
 ### GoLang语法新奇
 
 golang 中的表达式，加";"与不加都可以，建议不加
