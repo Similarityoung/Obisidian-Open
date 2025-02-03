@@ -268,3 +268,7 @@ func (m *SMap) Get(k string) string {
 
 在这种设计中，`sync.Mutex` 是结构体的一个显式字段（`mu`）。由于 `mu` 是小写字母开头的字段，它不会被导出。这意味着调用者无法直接访问 `mu`，只能通过 `SMap` 提供的方法（如 `Get` 和可能的 `Set`）来操作。
 
+### 在边界处拷贝 Slices 和 Maps
+
+slices 和 maps 包含了指向底层数据的指针，因此在需要**复制它们**时要特别注意。
+
