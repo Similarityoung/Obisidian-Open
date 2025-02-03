@@ -186,3 +186,19 @@ func (h *Handler) ServeHTTP(
 
 零值 `sync.Mutex` 和 `sync.RWMutex` 是有效的。所以指向 mutex 的指针基本是不必要的。
 
+**Bad**
+
+```go
+mu := new(sync.Mutex)
+mu.Lock()
+```
+
+**Good**
+
+```go
+var mu sync.Mutex
+mu.Lock()
+```
+
+如果你使用结构体指针，mutex 应该作为结构体的非指针字段。即使该结构体不被导出，也不要直接把 mutex 嵌入到结构体中。
+
