@@ -206,7 +206,7 @@ mu.Lock()
 
 ```go
 type SMap struct {
-  sync.Mutex
+  sync.Mutex // 直接嵌入 sync.Mutex
 
   data map[string]string
 }
@@ -225,4 +225,40 @@ func (m *SMap) Get(k string) string {
 }
 ```
 
-在这种设计中，`sync.Mutex` 是结构体的匿名字段。由于 `sync.Mutex` 是导出的（因为它以大写字母开头），因此其所有方法（如 `Lock` 和 `Unlock`）也会成为 `SMap` 的导出方法。这意味着调用者可以直接访问并操作 `sync.Mutex`，而不仅仅通过 `SMap` 提供的方法。
+1. **接口不清晰**：`sync.Mutex` 的方法（如 `Lock` 和 `Unlock`）会成为 `SMap` 的公共 API 的一部分，这可能导致调用者误用互斥锁。\
+
+2. **实现细节泄露**：互斥锁是实现细节，不应该暴露给调用者。
+
+在这种设计中，`sync.Mutex` 是结构体的匿名字段。由于 `sync.Mutex` 是导出的（因为它以大写字母开头），因此其所有方法（如 `Lock` 和 `Unlock`）也会成为 `SMap` 的导出方法。
+
+这意味着调用者可以直接访问并操作 `sync.Mutex`，而不仅仅通过 `SMap` 提供的方法。就像下面这样：
+
+```go
+// 调用者可以直接调用 Lock 和 Unlock 方法
+smap.Lock()
+defer smap.Unlock()
+```
+
+**Good**
+
+```go
+type SMap struct {
+  mu sync.Mutex
+
+  data map[string]string
+}
+
+func NewSMap() *SMap {
+  return &SMap{
+    data: make(map[string]string),
+  }
+}
+
+func (m *SMap) Get(k string) string {
+  m.mu.Lock()
+  defer m.mu.Unlock()
+
+  return m.data[k]
+}
+```
+
