@@ -202,3 +202,27 @@ mu.Lock()
 
 如果你使用结构体指针，mutex 应该作为结构体的非指针字段。即使该结构体不被导出，也不要直接把 mutex 嵌入到结构体中。
 
+**Bad**
+
+```go
+type SMap struct {
+  sync.Mutex
+
+  data map[string]string
+}
+
+func NewSMap() *SMap {
+  return &SMap{
+    data: make(map[string]string),
+  }
+}
+
+func (m *SMap) Get(k string) string {
+  m.Lock()
+  defer m.Unlock()
+
+  return m.data[k]
+}
+```
+
+在这种设计中，`sync.Mutex` 是结构体的匿名字段。由于 `sync.Mutex` 是导出的（因为它以大写字母开头），因此其所有方法（如 `Lock` 和 `Unlock`）也会成为 `SMap` 的导出方法。这意味着调用者可以直接访问并操作 `sync.Mutex`，而不仅仅通过 `SMap` 提供的方法。
