@@ -165,19 +165,20 @@ func (h *Handler) ServeHTTP(
 
 #### Good 示例
 
-为了在编译时就验证接口是否被正确实现，我们需要使用一个技巧：
-
 ```go
+type Handler struct {
+  // ...
+}
+// 用于触发编译期的接口的合理性检查机制
+// 如果 Handler 没有实现 http.Handler，会在编译期报错
 var _ http.Handler = (*Handler)(nil)
+func (h *Handler) ServeHTTP(
+  w http.ResponseWriter,
+  r *http.Request,
+) {
+  // ...
+}
 ```
 
-#### 分析：
+在这里就可以进行检测了
 
-- `(*Handler)(nil)` 是一个 `nil` 的 `*Handler` 指针。
-    
-- `var _ http.Handler = (*Handler)(nil)` 的作用是将 `*Handler` 赋值给一个 `http.Handler` 类型的变量。编译器会在这个赋值过程中检查 `*Handler` 是否实现了 `http.Handler` 接口。
-    
-- 如果 `*Handler` 没有实现 `http.Handler`，编译器会在编译阶段直接报错，而不会等到运行时才发现问题。
-    
-
-通过这种方式，接口一致性问题可以在编译阶段暴露，提高了代码的健壮性和开发效率。
