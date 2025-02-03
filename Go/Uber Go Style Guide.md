@@ -129,3 +129,55 @@ var _ http.Handler = (*Handler)(nil)
 - `var _ http.Handler = (*Handler)(nil)` 的作用是将 `*Handler` 赋值给一个 `http.Handler` 类型的变量。编译器会在这个赋值过程中检查 `*Handler` 是否实现了 `http.Handler` 接口。
 
 - 如果 `*Handler` 没有实现 `http.Handler`，编译器会在编译阶段直接报错，而不会等到运行时才发现问题。
+
+#### 接口合理性验证的背景
+
+在 Go 中，接口是一种契约（contract），规定了一个类型应该具备哪些方法。例如，`http.Handler` 接口定义如下：
+
+```go
+type Handler interface {
+    ServeHTTP(ResponseWriter, *Request)
+}
+```
+
+如果你有一个自定义类型（如 `Handler`），你需要确保它实现了 `ServeHTTP` 方法，才能被视为实现了 `http.Handler` 接口。通常情况下，Go 语言会在运行时隐式地进行这种检查，但这种方式有风险：如果类型没有正确实现接口，问题可能在运行时才被发现，这对调试和维护很不利。
+
+因此，Go 提供了一种机制，通过编译时的显式检查来确保类型是否实现了某个接口。
+
+#### Bad 示例
+
+以下是文档中的 `Bad` 示例：
+
+```go
+type Handler struct {
+  // ...
+}
+
+func (h *Handler) ServeHTTP(
+  w http.ResponseWriter,
+  r *http.Request,
+) {
+  // ...
+}
+```
+
+在这个例子中，`Handler` 结构体实现了 `ServeHTTP` 方法，理论上应该实现 `http.Handler` 接口。然而，这段代码没有显式地验证这一点。如果 `Handler` 的方法签名与接口不匹配（比如方法名拼写错误，或者参数类型不匹配），这些错误只有在运行时才会被发现，这对开发来说是不可接受的。
+
+#### Good 示例
+
+为了在编译时就验证接口是否被正确实现，我们需要使用一个技巧：
+
+```go
+var _ http.Handler = (*Handler)(nil)
+```
+
+#### 分析：
+
+- `(*Handler)(nil)` 是一个 `nil` 的 `*Handler` 指针。
+    
+- `var _ http.Handler = (*Handler)(nil)` 的作用是将 `*Handler` 赋值给一个 `http.Handler` 类型的变量。编译器会在这个赋值过程中检查 `*Handler` 是否实现了 `http.Handler` 接口。
+    
+- 如果 `*Handler` 没有实现 `http.Handler`，编译器会在编译阶段直接报错，而不会等到运行时才发现问题。
+    
+
+通过这种方式，接口一致性问题可以在编译阶段暴露，提高了代码的健壮性和开发效率。
