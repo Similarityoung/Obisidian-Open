@@ -415,3 +415,6 @@ c := make(chan int, 1) // 或者
 // 无缓冲 channel，大小为 0
 c := make(chan int)
 ```
+
+### 枚举从 1 开始
+
