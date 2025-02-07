@@ -418,3 +418,37 @@ c := make(chan int)
 
 ### 枚举从 1 开始
 
+在 Go 中，枚举类型的实现没有专门的关键字（如 `enum`），而是通过组合 `const` 和 `iota` 来实现。
+
+#### 枚举的基本实现
+
+`iota` 是 Go 中的一个预定义常量，代表自动递增的整数值。在 `const` 块中使用 `iota`，可以很方便地生成枚举值。
+
+```go
+type Status int
+
+const (
+    Pending Status = iota // iota的值为0
+    Active                 // iota的值为1
+    Completed              // iota的值为2
+)
+```
+
+- `Pending` 的值为 `0`。
+
+- `Active` 的值为 `1`。
+
+- `Completed` 的值为 `2`。
+
+如果希望枚举值从 `1` 开始，可以通过对 `iota` 进行简单的算术运算：
+
+```go
+type Status int
+
+const (
+    Pending Status = iota + 1 // iota的值为0，经过加法后变为1
+    Active                 // iota的值为1，变为2
+    Completed              // iota的值为2，变为3
+)
+```
+
