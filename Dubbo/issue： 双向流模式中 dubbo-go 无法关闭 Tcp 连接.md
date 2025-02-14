@@ -63,7 +63,7 @@ if err := stream.CloseRequest(); err != nil {
     
 2. 客户端调用 `CloseResponse()` 关闭响应部分，表示不再接收更多的响应。
 
-下面从closeRequest( )开始进行源码分析
+下面从`closeRequest( )`开始进行源码分析
 
 ### closeRequest( )
 
@@ -90,19 +90,10 @@ func (cc *errorTranslatingClientConn) CloseRequest() error {
 这个结构体的作用：
 
 - 它是一个包装器（wrapper），用于包装 `StreamingClientConn`。
-    
+
 - 它的主要目的是确保从客户端返回的错误是经过编码的（coded errors），即错误信息是结构化的、可识别的，而不是原始的底层错误。
-    
+
 - 它通常用于协议实现中，可能是为了在协议层对错误进行统一处理。
-
-这里有个疑问，我在 debug 的时候遇到了下面的变量：
-
-```go
-StreamingClientConn = {triple_protocol.StreamingClientConn | *triple_protocol.grpcClientConn}
-```
-
-**`triple` 协议和 `grpc` 有什么关系**
-
 
 接着步入就来到了
 
@@ -112,7 +103,7 @@ func (cc *grpcClientConn) CloseRequest() error {
 }
 ```
 
-开始观察 `duplexCall` (双工通信)
+开始观察核心代码 `duplexCall` (双工通信)
 #### duplex_http_call.go
 
 ```go
@@ -416,17 +407,17 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 ###### **步骤 1：初始化**
 
 - 创建 `duplexHTTPCall` 实例，初始化 `io.Pipe`。
-    
+
 - 将 `d.request.Body` 设置为 `pipeReader`。
-    
+
 ###### **步骤 2：调用 `ensureRequestMade`**
 
 - 在 `Write` 方法中，首先调用 `d.ensureRequestMade()`。
-    
+
 - `ensureRequestMade` 通过 `sync.Once` 确保 `d.httpClient.Do(d.request)` 只调用一次。
-    
+
 - `d.httpClient.Do(d.request)` 开始执行，并尝试从 `pipeReader` 读取数据。
-    
+
 ###### **步骤 3：写入数据**
 
 - 客户端调用 `Write` 方法，向 `pipeWriter` 写入数据。
