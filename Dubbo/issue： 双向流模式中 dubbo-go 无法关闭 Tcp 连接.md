@@ -204,24 +204,9 @@ func (d *duplexHTTPCall) CloseWrite() error {
 	return d.requestBodyWriter.Close()
 }
 
-// Header 返回 HTTP 请求头。
-func (d *duplexHTTPCall) Header() http.Header {
-	return d.request.Header
-}
-
-// Trailer 返回 HTTP 请求的 trailers。
-func (d *duplexHTTPCall) Trailer() http.Header {
-	return d.request.Trailer
-}
-
 // URL 返回请求的 URL。
 func (d *duplexHTTPCall) URL() *url.URL {
 	return d.request.URL
-}
-
-// SetMethod 设置请求的 HTTP 方法。
-func (d *duplexHTTPCall) SetMethod(method string) {
-	d.request.Method = method
 }
 
 // Read 从响应体读取数据。返回第一个通过 SetError 设置的错误。
@@ -261,51 +246,6 @@ func (d *duplexHTTPCall) CloseRead() error {
 	}
 	// 关闭响应体
 	return wrapIfRSTError(d.response.Body.Close())
-}
-
-// ResponseStatusCode 返回响应的 HTTP 状态码。
-func (d *duplexHTTPCall) ResponseStatusCode() (int, error) {
-	d.BlockUntilResponseReady()
-	if d.response == nil {
-		return 0, fmt.Errorf("nil response from %v", d.request.URL)
-	}
-	return d.response.StatusCode, nil
-}
-
-// ResponseHeader 返回响应的 HTTP 头。
-func (d *duplexHTTPCall) ResponseHeader() http.Header {
-	d.BlockUntilResponseReady()
-	if d.response != nil {
-		return d.response.Header
-	}
-	return make(http.Header)
-}
-
-// ResponseTrailer 返回响应的 HTTP trailers。
-func (d *duplexHTTPCall) ResponseTrailer() http.Header {
-	d.BlockUntilResponseReady()
-	if d.response != nil {
-		return d.response.Trailer
-	}
-	return make(http.Header)
-}
-
-// SetError 设置错误状态。所有后续的 Read 调用都会返回该错误，
-// 所有后续的 Write 调用都会返回一个包装了 io.EOF 的错误。
-func (d *duplexHTTPCall) SetError(err error) {
-	d.errMu.Lock()
-	if d.err == nil {
-		d.err = wrapIfContextError(err) // 包装上下文错误
-	}
-	d.errMu.Unlock()
-
-	// 关闭请求体的读端，停止写入
-	_ = d.requestBodyReader.Close()
-}
-
-// SetValidateResponse 设置响应验证函数。该函数在后台 goroutine 中运行。
-func (d *duplexHTTPCall) SetValidateResponse(validate func(*http.Response) *Error) {
-	d.validateResponse = validate
 }
 
 // BlockUntilResponseReady 阻塞直到响应准备好。
@@ -354,13 +294,6 @@ func (d *duplexHTTPCall) makeRequest() {
 			response.ProtoMinor,
 		))
 	}
-}
-
-// getError 返回当前的错误状态。
-func (d *duplexHTTPCall) getError() error {
-	d.errMu.Lock()
-	defer d.errMu.Unlock()
-	return d.err
 }
 
 // cloneURL 复制一个 url.URL 对象。
@@ -439,6 +372,7 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 ###### **步骤 6：客户端读取响应**
 
 - 客户端通过 `Read` 方法从响应体中读取服务器返回的数据。
+
 #### io.Pipe()
 
 `pipeReader, pipeWriter := io.Pipe()` 是 Go 语言中用于创建一个**同步的内存管道**的代码。这个管道可以用于在两个 `goroutine` 之间传递数据，其中一个 `goroutine` 负责写入数据（通过 `pipeWriter`），另一个 goroutine 负责读取数据（通过 `pipeReader`）。它的核心特点是**阻塞式读写**，即写入和读取操作是同步的，写入时会阻塞直到数据被读取，读取时也会阻塞直到有数据可读。
@@ -479,7 +413,6 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 
 1. 请求端管理：
 
-
 - 通过`requestBodyWriter *io.PipeWriter`进行请求体写入
 
 - CloseRequest()方法的核心职责：
@@ -490,10 +423,9 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
     
     - 触发服务端onCompleted回调（Java示例中的响应终止处理）
     
-
 你可以在 java 的 server 端进行如下操作：
 
-```ja
+```java
 @Override  
 public void onCompleted() {  
       responseObserver.onCompleted();  
@@ -501,15 +433,14 @@ public void onCompleted() {
 }
 ```
 1. 响应端管理：
-    
 
 - 通过`response.Body`进行响应体读取
-    
+
 - CloseResponse()的本质操作：`d.response.Body.Close()`
-    
 
 二、客户端实现的最佳实践 测试代码展示了符合生产级要求的实现模式：
 
+```go
 func TestBiDiStream2(svc greet.GreetService) error {  
     // 初始化流通道  
     stream, err := svc.GreetStream(context.Background())  
@@ -548,6 +479,7 @@ func TestBiDiStream2(svc greet.GreetService) error {
     fmt.Println("Stream closed properly")  
     return nil  
 }
+```
 
 三、资源管理的必要性
 
@@ -576,43 +508,44 @@ func TestBiDiStream2(svc greet.GreetService) error {
 一、命名误解与技术本质
 
 1. **客户端创建的核心逻辑** `NewGreetService` 的命名虽可能引起误解，但其技术本质是**创建客户端实例**而非直接建立TCP连接。通过源码分析可见：
-    
-    go
-    
-    复制
-    
-    svc, err := greet.NewGreetService(cli)    
-    // 实际调用链：    
-    // => newClientManager(url)    
-    //    => 初始化 transport (http.RoundTripper)  
-    
-    每个客户端实例内部维护独立的**连接池（Transport）**，负责管理底层TCP连接的复用。
-    
+
+```go
+svc, err := greet.NewGreetService(cli)    
+// 实际调用链：    
+// => newClientManager(url)    
+//    => 初始化 transport (http.RoundTripper) 
+```    
+
+每个客户端实例内部维护独立的**连接池（Transport）**，负责管理底层TCP连接的复用。
+
 2. **与gRPC设计的对标性** gRPC的经典实现方式与当前方案高度一致：
-    
-    conn := grpc.NewClient(addr)          // 物理连接管理    
+
+```go
+conn := grpc.NewClient(addr)          // 物理连接管理    
     client := pb.NewRouteGuideClient(conn) // 逻辑客户端    
     runRouteChat(client)                  // 复用连接  
-    
-    二者的核心差异仅体现在**API抽象层级**，而非连接管理机制。
-    
+```
+
+二者的核心差异仅体现在**API抽象层级**，而非连接管理机制。
 
 二、连接复用的实现机制
 
 1. **Transport 的核心作用**
     
     - 作为 `http.RoundTripper` 接口实现，管理HTTP/2连接池
-        
-    - **自动复用空闲TCP连接**，减少三次握手开销
-        
-    - 通过 `MaxIdleConns` 等参数控制连接池行为
-        
-2. **客户端生命周期管理**
     
-    // 正确用法：单例客户端复用    
+    - **自动复用空闲TCP连接**，减少三次握手开销
+    
+    - 通过 `MaxIdleConns` 等参数控制连接池行为
+    
+2. **客户端生命周期管理**
+
+```go
+// 正确用法：单例客户端复用    
     client := NewGreetService()    
     for i := 0; i < 10; i++ {    
         runBiDiStream(client) // 复用同一Transport    
     }  
-    
-    **关键准则**：避免重复创建客户端实例，防止产生冗余连接池。
+```
+
+  **关键准则**：避免重复创建客户端实例，防止产生冗余连接池。
