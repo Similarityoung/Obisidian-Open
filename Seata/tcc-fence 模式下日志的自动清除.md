@@ -1,9 +1,11 @@
 ---
 title: tcc-fence 模式下日志的自动清除
-tags: [pr]
-categories: [Seata]
+tags:
+  - pr
+categories:
+  - Seata
 date: 2025-02-21T02:51:10+08:00
-draft: true
+draft: false
 ---
 ### [issue 关联](https://github.com/apache/incubator-seata-go/issues/699)
 
