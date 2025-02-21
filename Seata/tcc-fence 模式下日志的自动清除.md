@@ -14,3 +14,15 @@ draft: true
 查询代码后发现，在 tcc-fence 模式下并不存在自动删除日志的功能，于是准备实现该功能。
 ### [pull request](https://github.com/apache/incubator-seata-go/pull/745)
 
+首先在 `config` 中添加内容，在 fence.go 内添加
+
+```go
+type Config struct {  
+    Enable       bool          `yaml:"enable" json:"enable" koanf:"enable"`  
+    Url          string        `yaml:"url" json:"url" koanf:"url"`  
+    LogTableName string        `yaml:"log-table-name" json:"log-table-name" koanf:"log-table-name"`  
+    CleanPeriod  time.Duration `yaml:"clean-period" json:"clean-period" koanf:"clean-period"`  
+}
+```
+
+并在客户端的 InitTCC 函数中添加了对 fence 的初始化
