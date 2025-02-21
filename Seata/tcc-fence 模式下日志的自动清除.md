@@ -124,3 +124,26 @@ rollback 操作在回滚之前会查询是否存在记录，如果不存在则�
 
 但是在 `QueryTCCFenceDO` 中，如果查询后无结果会返回 error：
 
+```go
+if err = result.Scan(&xid, &branchId, &actionName, &status, &gmtCreate, &gmtModify); err != nil {  
+    // will return error, if rows is empty  
+    if err.Error() == "sql: no rows in result set" {  
+       return nil, fmt.Errorf("query tcc fence get scan row，no rows in result set, [%w]", err)  
+    } else {  
+       return nil, fmt.Errorf("query tcc fence get scan row failed, [%w]", err)  
+    }  
+}
+```
+
+这与之前的 rollback 操作逻辑相违背，所以这里我修改为了，如果查找不到结果也返回 nil。这样查找不到的情况就可以交给rollback进行处理：
+
+```go
+if err = result.Scan(&xid, &branchId, &actionName, &status, &gmtCreate, &gmtModify); err != nil {  
+    // will return error, if rows is empty  
+    if err.Error() == "sql: no rows in result set" {  
+       return nil, nil  
+    } else {  
+       return nil, fmt.Errorf("query tcc fence get scan row failed, [%w]", err)  
+    }  
+}
+```
