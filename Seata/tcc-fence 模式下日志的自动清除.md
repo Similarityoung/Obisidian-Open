@@ -101,5 +101,26 @@ func (handler *tccFenceWrapperHandler) InitLogCleanChannel(dsn string) {
 
 ### 空回滚问题
 
-[issue](https://github.com/apache/incubator-seata-go/issues/685)
+[issue关联](https://github.com/apache/incubator-seata-go/issues/685)
+
+rollback 操作在回滚之前会查询是否存在记录，如果不存在则插入悬挂状态的日志。
+
+```go
+    fenceDo, err := handler.tccFenceDao.QueryTCCFenceDO(tx, xid, branchId)  
+    if err != nil {  
+       return fmt.Errorf("rollback fence method failed. xid= %s, branchId= %d, [%w]", xid, branchId, err)  
+    }  
+  
+    // record is null, mean the need suspend  
+    if fenceDo == nil {  
+       err = handler.insertTCCFenceLog(tx, xid, branchId, actionName, enum.StatusSuspended)  
+       if err != nil {  
+          return fmt.Errorf("insert tcc fence record errors, rollback fence failed. xid= %s, branchId= %d, [%w]", xid, branchId, err)  
+       }  
+       log.Infof("Insert tcc fence suspend record xid: %s, branchId: %d", xid, branchId)  
+       return nil  
+    }  
+```
+
+但是在 `QueryTCCFenceDO` 中，如果查询后无结果会返回 error：
 
