@@ -14,10 +14,12 @@ draft: true
 查询代码后发现，在 tcc-fence 模式下并不存在自动删除日志的功能，于是准备实现该功能。
 ### [pull request](https://github.com/apache/incubator-seata-go/pull/745)
 
-首先在 `config` 中添加内容，在 fence.go 内添加
+#### 1. 配置文件
 
-```go
-type Config struct {  
+在 `config` 模块中新增了 `Config` 结构体，用于配置 TCC Fence 日志清理功能的相关参数。
+
+```
+type Config struct {
     Enable       bool          `yaml:"enable" json:"enable" koanf:"enable"`  
     Url          string        `yaml:"url" json:"url" koanf:"url"`  
     LogTableName string        `yaml:"log-table-name" json:"log-table-name" koanf:"log-table-name"`  
@@ -25,39 +27,50 @@ type Config struct {
 }
 ```
 
-并在客户端的 `InitTCC` 函数中添加了对 `fence` 的初始化
+- **Enable**: 是否启用日志清理功能。
+- **Url**: 数据库连接字符串。
+- **LogTableName**: TCC 日志表的名称。
+- **CleanPeriod**: 清理任务的执行周期。
 
-```go
+#### 2. 初始化函数
+
+在客户端的 `InitTCC` 函数中添加了对 `fence` 的初始化逻辑。
+
+```
 func InitTCC(cfg fence.Config) {  
-	fence.InitFenceConfig(cfg)
-	rm.GetRmCacheInstance()
-	.RegisterResourceManager(GetTCCResourceManagerInstance()) 
+    fence.InitFenceConfig(cfg)
+    rm.GetRmCacheInstance().RegisterResourceManager(GetTCCResourceManagerInstance()) 
 }
 ```
 
-在 `InitFenceConfig` 中，我根据配置的参数进行解析，配置清理任务
+#### 3. 配置初始化
 
-```go
+在 `InitFenceConfig` 函数中，根据配置参数初始化相关组件，并启动清理任务。
+
+```
 func InitFenceConfig(cfg Config) {  
     FenceConfig = cfg  
   
     if FenceConfig.Enable {  
-       dao.GetTccFenceStoreDatabaseMapper().InitLogTableName(FenceConfig.LogTableName)  
-       handler.GetFenceHandler().InitCleanPeriod(FenceConfig.CleanPeriod)  
-       config.InitCleanTask(FenceConfig.Url)  
+        dao.GetTccFenceStoreDatabaseMapper().InitLogTableName(FenceConfig.LogTableName)  
+        handler.GetFenceHandler().InitCleanPeriod(FenceConfig.CleanPeriod)  
+        config.InitCleanTask(FenceConfig.Url)  
     }  
 }
 ```
 
-关于 initCleanTask 的具体逻辑是：
+#### 4. 清理任务初始化
 
-```go
+在 `InitLogCleanChannel` 函数中，初始化了数据库连接、日志清理 channel 和定时任务。
+
+
+```
 func (handler *tccFenceWrapperHandler) InitLogCleanChannel(dsn string) {  
   
     db, err := sql.Open("mysql", dsn)  
     if err != nil {  
-       log.Warnf("failed to open database: %v", err)  
-       return  
+        log.Warnf("failed to open database: %v", err)  
+        return  
     }  
   
     handler.dbMutex.Lock()  
@@ -65,16 +78,28 @@ func (handler *tccFenceWrapperHandler) InitLogCleanChannel(dsn string) {
     handler.dbMutex.Unlock()  
   
     handler.logQueueOnce.Do(func() {  
-       go handler.traversalCleanChannel(db)  
+        go handler.traversalCleanChannel(db)  
     })  
   
     handler.logTaskOnce.Do(func() {  
-       go handler.initLogCleanTask(db)  
+        go handler.initLogCleanTask(db)  
     })  
-  
 }
 ```
 
-1. 连接数据库
-2. 初始化清除日志的 channel，并一直从 channel 中取数据清除
-3. 初始化定时任务，每隔固定时间（默认是五分钟）查找一天之前的数据，放进清除 channel 中。
+##### 4.1 数据库连接
+
+通过 `sql.Open` 函数连接到 MySQL 数据库。
+
+##### 4.2 清理日志的 channel
+
+启动 `traversalCleanChannel` goroutine，持续从 channel 中取出日志并进行清理。
+
+##### 4.3 定时任务
+
+启动 `initLogCleanTask` goroutine，定时（默认五分钟）查找一天之前的数据，并将其放入清理 channel 中。
+
+### 空回滚问题
+
+[issue](https://github.com/apache/incubator-seata-go/issues/685)
+
