@@ -11,3 +11,6 @@ draft: true
 >2. 按索引删除数据
 >3. 给delete加上limit
 
+查询代码后发现，在 tcc-fence 模式下并不存在自动删除日志的功能，于是准备实现该功能。
+### [pull request](https://github.com/apache/incubator-seata-go/pull/745)
+
