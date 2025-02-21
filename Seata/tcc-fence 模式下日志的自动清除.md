@@ -35,3 +35,44 @@ func InitTCC(cfg fence.Config) {
 }
 ```
 
+在 `InitFenceConfig` 中，我根据配置的参数进行解析，配置清理任务
+
+```go
+func InitFenceConfig(cfg Config) {  
+    FenceConfig = cfg  
+  
+    if FenceConfig.Enable {  
+       dao.GetTccFenceStoreDatabaseMapper().InitLogTableName(FenceConfig.LogTableName)  
+       handler.GetFenceHandler().InitCleanPeriod(FenceConfig.CleanPeriod)  
+       config.InitCleanTask(FenceConfig.Url)  
+    }  
+}
+```
+
+关于 initCleanTask 的具体逻辑是：
+
+```go
+func (handler *tccFenceWrapperHandler) InitLogCleanChannel(dsn string) {  
+  
+    db, err := sql.Open("mysql", dsn)  
+    if err != nil {  
+       log.Warnf("failed to open database: %v", err)  
+       return  
+    }  
+  
+    handler.dbMutex.Lock()  
+    handler.db = db  
+    handler.dbMutex.Unlock()  
+  
+    handler.logQueueOnce.Do(func() {  
+       go handler.traversalCleanChannel(db)  
+    })  
+  
+    handler.logTaskOnce.Do(func() {  
+       go handler.initLogCleanTask(db)  
+    })  
+  
+}
+```
+
+1. 连姐数据库
