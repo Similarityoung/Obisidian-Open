@@ -25,4 +25,13 @@ type Config struct {
 }
 ```
 
-并在客户端的 InitTCC 函数中添加了对 fence 的初始化
+并在客户端的 `InitTCC` 函数中添加了对 `fence` 的初始化
+
+```go
+func InitTCC(cfg fence.Config) {  
+	fence.InitFenceConfig(cfg)
+	rm.GetRmCacheInstance()
+	.RegisterResourceManager(GetTCCResourceManagerInstance()) 
+}
+```
+
