@@ -75,4 +75,6 @@ func (handler *tccFenceWrapperHandler) InitLogCleanChannel(dsn string) {
 }
 ```
 
-1. 连姐数据库
+1. 连接数据库
+2. 初始化清除日志的 channel，并一直从 channel 中取数据清除
+3. 初始化定时任务，每隔固定时间（默认是五分钟）查找一天之前的数据，放进清除 channel 中。
