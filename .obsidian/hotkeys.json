@@ -1,11 +1,12 @@
 {
+  "markdown:toggle-preview": [],
+  "editor:toggle-comments": [],
   "editor:toggle-source": [
     {
       "modifiers": [
         "Mod"
       ],
-      "key": "E"
+      "key": "/"
     }
-  ],
-  "markdown:toggle-preview": []
+  ]
 }
