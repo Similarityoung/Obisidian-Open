@@ -22,38 +22,6 @@ dubbo-go 的 client 端无法调用 dubbo 的 server 端的代码。
 
 ### 问题分析
 
-**Type Mismatch Issue** 
-
-in `QueryDataSource` MethodAfter debugging and reproducing the issue in my code, I've identified the problem within the `QueryDataSource` method:
-
-```go
-goQueryDataSource func(ctx context.Context, id int) (*DataSource, error) dubbo:"queryDataSource"
-```
-
-The root cause is a type mismatch: In Go, both `int` and `int64` are typically 8 bytes, while in Java, the `int` type is only 4 bytes. This discrepancy prevents Java from correctly identifying the method for invocation.
-
-**Solution:** Change the `int` parameter to `int32` in the Go method.
-
-```go
-QueryDataSource func(ctx context.Context, id int32) (*DataSource, error) dubbo:"queryDataSource"
-```
-
-This modification should resolve the type compatibility issue.
-
-**Enum Representation in Go**
-
-I noticed that the Java enum types you've defined are represented as strings in Go:
-
-```go
-Type string hessian:"type" // Mapped from Java enum
-```
-
-To address this and ensure proper enum handling in Go, I recommend utilizing the enum generation tool provided in the `dubbo-go-hessian2` repository.
-
-You can find the tool and instructions here: [dubbo-go-hessian2 enum generation tool](https://github.com/apache/dubbo-go-hessian2/blob/master/tools/gen-go-enum/README.md)
-
-Using this tool will enable you to correctly represent and utilize enums in your Go code. This will improve type safety and code clarity.
-
 在调试并复现代码问题后，我发现问题出在 `QueryDataSource` 方法中：
 
 ```go
@@ -86,4 +54,98 @@ Type string hessian:"type" // Mapped from Java enum
 
 ### 总结
 
-这是一个
+#### 类型错误
+
+这是一个对于序列化的类型的使用错误问题，通过查阅相关资料我了解到 java 的 int是 4 字节，而在 go 中 int型是 8 字节，具体类型如下展示：
+
+```
+int类型的大小为 8 字节 
+int8类型大小为 1 字节 
+int16类型大小为 2 字节 
+int32类型大小为 4 字节 
+int64类型大小为 8 字节
+```
+
+官方文档中
+
+`int is a signed integer type that is at least 32 bits in size. It is a distinct type, however, and not an alias for, say, int32.`
+
+另外
+
+uint is a variable sized type, on your 64 bit computer uint is 64 bits wide.  
+
+uint和uint8等都属于无符号int类型，uint类型长度取决于 CPU，如果是32位CPU就是4个字节，如果是64位就是8个字节。
+
+#### go 中实现枚举类
+
+阅读 [A tool for generate hessian2 java enum define golang code](https://github.com/apache/dubbo-go-hessian2/blob/master/tools/gen-go-enum/README.md)
+
+生成的代码文件为
+
+```go
+package enum
+
+import (
+	"strconv"
+)
+
+import (
+	hessian "github.com/apache/dubbo-go-hessian2"
+)
+
+const (
+	TestColorEnumRed TestColorEnum = iota
+	TestColorEnumBlue
+	TestColorEnumYellow
+)
+
+var _TestColorEnumValues = map[TestColorEnum]string{
+	TestColorEnumRed: "RED",
+	TestColorEnumBlue: "BLUE",
+	TestColorEnumYellow: "YELLOW",
+}
+
+var _TestColorEnumEntities = map[string]TestColorEnum{
+	"RED": TestColorEnumRed,
+	"BLUE": TestColorEnumBlue,
+	"YELLOW": TestColorEnumYellow,
+}
+
+type TestColorEnum hessian.JavaEnum
+
+func (e TestColorEnum) JavaClassName() string {
+	return "com.test.enums.TestColorEnum"
+}
+
+func (e TestColorEnum) String() string {
+	if v, ok := _TestColorEnumValues[e]; ok {
+		return v
+	}
+
+	return strconv.Itoa(int(e))
+}
+
+func (e TestColorEnum) EnumValue(s string) hessian.JavaEnum {
+	if v, ok := _TestColorEnumEntities[s]; ok {
+		return hessian.JavaEnum(v)
+	}
+
+	return hessian.InvalidJavaEnum
+}
+
+func NewTestColorEnum(s string) TestColorEnum {
+	if v, ok := _TestColorEnumEntities[s]; ok {
+		return v
+	}
+
+	return TestColorEnum(hessian.InvalidJavaEnum)
+}
+
+func init() {
+	for v := range _TestColorEnumValues {
+		hessian.RegisterJavaEnum(v)
+	}
+}
+```
+
+实现原理为
