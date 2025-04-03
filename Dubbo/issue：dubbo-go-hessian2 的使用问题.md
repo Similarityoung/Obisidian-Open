@@ -204,77 +204,77 @@ var _TestColorEnumEntities = map[string]TestColorEnum{
 
 ```go
 func (e TestColorEnum) JavaClassName() string {
-    	return "com.test.enums.TestColorEnum"
-       }
+	return "com.test.enums.TestColorEnum"
+}
 ```
 
-    *   `JavaClassName()`:  这个方法实现了 `hessian.JavaEnum` 接口。  它返回 Java 枚举类的完整类名（包括包名）。 Hessian 协议需要这个信息来正确地序列化和反序列化 Java 枚举。  这个方法是 Hessian 识别 Java 枚举的关键。
+*   `JavaClassName()`:  这个方法实现了 `hessian.JavaEnum` 接口。  它返回 Java 枚举类的完整类名（包括包名）。 Hessian 协议需要这个信息来正确地序列化和反序列化 Java 枚举。  这个方法是 Hessian 识别 Java 枚举的关键。
 
 4.  **`String()` 方法：**
 
-    ```go
-    func (e TestColorEnum) String() string {
-    	if v, ok := _TestColorEnumValues[e]; ok {
-    		return v
-    	}
-
-    	return strconv.Itoa(int(e))
+```go
+func (e TestColorEnum) String() string {
+	if v, ok := _TestColorEnumValues[e]; ok {
+	    return v
     }
-    ```
 
-    *   `String()`:  实现了 `Stringer` 接口 (Go 标准库中的 `fmt.Stringer` 接口)。  这个方法用于将 `TestColorEnum` 类型转换为字符串。
-    *   它首先尝试在 `_TestColorEnumValues` 映射中查找对应的字符串名称。如果找到，则返回该名称（例如，`TestColorEnumRed` 返回 "RED"）。
-    *   如果找不到（这种情况通常不应该发生，除非枚举值是无效的），则使用 `strconv.Itoa()` 将枚举值转换为字符串形式的整数 (例如，0, 1, 2)。  这提供了一个备选方案，但建议确保所有有效的枚举值都在映射中。
+	return strconv.Itoa(int(e))
+}
+```
 
-    这个方法的主要目的是提供一个友好的字符串表示形式，方便调试和日志输出。
+*   `String()`:  实现了 `Stringer` 接口 (Go 标准库中的 `fmt.Stringer` 接口)。  这个方法用于将 `TestColorEnum` 类型转换为字符串。
+*   它首先尝试在 `_TestColorEnumValues` 映射中查找对应的字符串名称。如果找到，则返回该名称（例如，`TestColorEnumRed` 返回 "RED"）。
+*   如果找不到（这种情况通常不应该发生，除非枚举值是无效的），则使用 `strconv.Itoa()` 将枚举值转换为字符串形式的整数 (例如，0, 1, 2)。  这提供了一个备选方案，但建议确保所有有效的枚举值都在映射中。
+
+这个方法的主要目的是提供一个友好的字符串表示形式，方便调试和日志输出。
 
 5.  **`EnumValue()` 方法：**
 
-    ```go
-    func (e TestColorEnum) EnumValue(s string) hessian.JavaEnum {
-    	if v, ok := _TestColorEnumEntities[s]; ok {
-    		return hessian.JavaEnum(v)
-    	}
+```go
+func (e TestColorEnum) EnumValue(s string) hessian.JavaEnum {
+	if v, ok := _TestColorEnumEntities[s]; ok {
+		return hessian.JavaEnum(v)
+	}
 
-    	return hessian.InvalidJavaEnum
-    }
-    ```
+	return hessian.InvalidJavaEnum
+}
+```
 
-    *   `EnumValue()`:  这个方法用于将 Java 中传递过来的枚举名称 (字符串) 转换为 Go 中的 `TestColorEnum` 类型。
-    *   它首先在 `_TestColorEnumEntities` 映射中查找对应的 `TestColorEnum` 值。如果找到，则将该值转换为 `hessian.JavaEnum` 类型并返回。
-    *   如果找不到，则返回 `hessian.InvalidJavaEnum`，表示这是一个无效的枚举值。
+*   `EnumValue()`:  这个方法用于将 Java 中传递过来的枚举名称 (字符串) 转换为 Go 中的 `TestColorEnum` 类型。
+*   它首先在 `_TestColorEnumEntities` 映射中查找对应的 `TestColorEnum` 值。如果找到，则将该值转换为 `hessian.JavaEnum` 类型并返回。
+*   如果找不到，则返回 `hessian.InvalidJavaEnum`，表示这是一个无效的枚举值。
 
-    这个方法是反序列化 Java 枚举的关键。  Hessian 会调用这个方法将 Java 端的枚举字符串转换为 Go 端的枚举值。
+这个方法是反序列化 Java 枚举的关键。  Hessian 会调用这个方法将 Java 端的枚举字符串转换为 Go 端的枚举值。
 
 6.  **`NewTestColorEnum()` 方法：**
 
-    ```go
-    func NewTestColorEnum(s string) TestColorEnum {
-    	if v, ok := _TestColorEnumEntities[s]; ok {
-    		return v
-    	}
+```go
+func NewTestColorEnum(s string) TestColorEnum {
+	if v, ok := _TestColorEnumEntities[s]; ok {
+		return v
+	}
 
-    	return TestColorEnum(hessian.InvalidJavaEnum)
-    }
-    ```
+	return TestColorEnum(hessian.InvalidJavaEnum)
+}
+```
 
-    *   `NewTestColorEnum()`:  这个方法提供了一个更方便的方式来创建一个 `TestColorEnum` 类型的实例，基于 Java 的枚举名称。
-    *   它的逻辑与 `EnumValue()` 类似，但在找不到对应枚举值时，会返回一个 `TestColorEnum` 类型的零值，其底层是 `hessian.InvalidJavaEnum`。
+*   `NewTestColorEnum()`:  这个方法提供了一个更方便的方式来创建一个 `TestColorEnum` 类型的实例，基于 Java 的枚举名称。
+*   它的逻辑与 `EnumValue()` 类似，但在找不到对应枚举值时，会返回一个 `TestColorEnum` 类型的零值，其底层是 `hessian.InvalidJavaEnum`。
 
-    `EnumValue()` 和 `NewTestColorEnum()` 的区别在于返回值类型：`EnumValue()` 返回 `hessian.JavaEnum` 接口类型，而 `NewTestColorEnum()` 返回具体的 `TestColorEnum` 类型。  选择哪个方法取决于具体的使用场景。  在 Hessian 反序列化过程中，通常会使用 `EnumValue()`。
+`EnumValue()` 和 `NewTestColorEnum()` 的区别在于返回值类型：`EnumValue()` 返回 `hessian.JavaEnum` 接口类型，而 `NewTestColorEnum()` 返回具体的 `TestColorEnum` 类型。  选择哪个方法取决于具体的使用场景。  在 Hessian 反序列化过程中，通常会使用 `EnumValue()`。
 
 7.  **`init()` 函数：**
 
-    ```go
-    func init() {
-    	for v := range _TestColorEnumValues {
-    		hessian.RegisterJavaEnum(v)
-    	}
-    }
-    ```
+```go
+func init() {
+	for v := range _TestColorEnumValues {
+		hessian.RegisterJavaEnum(v)
+	}
+}
+```
 
-    *   `init()`:  这是一个特殊的函数，在包被加载时自动执行。
-    *   它遍历 `_TestColorEnumValues` 映射中的所有键（即 `TestColorEnum` 枚举值），并使用 `hessian.RegisterJavaEnum()` 函数将它们注册到 Hessian 库中。  **这是至关重要的一步！**  只有注册过的枚举类型，Hessian 才能正确地序列化和反序列化。
+*   `init()`:  这是一个特殊的函数，在包被加载时自动执行。
+*   它遍历 `_TestColorEnumValues` 映射中的所有键（即 `TestColorEnum` 枚举值），并使用 `hessian.RegisterJavaEnum()` 函数将它们注册到 Hessian 库中。  **这是至关重要的一步！**  只有注册过的枚举类型，Hessian 才能正确地序列化和反序列化。
 
 **总结：**
 
@@ -293,5 +293,3 @@ func (e TestColorEnum) JavaClassName() string {
 **与 Hessian 协议的关系：**
 
 Hessian 协议是 Dubbo 中使用的序列化协议。 它需要在序列化和反序列化过程中知道 Java 对象的类型信息，才能正确地进行转换。  `JavaClassName()` 方法和 `RegisterJavaEnum()` 函数就是为了向 Hessian 协议提供这些信息。
-
-希望这个详细的解释能够帮助你理解这段代码的实现原理！  如果你还有其他问题，随时可以提出。
