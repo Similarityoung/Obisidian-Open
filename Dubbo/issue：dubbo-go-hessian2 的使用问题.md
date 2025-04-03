@@ -5,7 +5,7 @@ tags:
 categories:
   - Dubbo
 date: 2025-04-03T21:17:51+08:00
-draft: true
+draft: false
 ---
 ### [issue 关联](https://github.com/apache/dubbo-go/issues/2728)
 
@@ -56,25 +56,27 @@ Type string hessian:"type" // Mapped from Java enum
 
 #### 类型错误
 
-这是一个对于序列化的类型的使用错误问题，通过查阅相关资料我了解到 java 的 int是 4 字节，而在 go 中 int型是 8 字节，具体类型如下展示：
+在 Java 中，`int` 类型始终为 4 字节（32 位），而在 Go 中，`int` 类型的大小取决于底层平台。在 64 位架构上，`int` 通常为 8 字节（64 位），而在 32 位架构上则为 4 字节（32 位）。Go 官方文档指出，`int` 是一种带符号的整数类型，其大小至少为 32 位。
 
+下表总结了 Go 中不同整数类型的大小：
+
+```txt
+int类型的大小为 8 字节 (64位系统) / 4 字节 (32位系统)
+
+int8类型大小为 1 字节 (8 位)
+
+int16类型大小为 2 字节 (16 位)
+
+int32类型大小为 4 字节 (32 位)
+
+int64类型大小为 8 字节 (64 位)
 ```
-int类型的大小为 8 字节 
-int8类型大小为 1 字节 
-int16类型大小为 2 字节 
-int32类型大小为 4 字节 
-int64类型大小为 8 字节
-```
 
-官方文档中
+需要注意的是，`uint` 类型（以及 `uint8` 等无符号整数类型）的大小也取决于底层 CPU 架构。在 64 位 CPU 上，`uint` 为 8 字节，在 32 位 CPU 上则为 4 字节。
 
-`int is a signed integer type that is at least 32 bits in size. It is a distinct type, however, and not an alias for, say, int32.`
+为了避免因 `int` 类型大小不一致导致的序列化问题，建议在跨语言通信时，显式使用固定大小的整数类型，例如 `int32`。这样可以确保 Go 和 Java 之间数据类型的兼容性，从而避免类型错误。
 
-另外
-
-uint is a variable sized type, on your 64 bit computer uint is 64 bits wide.  
-
-uint和uint8等都属于无符号int类型，uint类型长度取决于 CPU，如果是32位CPU就是4个字节，如果是64位就是8个字节。
+Go 的 `int` 类型是平台相关的，而 Java 的 `int` 类型是固定的。在进行跨语言序列化时，必须注意这种差异，并采取适当的措施来确保类型匹配，推荐使用 `int32` 这种明确声明字节大小的类型。
 
 #### go 中实现枚举类
 
