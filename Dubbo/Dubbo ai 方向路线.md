@@ -9,4 +9,4 @@ draft: true
 
 第二步：client 通过 nacos 走服务发现 server，而不是直接调用 server 地址
 
-第三步：其中一个 client 调用两个模型（？）另一个 client 通过
+第三步：其中一个 client 调用两个模型（？）另一个 client 通过mcp 协议跟 server 联系
