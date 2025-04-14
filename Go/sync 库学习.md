@@ -24,3 +24,4 @@ draft: true
 }
 ```
 
+这里 hcm.pool.New 就是定义一个方法，当 pool 中没有
