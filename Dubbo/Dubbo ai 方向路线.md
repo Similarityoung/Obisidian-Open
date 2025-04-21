@@ -9,14 +9,19 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 
 
-项目名称： 基于 Dubbo-go-Pixiu 集成 MCP(Model Context Protocol) 与 A2A(Announcing the Agent2Agent Protocol) 
+项目名称： 基于 Dubbo-go-Pixiu 构建 MCP/A2A 协议的 AI 网关及混合治理能力集成
 
 项目描述：
 
-随着人工智能技术的飞速发展，越来越多的应用开始集成大型语言模型（LLM）等 AI 服务。传统的 API 网关主要面向微服务（如 HTTP/Dubbo/gRPC）设计，难以满足 AI 服务特有的需求，例如对流式协议（SSE/WebSocket）的深度支持、基于 Token 的流量管理、AI 特有的可观测性指标以及与 AI 控制平面的集成。
-本项目旨在增强 Apache Dubbo-go-Pixiu 网关的能力，使其成为一个功能强大的 AI 网关。项目将基于 Dubbo-go-Pixiu 现有的框架，完成以下关键改进：
+随着 AI 技术的快速发展，以及 Agent 技术的兴起，应用间的互联互通需求日益增长。传统的 API 网关在面对新型协议（如 MCP、A2A）和复杂的应用场景时，在协议兼容性、安全认证、动态能力协商和混合治理等方面存在不足。尤其是在 AI Agent 场景下，不同 Agent 采用不同通信协议，需要网关具备灵活的协议适配和转换能力。
 
-AI 协议与流式支持增强： 扩展网关对 OpenAI 兼容协议的完整支持，特别是对 SSE (Server-Sent Events) 和 HTTP/2 分块传输等流式接口的处理能力，以及多模态数据（如 Base64 编码图像、音频等）的初步解析能力。
+本项目旨在基于 Apache Dubbo-go-Pixiu 现有框架，构建一个支持 MCP/A2A 协议的 AI 网关，增强其在 Agent 互联互通和混合治理方面的能力，使其成为一个面向未来的、灵活可扩展的协议网关。
+
+多协议支持： 在现有 HTTP/SSE 基础上，集成 MCP (JSON-RPC) 和 A2A 协议，实现对多种通信协议的统一支持。
+
+统一安全模型：构建基于 OAuth 2.1 和 API Key 的统一认证授权体系，覆盖 HTTP/SSE, MCP 和 A2A 协议，提供一致的安全策略管理。
+
+动态能力协商： 实现基于 MCP 协议的能力协商机制，支持在请求转发过程中，根据客户端和服务端的能力动态调整处理策略，提升系统的灵活性和兼容性。
 
 AI 相关的服务治理： 实现基于 Token 的精流量控制、Token 用量统计与计费、以及可能的治理策略（如模型回退策略）。
 
