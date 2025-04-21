@@ -9,7 +9,7 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 
 
-项目名称： 基于Dubbo-go-Pixiu构建AI网关及AI治理能力集成
+项目名称： 基于 Dubbo-go-Pixiu 集成 MCP(Model Context Protocol 与 Announcing the Agent2Agent Protocol (A2A)
 
 项目描述：
 
