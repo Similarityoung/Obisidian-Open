@@ -33,3 +33,16 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 > 南北走向流量为 client-server 的流量
 > 东西走向流量为 server-sever 流量
 
+传统的云原生 API 网关注重于同 k8s 中的 Pod 进行交互，有东西走向流量和南北走向流量。
+
+而**新一代网关**有如下特点
+
+流量网关、API网关，微服务网
+
+关、AI网关、MCP网关多合一
+
+Ø 统一东西南北向流量
+
+Ø 集成 WAF ，内容安全数据面
+
+Ø 集成 AI 领域 LLM，MCP
