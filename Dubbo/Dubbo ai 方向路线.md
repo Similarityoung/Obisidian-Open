@@ -28,12 +28,14 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 ### 云原生 API 网关
 
-注：
-
+> [!注释]
 > 南北走向流量为 client-server 的流量
+> 
 > 东西走向流量为 server-sever 流量
+> 
+> Web Application Firewall，Web应用防火墙，简称WAF
 
-传统的云原生 API 网关注重于同 k8s 中的 Pod 进行交互，有东西走向流量和南北走向流量。
+传统的流量网关和 API 网关集成的微服务网关（SpringCloud Gateway）注重于同 k8s 中的 Pod 进行交互，有东西走向流量和南北走向流量。
 
 而**新一代网关** 增加了AI 流程的同时，有如下特点
 
@@ -41,6 +43,9 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 - 统一东西南北向流量
 
-- 集成 WAF ，内容安全数据面（Web Application Firewall，Web应用防火墙，简称WAF）
+- 集成 WAF ，内容安全数据面（）
 
 - 集成 AI 领域 LLM，MCP
+
+> 差异化竞争力：服务治理、API管理、LLM管理、MCP管理 + 基本竞争力：高性能、高可用、零信任、易扩展
+
