@@ -49,3 +49,6 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 > 差异化竞争力：服务治理、API管理、LLM管理、MCP管理 + 基本竞争力：高性能、高可用、零信任、易扩展
 
+#### AI 网关
+
+![image.png](https://img.simi.host/20250422143019.png)
