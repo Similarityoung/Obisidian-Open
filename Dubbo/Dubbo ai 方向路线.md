@@ -53,9 +53,13 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 ![image.png](https://img.simi.host/20250422143019.png)
 
+AI 网关集中于 AI 开发插件集，AI 安全防护，多模型适配，可观测性。
+
 #### MCP 网关
 
 ![image.png](https://img.simi.host/20250422145814.png)
+
+MCP 网关在 AI 网关的基础上支持 MCP Servers Proxy，MCP Server Converter，MCP Client 身份认证，MCP Server 动态发现。
 
 ![image.png](https://img.simi.host/20250422152055.png)
 
