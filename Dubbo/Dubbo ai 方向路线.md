@@ -9,9 +9,11 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 ## AI 应用架构新范式
 
+### AI 应用架构图
+
 ![image.png](https://img.simi.host/20250422133722.png)
 
-### 调用链路说明
+#### 调用链路说明
 
 1. 用户向AI应用发起请求，请求流量进入流量网关（云原生API网关）。
 2. 云原生API网关侧维护管理了不同类型的AI Agent的API或路由规则，将用户请求转发至对应的AI Agent。（可以考虑接入 A2A 协议）
@@ -23,3 +25,11 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 8. AI Agent拿到确定的MCP Server和MCP Tool信息后通过MCP网关对该MCP Tool做请求。
 
 实际生产中 ③-⑧ 步会多次循环交互
+
+### 云原生 API 网关
+
+注：
+
+> 南北走向流量为 client-server 的流量
+> 东西走向流量为 server-sever 流量
+
