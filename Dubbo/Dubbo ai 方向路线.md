@@ -7,5 +7,7 @@ draft: true
 ---
 todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
-**draft** ai 网关申请书
+## AI 应用架构新范式
+
+
 
