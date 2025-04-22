@@ -55,4 +55,5 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 #### MCP 网关
 
-![image.png](https://img.simi.host/20250422145529.png)
+![image.png](https://img.simi.host/20250422145814.png)
+
