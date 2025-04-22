@@ -43,7 +43,7 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 
 - 统一东西南北向流量
 
-- 集成 WAF ，内容安全数据面（）
+- 集成 WAF ，内容安全数据面
 
 - 集成 AI 领域 LLM，MCP
 
