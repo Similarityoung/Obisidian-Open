@@ -18,4 +18,8 @@ todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
 3. AI Agent无论以哪种方式实现，只要其中的节点需要获取数据，便向MCP网关（云原生API网关）请求获取可用的MCP Server及MCP Tool的信息。
 4. 因为MCP网关处可能维护了很多MCP信息，可以借助LLM缩小MCP范围，减少Token消耗，所以向AI网关（云原生API网关）发请求和LLM交互。（这一步可选）
 5. MCP网关将确定好范围的MCPServer及MCP Tool的信息List返回给AIAgent。
-6. AI Agent将用户的请求信息及从MCP网关拿到的所有MCP信息通过AI网关发送给LLM。⑦ 经过LLM推理后，返回解决问题的唯一MCP Server和MCP Tool信息。⑧ AI Agent拿到确定的MCP Server和MCP Tool信息后通过MCP网关对该MCP Tool做请求。实际生产中 ③-⑧ 步会多次循环交互③④⑤
+6. AI Agent将用户的请求信息及从MCP网关拿到的所有MCP信息通过AI网关发送给LLM。
+7. 经过LLM推理后，返回解决问题的唯一MCP Server和MCP Tool信息。
+8. AI Agent拿到确定的MCP Server和MCP Tool信息后通过MCP网关对该MCP Tool做请求。
+
+实际生产中 ③-⑧ 步会多次循环交互
