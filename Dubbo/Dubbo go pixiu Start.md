@@ -24,3 +24,10 @@ draft: true
  go run pixiu/*.go gateway start -c pathToConfig/conf.yaml
 ```
 
+### 使用 goLand 配置来 debug
+
+1. 选择 go build 
+2. Run kind 选择 Directory
+3. Directory 选择 你需要执行 go 文件所在的目录
+4. Working directory 根目录即可
+5. 
