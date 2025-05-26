@@ -30,4 +30,4 @@ draft: true
 2. Run kind 选择 Directory
 3. Directory 选择 你需要执行 go 文件所在的目录
 4. Working directory 根目录即可
-5. 
+5. Program arguments 程序实参上填 gateway start -c pathToConfig/conf.yaml
