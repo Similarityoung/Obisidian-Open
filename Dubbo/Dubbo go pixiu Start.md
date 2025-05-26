@@ -18,3 +18,9 @@ draft: true
  go test 
 ```
 
+### samples 运行命令
+
+```shell
+ go run pixiu/*.go gateway start -c pathToConfig/conf.yaml
+```
+
