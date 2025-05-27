@@ -297,7 +297,7 @@ if methodDesc.IsClientStreaming() && methodDesc.IsServerStreaming() {
 
 ### 方案三：基于 `TripleListenerService` 的扩展 (简述)
 
-- **核心思想**: `TripleListenerService` (位于 `pkg/listener/triple/triple_listener.go`) [cite: apache/dubbo-go-pixiu/dubbo-go-pixiu-e580053e6b6a90d7615f4ff5d3c59b802fce6ce2/pkg/listener/triple/triple_listener.go] 本身就是一个 gRPC/Triple 服务器。可以对其进行扩展，使其不仅能调用预定义的 Dubbo 服务，也能动态代理到任意 gRPC 后端。
+- **核心思想**: `TripleListenerService` (位于 `pkg/listener/triple/triple_listener.go`)  本身就是一个 gRPC/Triple 服务器。可以对其进行扩展，使其不仅能调用预定义的 Dubbo 服务，也能动态代理到任意 gRPC 后端。
     
 - **工作流程**:
     
