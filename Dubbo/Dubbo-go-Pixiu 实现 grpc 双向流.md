@@ -97,7 +97,7 @@ draft: true
 
 #### 3.3. 伪代码 (针对双向流的核心代理逻辑)
 
-```
+```go
 // func myDynamicGrpcProxyHandler(srv interface{}, clientToGatewayStream grpc.ServerStream) error
 // ... 获取 methodDesc, backendConn, dynStub ...
 
