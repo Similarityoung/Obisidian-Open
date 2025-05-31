@@ -1,10 +1,12 @@
 ---
 title: cursor rules
-tags: []
-categories: []
+tags: 
+categories: 
 date: 2025-04-19T21:51:52+08:00
-draft: true
+draft: false
 ---
+# 转发自互联网
+
 分享一个自己刚优化的极简版的代码规范，生成代码的质量很相当不错
 ### 开发规范 
 【代码生成原则（按优先级）】
