@@ -349,3 +349,33 @@ if methodDesc.IsClientStreaming() && methodDesc.IsServerStreaming() {
 | **TLS支持**  | 完整autocert集成                 | 无TLS支持                                 | 保持HTTP/2服务的轻量性，专注h2c场景            |
 | **活跃请求跟踪** | 无                            | **精确计数** (AddActiveCount)              | 实现请求级优雅关闭的必要条件                    |
 | **错误处理**   | 标准HTTP错误                     | **专用拒绝响应** (503错误)                     | 明确区分正常关闭和拒绝状态                     |
+
+# 目前流式设计的设计方案
+## 1. 整体架构
+
+### 1.1 核心组件
+
+- GrpcContext: gRPC 请求上下文管理
+
+- GrpcFilter: gRPC 过滤器接口
+
+- GrpcConnectionManager: gRPC 连接管理器
+
+- StreamConfig: 流式配置管理
+### 1.2 目录结构
+
+```
+pkg/
+├── context/
+│   └── grpc/
+│       └── context.go      # gRPC 上下文定义
+├── common/
+│   └── grpc/
+│       ├── manager.go      # 连接管理器
+│       └── RoundTripper.go # HTTP/2 转发器
+├── model/
+│   └── http.go            # 配置模型定义
+└── common/extension/filter/
+    └── filter.go          # 过滤器接口定义
+```
+
