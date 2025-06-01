@@ -376,6 +376,7 @@ pkg/
 ├── model/
 │   └── http.go            # 配置模型定义
 └── common/extension/filter/
-    └── filter.go          # 过滤器接口定义
+│   └── filter.go          # 过滤器接口定义
+└──
 ```
 
