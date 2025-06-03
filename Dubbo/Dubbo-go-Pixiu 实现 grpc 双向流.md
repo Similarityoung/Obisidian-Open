@@ -380,3 +380,8 @@ pkg/
 └──
 ```
 
+```text
+   客户端请求 -> gRPC Server -> UnknownServiceHandler -> dynamicGrpcProxyHandler
+   -> FilterChain.OnGrpcStream -> 后端服务
+```
+
