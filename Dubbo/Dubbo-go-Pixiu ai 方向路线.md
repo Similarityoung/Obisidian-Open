@@ -1,11 +1,13 @@
 ---
 title: Dubbo ai 方向路线
-tags: [ Dubbo]
-categories: [Dubbo]
+tags:
+  - Dubbo
+categories:
+  - Dubbo
 date: 2025-04-04T19:39:21+08:00
-draft: true
+draft: false
 ---
-todo： 给 dubbo-go-pixiu 添加 streamable http 的适配
+# Pixiu AI 演进
 
 ## AI 应用架构新范式
 
@@ -63,3 +65,5 @@ MCP 网关在 AI 网关的基础上支持 MCP Servers Proxy，MCP Server Convert
 
 ![image.png](https://img.simi.host/20250422152055.png)
 
+
+## 
