@@ -68,3 +68,48 @@ MCP 网关在 AI 网关的基础上支持 MCP Servers Proxy，MCP Server Convert
 
 ## Pixiu mcp-session 设计
 
+```mermaid
+flowchart TD
+    subgraph "MCP Session Filter"
+        A[filter] --> B[DecodeHeaders]
+        A --> C[DecodeData]
+        A --> D[EncodeHeaders]
+        A --> E[EncodeData]
+        
+        B -->|匹配规则| F{匹配类型}
+        F -->|REST/Streamable| G[processMcpRequestHeadersForRestUpstream]
+        F -->|SSE| H[processMcpRequestHeadersForSSEUpstream]
+        
+        C -->|处理请求体| I{请求类型}
+        I -->|用户配置| J[MCPConfigHandler]
+        I -->|速率限制| K[MCPRatelimitHandler]
+        
+        E -->|处理响应体| L{上游类型}
+        L -->|REST/Streamable| M[encodeDataFromRestUpstream]
+        L -->|SSE| N[encodeDataFromSSEUpstream]
+    end
+    
+    subgraph "Redis 交互"
+        J -->|存储/获取配置| O[RedisClient]
+        K -->|检查速率限制| O
+        M -->|发布消息| O
+        N -->|处理SSE数据| O
+        
+        O -->|Set/Get| P[Redis存储]
+        O -->|Publish| Q[Redis发布]
+        O -->|Subscribe| R[Redis订阅]
+        O -->|Eval| S[Redis脚本]
+    end
+    
+    subgraph "配置处理"
+        T[ConfigStore] -->|存储配置| P
+        U[MCPConfigHandler] -->|管理配置| T
+    end
+    
+    subgraph "SSE处理"
+        V[SSEServer] -->|处理SSE连接| W[HandleSSE]
+        W -->|订阅消息| R
+        W -->|发送消息| Q
+    end
+```
+
