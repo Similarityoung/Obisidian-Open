@@ -66,4 +66,5 @@ MCP 网关在 AI 网关的基础上支持 MCP Servers Proxy，MCP Server Convert
 ![image.png](https://img.simi.host/20250422152055.png)
 
 
-## 
+## Pixiu mcp-session 设计
+
