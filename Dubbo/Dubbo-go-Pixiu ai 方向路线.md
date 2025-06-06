@@ -69,47 +69,36 @@ MCP 网关在 AI 网关的基础上支持 MCP Servers Proxy，MCP Server Convert
 ## Pixiu mcp-session 设计
 
 ```mermaid
-flowchart TD
-    subgraph "MCP Session Filter"
-        A[filter] --> B[DecodeHeaders]
-        A --> C[DecodeData]
-        A --> D[EncodeHeaders]
-        A --> E[EncodeData]
-        
-        B -->|匹配规则| F{匹配类型}
-        F -->|REST/Streamable| G[processMcpRequestHeadersForRestUpstream]
-        F -->|SSE| H[processMcpRequestHeadersForSSEUpstream]
-        
-        C -->|处理请求体| I{请求类型}
-        I -->|用户配置| J[MCPConfigHandler]
-        I -->|速率限制| K[MCPRatelimitHandler]
-        
-        E -->|处理响应体| L{上游类型}
-        L -->|REST/Streamable| M[encodeDataFromRestUpstream]
-        L -->|SSE| N[encodeDataFromSSEUpstream]
+graph TD
+    subgraph MCP Session Filter
+        A(Filter主流程) --> B(OnHttpRequestHeaders)
+        A --> C(OnHttpRequestBody)
+        A --> E(OnHttpResponseBody)
+
+        B --> F{匹配上游类型}
+        F -- REST --> G[处理REST请求头]
+        F -- SSE --> H[处理SSE请求头]
+
+        C --> I{请求体类型}
+        I -- 用户配置 --> J[配置处理器]
+        I -- 速率限制 --> K[速率限制处理器]
+
+        E --> L{上游响应类型}
+        L -- REST --> M[处理REST响应体]
     end
-    
-    subgraph "Redis 交互"
-        J -->|存储/获取配置| O[RedisClient]
-        K -->|检查速率限制| O
-        M -->|发布消息| O
-        N -->|处理SSE数据| O
-        
-        O -->|Set/Get| P[Redis存储]
-        O -->|Publish| Q[Redis发布]
-        O -->|Subscribe| R[Redis订阅]
-        O -->|Eval| S[Redis脚本]
+
+    subgraph Redis交互
+        J --> O{RedisClient}
+        K --> O
+        M -- 发布消息 --> O
+        H -- 会话管理 --> O
     end
-    
-    subgraph "配置处理"
-        T[ConfigStore] -->|存储配置| P
-        U[MCPConfigHandler] -->|管理配置| T
-    end
-    
-    subgraph "SSE处理"
-        V[SSEServer] -->|处理SSE连接| W[HandleSSE]
-        W -->|订阅消息| R
-        W -->|发送消息| Q
+
+    subgraph SSE处理
+        V(SSEServer) -- 处理SSE连接 --> W(HandleSSE)
+        W -- 订阅Redis消息 --> O
+        W -- 发送事件到客户端 --> Z((客户端))
     end
 ```
+
 
