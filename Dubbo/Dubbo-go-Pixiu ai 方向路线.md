@@ -110,3 +110,7 @@ sequenceDiagram
 Streamable http 下与 Pixiu 的通信
 
 目前 Pixiu 开发计划
+
+首先实现单个实例的情况下，将api 服务包装成 mcp server，与 mcp client 进行通信。
+
+第二步： 通过
