@@ -69,50 +69,42 @@ MCP 网关在 AI 网关的基础上支持 MCP Servers Proxy，MCP Server Convert
 ## Pixiu mcp-session 设计
 
 ```mermaid
-graph TD
-    subgraph "MCP Session Filter"
-        A[filter] --> B[DecodeHeaders]
-        A --> C[DecodeData]
-        A --> D[EncodeHeaders]
-        A --> E[EncodeData]
+sequenceDiagram
+    participant Client
+    participant Server
 
-        B -->|匹配规则| F{匹配类型}
-        F -->|REST/Streamable| G[processMcpRequestHeadersForRestUpstream]
-        F -->|SSE| H[processMcpRequestHeadersForSSEUpstream]
+    %% 1. 初始化
+    Note over Client,Server: 初始化 (Initialization)
+    Client->>Server: POST InitializeRequest
+    Server-->>Client: InitializeResponse (Header: Mcp-Session-Id: 1868a90c...)
+    Client->>Server: POST InitializedNotification (Header: Mcp-Session-Id: 1868a90c...)
+    Server-->>Client: 202 Accepted
 
-        C -->|处理请求体| I{请求类型}
-        I -->|用户配置| J[MCPConfigHandler]
-        I -->|速率限制| K[MCPRatelimitHandler]
-
-        E -->|处理响应体| L{上游类型}
-        L -->|REST/Streamable| M[encodeDataFromRestUpstream]
-        L -->|SSE| N[encodeDataFromSSEUpstream]
+    %% 2. 客户端请求
+    Note over Client,Server: 客户端请求 (Client Request)
+    Client->>Server: POST ... request ... (Header: Mcp-Session-Id: 1868a90c...)
+    
+    alt 单个 HTTP 响应 (Single HTTP Response)
+        Server-->>Client: ... response ...
+    else 服务器打开 SSE 流 (Server Opens SSE Stream)
+        Note right of Server: 连接保持打开状态 (Connection stays open)
+        loop 持续接收 SSE 消息 (Loop for SSE Messages)
+            Server-->>Client: ... 来自服务器的 SSE 消息 (SSE message from server) ...
+        end
     end
 
-    subgraph "Redis 交互"
-        J -->|存储/获取配置| O[RedisClient]
-        K -->|检查速率限制| O
-        M -->|发布消息| O
-        N -->|处理SSE数据| O
+    %% 3. 客户端通知/响应 (这部分在原图比较模糊，可以理解为客户端在收到SSE后发起的另一个请求)
+    Note over Client,Server: 客户端通知/响应 (Client Notification/Response)
+    Client->>Server: POST ... notification/response ... (Header: Mcp-Session-Id...)
+    Server-->>Client: 202 Accepted
 
-        O -->|Set/Get| P[Redis存储]
-        O -->|Publish| Q[Redis发布]
-        O -->|Subscribe| R[Redis订阅]
-        O -->|Eval| S[Redis脚本]
-    end
-
-    subgraph "配置处理"
-        T[ConfigStore] -->|存储配置| P
-        U[MCPConfigHandler] -->|管理配置| T
-    end
-
-    subgraph "SSE处理"
-        V[SSEServer] -->|处理SSE连接| W[HandleSSE]
-        W -->|订阅消息| R
-        W -->|发送消息| Q
+    %% 4. 服务器请求 (实际上是客户端发起的长连接，由服务器主动推送)
+    Note over Client,Server: 服务器请求 (Server Push via Long-lived Connection)
+    Note left of Client: 客户端发起 GET 请求建立长连接
+    Client->>Server: GET (Header: Mcp-Session-Id: 1868a90c...)
+    loop 连接保持打开状态 (Connection stays open)
+        Server-->>Client: ... 来自服务器的 SSE 消息 (SSE message from server) ...
     end
 ```
 
-
-
-
+Streamable http 下
