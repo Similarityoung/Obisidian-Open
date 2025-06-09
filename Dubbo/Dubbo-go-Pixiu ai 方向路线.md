@@ -113,6 +113,55 @@ Streamable http 下与 Pixiu 的通信
 
 第一步： 实现单个实例的情况下，将 api 服务包装成 mcp server，与 mcp client 进行通信。
 
-第二步： 在多个实例的情况下，采用 Map（或者其他缓存方式）将 session-id 和实例存储起来
+```txt
+客户端 ---> Pixiu ---> 后端 api
+```
+
+第二步： 在多个实例的情况下，采用 Map（或者其他缓存方式）将 session-id 
+
+```mermaid
+graph TD
+    subgraph "客户端"
+        Client_A[MCP Client]
+        Client_B[MCP Client]
+    end
+
+    subgraph "共享服务"
+        subgraph "Redis"
+            L2_Cache["L2 共享缓存<br/>[Mcp-Session-Id: 实例信息]"]
+            PubSub["发布/订阅 (Pub/Sub)<br/>用于失效通知"]
+        end
+    end
+
+    subgraph "Pixiu 集群"
+        LB[Load Balancer]
+        subgraph "实例 A"
+            P_A[Pixiu Instance A]
+            L1_A["L1 本地缓存<br/>[Mcp-Session-Id: 实例信息]"]
+            P_A <--> L1_A
+        end
+        subgraph "实例 B"
+            P_B[Pixiu Instance B]
+            L1_B["L1 本地缓存<br/>[Mcp-Session-Id: 实例信息]"]
+            P_B <--> L1_B
+        end
+    end
+    
+    %% 连接与流程
+    Client_A & Client_B --> LB;
+    LB --> P_A & P_B;
+
+    %% 读流程 (以实例 A 为例)
+    P_A -- "1. 读请求" --> L1_A;
+    L1_A -- "2. L1 未命中" --> L2_Cache;
+    L2_Cache -- "3. L2 返回数据" --> P_A;
+    P_A -- "4. 数据写入 L1" --> L1_A;
+
+    %% 写/更新流程 (以实例 A 为例)
+    P_A -- "1. 更新数据" --> L2_Cache;
+    L2_Cache -- "2. 发布失效消息" --> PubSub;
+    PubSub -- "3. 失效通知" --> P_A & P_B;
+```
+
 
 第三步： 在 Pixiu 集群的情况下，在 Map 的基础上加上 Redis 将 session-id 存储起来
