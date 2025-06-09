@@ -107,4 +107,6 @@ sequenceDiagram
     end
 ```
 
-Streamable http 下
+Streamable http 下与 Pixiu 的通信
+
+目前 Pixiu 开发计划
