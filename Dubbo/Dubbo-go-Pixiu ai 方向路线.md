@@ -115,4 +115,4 @@ Streamable http 下与 Pixiu 的通信
 
 第二步： 在多个实例的情况下，采用 Map（或者其他缓存方式）将 session-id 和实例存储起来
 
-第三步： 在 Pixiu 集群的情况下，在 Map 的基础上加上
+第三步： 在 Pixiu 集群的情况下，在 Map 的基础上加上 Redis 进行一致性
