@@ -109,10 +109,10 @@ sequenceDiagram
 
 Streamable http 下与 Pixiu 的通信
 
-目前 Pixiu 开发计划
+目前 Pixiu 开发计划，与 mcp client 的交互
 
-第一步： 实现单个实例的情况下，将api 服务包装成 mcp server，与 mcp client 进行通信。
+第一步： 实现单个实例的情况下，将 api 服务包装成 mcp server，与 mcp client 进行通信。
 
 第二步： 在多个实例的情况下，采用 Map（或者其他缓存方式）将 session-id 和实例存储起来
 
-第三步： 在 Pixiu 集群的情况下，在 Map 的基础上加上 Redis 进行一致性
+第三步： 在 Pixiu 集群的情况下，在 Map 的基础上加上 Redis 将 session-id 存储起来
