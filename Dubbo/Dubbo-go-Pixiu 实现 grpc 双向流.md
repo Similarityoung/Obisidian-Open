@@ -5,7 +5,7 @@ tags:
 categories:
   - Gateway
 date: 2025-05-27T21:54:03+08:00
-draft: true
+draft: false
 ---
 ## 1. 引言
 
@@ -337,3 +337,26 @@ pkg
 
 本次修改主要增加了 grpc_listener 和 grpc_filter，并且将networkfilterchain 中多添加了两个方法，OnUnaryRPC 和 OnStreamRPC ，这两个方法用于实现 rpc 框架下面的流式调用和一元调用（目前grpc 的处理方式是一元调用为特殊的流式调用，所以并未采用OnUnaryRPC）
 
+## 5. 主要工作
+
+当前的 gRPC 代理实现是一个占位符，不具备实际的代理能力，特别是对于流式 RPC。它无法处理未知的 Protobuf 消息类型，也缺少健壮的连接管理和优雅的生命周期控制。
+
+此 PR 旨在将 Pixiu 实现为一个功能完整、健壮且高效的 gRPC 透明代理，能够处理所有类型的 gRPC 调用（一元、流式），并为未来的功能扩展打下坚实基础。
+
+### 5.1 核心代理功能实现
+
+- 实现 Passthrough 编解码器: 为了解决代理不认识消息体的问题，我们实现了一个自定义的 grpc.Codec，它将所有消息都作为原始字节 ([]byte) 对待，从而跳过 Protobuf 的编解码过程，实现了真正的“透传”代理。
+
+- 统一流处理器: 通过 grpc.UnknownServiceHandler 将所有 gRPC 请求（无论类型）都导向一个统一的流处理器。该处理器会建立一个到后端的全双工流，并在客户端和后端之间透明地转发数据。请求处理链路如下：
+
+> 客户端 -> GrpcListener -> GrpcProxyConnectionManager -> GrpcProxyFilter -> 后端服务
+
+### 5.2 健壮性与生命周期管理
+
+- 后端连接池与健康检查: 为后端连接实现了带锁的连接池 (sync.Map) 和复用机制，并增加了后台 goroutine 来监控连接健康状况，自动移除失效连接。
+
+- 实现优雅关闭: 对框架进行了扩展，为 GrpcFilter 接口添加了 Close() 方法，并在网关关闭时（Close/ShutDown）安全地关闭所有后端连接和资源，防止泄露。通过 sync.Once 确保清理操作的幂等性。
+
+### 5.3 代码质量与可维护性提升
+
+- 全面重构: 对 grpc_listener, grpc_manager, grpc_proxy_filter 等核心文件进行了重构，将庞大的函数拆分为职责单一的小函数，大幅提升了代码可读性。
