@@ -267,40 +267,6 @@ if methodDesc.IsClientStreaming() && methodDesc.IsServerStreaming() {
         
     - 过滤器产生的错误或 `grpcdynamic` 调用产生的错误，都需要被 `myDynamicGrpcProxyHandler` 捕获，并转换为标准的 gRPC 错误状态返回给客户端。
         
-
-### 方案二：基于 `TripleListenerService` 的扩展 (简述)
-
-- **核心思想**: `TripleListenerService` (位于 `pkg/listener/triple/triple_listener.go`) 本身就是一个 gRPC/Triple 服务器。可以对其进行扩展，使其不仅能调用预定义的 Dubbo 服务，也能动态代理到任意 gRPC 后端。
-    
-- **工作流程**:
-    
-    1. 配置 `protocol_type: TRIPLE` 的 Listener。
-        
-    2. `TripleListenerService` 通过其内部的 `ProxyService` (或类似的机制) 处理 RPC 调用。
-        
-    3. **关键修改点**:
-        
-        - 在 `ProxyService.InvokeWithArgs` (用于一元和可能的客户端流起点) 或 Triple 库提供的服务器流处理回调中，增加逻辑来识别请求是否需要被动态代理到通用 gRPC 后端。
-            
-        - 如果是，则执行与方案一类似的步骤：获取方法描述符，连接后端，使用 `grpcdynamic` 建立流，并在 Triple 的服务器流抽象与 `grpcdynamic` 的客户端流抽象之间泵送数据。
-            
-- **优劣分析**:
-    
-    - **优点**:
-        
-        - 复用 `Triple` 协议栈，该协议栈设计上考虑了与 gRPC 的兼容性。
-            
-        - 可能与 Dubbo Triple 生态结合更紧密。
-            
-    - **缺点**:
-        
-        - 需要对 `dubbo-go/triple` 库有深入理解。
-            
-        - 将其扩展为通用 gRPC 代理可能偏离其主要设计目标，需要较多适配。
-            
-        - Pixiu 通用过滤器链与 `Triple` 库的拦截器机制的协调。
-            
-
 ## 4. 通用考虑因素
 
 对于以上所有方案，都需要考虑以下通用问题：
