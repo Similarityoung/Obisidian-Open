@@ -43,9 +43,7 @@ draft: true
     - 由于没有服务被显式注册到 `grpcServer` 上，所有调用都会被路由到 `UnknownServiceHandler`。
 
 3. **`UnknownServiceHandler` 函数**:
-    
-    - `func myDynamicGrpcProxyHandler(srv interface{}, serverStream grpc.ServerStream) error`
-        
+
     - **解析请求**: 从 `serverStream.Context()` 和 `grpc.MethodFromServerStream(serverStream)` 获取完整方法名（如 `/package.Service/Method`）、元数据等。
         
     - **路由与服务发现**: 根据方法名中的服务部分，查询 Pixiu 路由配置，找到目标后端集群。
@@ -54,66 +52,119 @@ draft: true
         
     - **后端连接**: 获取到目标集群的 `grpc.ClientConn`。
 
-### 3.3. 伪代码 (针对双向流的核心代理逻辑)
+### 3.3. 伪代码：与后端处理的逻辑
 
-```go
-// func myDynamicGrpcProxyHandler(srv interface{}, clientToGatewayStream grpc.ServerStream) error
-// ... 获取 methodDesc, backendConn, dynStub ...
+```pseudocode
+// -----------------------------------------------------------------
+// grpc_proxy_filter.go 的伪代码表示
+// -----------------------------------------------------------------
 
-if methodDesc.IsClientStreaming() && methodDesc.IsServerStreaming() {
-    gatewayToBackendStream, err := dynStub.InvokeRpcBidiStream(clientToGatewayStream.Context(), methodDesc)
-    if err != nil { return err }
-
-    errChan := make(chan error, 2)
-
-    // Client -> Gateway -> Backend
-    go func() {
-        defer gatewayToBackendStream.CloseSend() // 通知后端客户端流结束
-        for {
-            // 假设 msg 是从 clientToGatewayStream 正确读取的类型
-            msg := dynamic.NewMessage(methodDesc.GetInputType()) // 或直接使用 clientToGatewayStream 的消息类型
-            if err := clientToGatewayStream.RecvMsg(msg); err == io.EOF {
-                errChan <- nil // 客户端正常关闭发送
-                return
-            } else if err != nil {
-                errChan <- err
-                return
-            }
-            if err := gatewayToBackendStream.SendMsg(msg); err != nil {
-                errChan <- err
-                return
-            }
-        }
-    }()
-
-    // Backend -> Gateway -> Client
-    go func() {
-        for {
-            respMsg, err := gatewayToBackendStream.RecvMsg() // 已经是 proto.Message
-            if err == io.EOF {
-                errChan <- nil // 后端正常关闭发送
-                return
-            } else if err != nil {
-                errChan <- err
-                return
-            }
-            if err := clientToGatewayStream.SendMsg(respMsg); err != nil {
-                errChan <- err
-                return
-            }
-        }
-    }()
-
-    // 等待两个方向的流都结束或出错
-    for i := 0; i < 2; i++ {
-        if err := <-errChan; err != nil {
-            // 可能需要更复杂的错误合并逻辑
-            return err
-        }
-    }
-    return nil
+// 定义 Filter 结构体，它包含配置和一个用于缓存后端连接的池子
+FILTER GrpcProxyFilter {
+    Config: Filter配置 // (例如超时时间等)
+    ConnectionPool: 线程安全的Map // (键: 后端地址, 值: gRPC连接)
+    Mutex: 读写锁 // (用于保护连接池的创建操作)
 }
-// ... 其他流类型的处理 ...
+
+// 1. Handle - 过滤器的主入口函数
+FUNCTION Handle(请求上下文):
+    // 从请求上下文中获取路由结果，确定要去哪个集群
+    目标集群 = 请求上下文.路由信息.集群名
+
+    // 从集群中选择一个健康的后端服务地址
+    后端地址 = 集群管理器.选择一个后端(目标集群)
+
+    // 调用流处理函数，并传入后端地址
+    RETURN handleStream(请求上下文, 后端地址)
+END FUNCTION
+
+
+// 2. handleStream - 核心的流处理函数
+FUNCTION handleStream(请求上下文, 后端地址):
+    // 从连接池获取或创建一个到后端的长连接
+    后端连接 = getOrCreateConnection(后端地址)
+    IF 后端连接 IS NULL:
+        设置请求错误("获取后端连接失败")
+        RETURN 停止处理
+
+    // 使用后端连接，创建一个通向后端的新gRPC流
+    // (关键点: 强制使用 "passthrough" 编解码器，只传递原始字节)
+    后端流 = 后端连接.创建新流(使用Passthrough编解码器)
+
+    // 启动两个goroutine，实现双向数据转发
+    START GOROUTINE forward(FROM=请求上下文.客户端流, TO=后端流)
+    START GOROUTINE forward(FROM=后端流, TO=请求上下文.客户端流)
+
+    // 等待两个转发任务完成，并处理可能发生的错误
+    等待所有goroutine结束
+
+    RETURN 继续处理
+END FUNCTION
+
+
+// 3. getOrCreateConnection - 连接池管理
+FUNCTION getOrCreateConnection(后端地址):
+    // --- 乐观锁定路径 ---
+    // 首先，不加锁，尝试从连接池中读取连接
+    连接 = ConnectionPool.Get(后端地址)
+    IF 连接存在 AND 连接是健康的:
+        日志("复用已有连接")
+        RETURN 连接
+
+    // --- 悲观锁定路径 ---
+    // 如果没有找到或连接不健康，则获取一个写锁，准备创建新连接
+    获取写锁()
+    DEFER 释放写锁() // 确保函数结束时释放锁
+
+    // 双重检查：在等待锁的过程中，可能有其他goroutine已经创建了连接
+    连接 = ConnectionPool.Get(后端地址)
+    IF 连接存在 AND 连接是健康的:
+        RETURN 连接
+
+    // 确定需要创建新连接
+    日志("创建到 %s 的新连接", 后端地址)
+    新连接 = createConnection(后端地址)
+    
+    // 将新连接存入池中
+    ConnectionPool.Set(后端地址, 新连接)
+
+    // 为新连接启动一个独立的健康检查监控
+    START GOROUTINE monitorConnection(新连接, 后端地址)
+
+    RETURN 新连接
+END FUNCTION
+
+
+// 4. monitorConnection - 单个连接的健康检查器
+FUNCTION monitorConnection(连接, 地址):
+    // 创建一个每30秒触发一次的定时器
+    定时器 = 每30秒的Ticker
+
+    LOOP FOREVER:
+        等待定时器触发
+        连接状态 = 连接.获取当前状态()
+        
+        // 如果连接已关闭或出现故障
+        IF 连接状态 IS "Shutdown" OR "TransientFailure":
+            日志("连接 %s 状态异常，从池中移除", 地址)
+            获取写锁()
+            ConnectionPool.Delete(地址)
+            释放写锁()
+            BREAK // 结束监控
+END FUNCTION
+
+
+// 5. Close - 过滤器关闭时的清理逻辑
+FUNCTION Close():
+    日志("开始关闭所有后端连接...")
+    
+    // 遍历连接池中的所有连接
+    FOREACH 连接 IN ConnectionPool:
+        // 安全地关闭每一个连接
+        连接.关闭()
+
+    日志("所有连接已关闭")
+END FUNCTION
 ```
 
 ### 3.4. 优劣分析
