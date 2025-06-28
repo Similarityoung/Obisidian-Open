@@ -309,5 +309,31 @@ END FUNCTION
 
 ## 4.  代码结构
 
+```txt
+pkg
+├── common
+│   └── codec
+│       └── grpc
+│           └── passthrough
+│               └── codec.go                (透传编解码器，代理核心技术)
+├── context
+│   └── grpc
+│       └── context.go                    (gRPC 请求上下文定义)
+├── filter
+│   └── network
+│       └── grpcproxy
+│           ├── filter
+│           │   └── proxy
+│           │       └── grpc_proxy_filter.go  (代理核心逻辑实现)
+│           ├── grpc_filter_manager.go      (gRPC 过滤器管理器)
+│           ├── grpc_manager.go             (gRPC 连接管理器和过滤器链调用)
+│           └── plugin.go                   (gRPC 代理网络过滤器的插件化入口)
+├── listener
+│   └── grpc
+│       └── grpc_listener.go              (gRPC 监听器和请求入口)
+└── model
+    └── stream.go                       (RPC 流的核心接口定义)
 ```
-```
+
+本次修改主要增加了 grpc_listener 和 grpc_filter，并且将networkfilterchain 中多添加了两个方法，OnUnaryRPC 和 OnStreamRPC ，这两个方法用于实现 rpc 框架下面的流式调用和一元调用（目前grpc 的处理方式是一元调用为特殊的流式调用，所以并未采用OnUnaryRPC）
+
