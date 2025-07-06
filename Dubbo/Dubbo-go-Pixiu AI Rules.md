@@ -13,13 +13,8 @@ draft: true
 ## 步骤1提示词
 进入研究模式，先观察已有架构，再进行编写。目标是研究编写一个MCP_README.md的项目蓝图，一个MCP_DEV_PLAN.md的开发计划。
 	
-我想实现在 pixiu 网关下将后端服务暴露成 mcp server，功能如下：
-- 功能1（包括CRUD）
-- 功能2
-- 功能3
-- 模块
-- 部署脚本
-- 说明文档：README.md和DEV_PLAN.md
+我想实现在 pixiu 网关下将后端服务暴露成 mcp server，mcp-go 可以参考： https://github.com/mark3labs/mcp-go 或者 https://github.com/ThinkInAIXYZ/go-mcp 。我希望mcp client 可以通过 pixiu 网关利用 mcp 协议调用 pixiu 内的 api 服务。
+
 	
 README.md的要求
 - 详细描述整个应用，作为后续开发的蓝图，指导AI按这个蓝图框架设计和开发。
