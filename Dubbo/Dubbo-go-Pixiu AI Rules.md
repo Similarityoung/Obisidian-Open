@@ -11,16 +11,17 @@ draft: true
 # RIPER-5
 
 ## 步骤1提示词
-进入研究模式，先观察已有架构，再进行编写。目标是研究编写一个MCP_README.md的项目蓝图，一个MCP_DEV_PLAN.md的开发计划。
+
+进入研究模式，先观察已有架构，再进行编写。目标是研究编写一个 MCP_README.md 的项目蓝图，一个 MCP_DEV_PLAN.md 的开发计划。
 	
-我想实现在 pixiu 网关下将后端服务暴露成 mcp server，mcp-go 可以参考： https://github.com/mark3labs/mcp-go 或者 https://github.com/ThinkInAIXYZ/go-mcp 。我希望mcp client 可以通过 pixiu 网关利用 mcp 协议调用 pixiu 内的 api 服务。
+我想实现在 pixiu 网关下将后端服务暴露成 mcp server，mcp-go 可以参考： https://github.com/mark3labs/mcp-go 或者 https://github.com/ThinkInAIXYZ/go-mcp 。我希望 mcp client 可以通过 pixiu 网关利用 mcp 协议调用 pixiu 内的 api 服务。
 
 	
-README.md的要求
+MCP_README.md的要求
 - 详细描述整个应用，作为后续开发的蓝图，指导AI按这个蓝图框架设计和开发。
-- 我想……（一些你自己的习惯或框架或熟悉的方式）
+- 记得给我一个数据流通的样例
 	
-DEV_PLAN.md的要求
+MCP_DEV_PLAN.md的要求
 - 按1.0、2.0、3.0的版本分类（1.0是最小可行的初始版本）；
 - 每个版本根据开发顺序创建TASK001这样的任务编号；
 - 每个任务包含名称、版本、状态（计划中、测试单元编写中、开发中、完成等）。
