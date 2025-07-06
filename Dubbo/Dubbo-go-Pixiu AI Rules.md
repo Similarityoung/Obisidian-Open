@@ -11,9 +11,9 @@ draft: true
 # RIPER-5
 
 ## 步骤1提示词
-进入研究模式，目标是研究编写一个README.md的项目蓝图，一个DEV_PLAN.md的开发计划。
+进入研究模式，先观察已有架构，再进行编写。目标是研究编写一个MCP_README.md的项目蓝图，一个MCP_DEV_PLAN.md的开发计划。
 	
-我想实现一个xxxx应用，前后端分离的，功能如下：
+我想实现在 pixiu 网关下将后端服务暴露成 mcp server，功能如下：
 - 功能1（包括CRUD）
 - 功能2
 - 功能3
