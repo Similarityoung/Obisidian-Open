@@ -12,4 +12,4 @@ draft: true
 5. 语音，图像的 mcp 兼容（很晚进行）
 6. mcp server 的后端不止可以是 openapi，还可以是 grpc，dubbo
 7. 支持 resource 和 prompt
-8. 对齐 mcp 协议的新特性
+8. 对齐 mcp 协议的新特性（log，
