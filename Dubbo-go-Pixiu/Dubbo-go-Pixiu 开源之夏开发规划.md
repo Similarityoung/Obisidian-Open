@@ -13,7 +13,7 @@ draft: true
     
 2. **动态配置更新**：集成 Nacos，实现配置的动态更新，提高系统的灵活性和可维护性。
     
-3. **权限认证**：增加 MCP [Auth 权限认证机制]([https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization))，保障模型的安全访问和合规使用。
+3. **权限认证**：增加 MCP [Auth 权限认证机制](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization)，保障模型的安全访问和合规使用。
     
 4. **核心对象支持**：完整支持 MCP 中的 `resource` 和 `prompt` 对象。
 
@@ -28,7 +28,7 @@ draft: true
 
 1. **多模态数据兼容**：探索在 MCP 体系下对语音、图像等多模态数据的兼容方案。
     
-2. **协议新特性对齐**：对齐 MCP 协议的[最新特性]([https://modelcontextprotocol.io/specification/2025-06-18/server/utilities](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities))，包括日志（logging）、自动完成（completion）和分页（pagination）。
+2. **协议新特性对齐**：对齐 MCP 协议的[最新特性](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities)，包括日志（logging）、自动完成（completion）和分页（pagination）。
     
 3. **可观测性**：构建完善的可观测性体系，方便对系统进行监控和问题排查。
 
