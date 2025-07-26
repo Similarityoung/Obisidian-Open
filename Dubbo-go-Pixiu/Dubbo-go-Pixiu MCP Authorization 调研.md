@@ -17,4 +17,4 @@ A protected _MCP server_ acts as an [OAuth 2.1 resource server](https://www.i
 
 受保护的 MCP 服务器充当 [OAuth 2.1 资源服务器](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-13.html#name-roles) ，能够使用访问令牌接受和响应受保护的资源请求。
 
-Pixiu 网关既然是将后端 API 暴露成 MCP Server，
+Pixiu 网关既然是将后端 API 暴露成 MCP Server，理应承担相应的职责。
