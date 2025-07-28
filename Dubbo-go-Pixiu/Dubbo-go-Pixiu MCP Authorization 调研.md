@@ -11,12 +11,14 @@ draft: true
 ---
 ## Authorization Flow  授权流程
 
-### 背景
+### 1. 背景(Background)
 
-由于 MCP 服务不仅局限于本地，而是在互联网上进行更大范围的使用，所以鉴权是很有意义且有必要的一件事，这关乎到 MCP Server 的安全性。目前在 Pixiu 网关中已经实现了将后端 API 包装成 MCP Server ，现在需要做的是利用网关本身的能力集成鉴权功能，实现 MCP 协议中的 Authorization 部分。
+随着模型上下文协议 (Model Context Protocol, MCP) 的应用场景从本地环境扩展到开放的互联网，对服务进行访问控制和身份验证变得至关重要。这直接关系到 MCP Server 的核心安全性。当前，Pixiu 网关已经具备将后端 API 包装为 MCP Server 的能力，下一步的核心任务是利用网关的现有能力，集成一套标准的鉴权机制，以完整实现 MCP 规范中的授权 (Authorization) 要求。
 
-Implementations using an HTTP-based transport **SHOULD** conform to this specification.
-基于 HTTP 的传输应该实现此规范。
+MCP 规范明确指出：
+
+	Implementations using an HTTP-based transport **SHOULD** conform to this specification.
+（基于 HTTP 的传输应该实现此规范。
 
 #### Pixiu 角色的抉择
 
