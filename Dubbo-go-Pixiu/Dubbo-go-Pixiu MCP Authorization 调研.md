@@ -46,9 +46,9 @@ Pixiu 应该支持多个授权服务器的选择，选择权在于 MCP Client。
 
 MCP servers **MUST** use the HTTP header `WWW-Authenticate` when returning a _401 Unauthorized_ to indicate the location of the resource server metadata URL as described in [RFC9728 Section 5.1 “WWW-Authenticate Response”](https://datatracker.ietf.org/doc/html/rfc9728#name-www-authenticate-response).
 
-Pixiu 在返回 401 的时候，需要告知
+Pixiu 在返回 401 的时候，需要通过 `WWW-Authenticate` 指示资源服务器的元数据 URL
 
-The following diagram outlines an example flow:
+#### 流程图
 
 ```mermaid
 sequenceDiagram
@@ -76,3 +76,4 @@ sequenceDiagram
     M-->>C: MCP response
     Note over C,M: MCP communication continues with valid token
 ```
+
