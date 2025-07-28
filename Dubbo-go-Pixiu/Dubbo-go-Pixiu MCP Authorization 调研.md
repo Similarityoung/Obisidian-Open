@@ -26,6 +26,8 @@ Pixiu 网关既然是将后端 API 暴露成 MCP Server，理应承担相应的�
 | 网关只作资源服务器 (推荐)     | 架构清晰，职责单一。<br>安全性高，依赖专业方案。<br>灵活，可扩展性强。<br>符合行业最佳实践 | 需要额外部署/购买一个授权服务器                            | ⭐⭐⭐⭐⭐ (强烈推荐) |
 | 网关 = 资源服务器 + 授权服务器 | 表面上看起来组件少，部署简单                                      | 架构混乱，高耦合。<br>极高的安全风险。<br>难以维护和扩展。<br>缺乏互操作性 | ⭐ (强烈不推荐)    |
 
+The following diagram outlines an example flow:
+
 ```mermaid
 sequenceDiagram
     participant C as Client
