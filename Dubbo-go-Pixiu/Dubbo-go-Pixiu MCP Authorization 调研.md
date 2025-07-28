@@ -90,7 +90,7 @@ MCP servers, acting in their role as an OAuth 2.1 resource server, **MUST** va
 Pixiu 需要验证访问令牌是否专门为其目标用户颁发。无效或过期的令牌**必须**收到 HTTP 401 响应。
 
 - **`HTTP 401 Unauthorized`**: 用于**认证失败**，即客户端没有提供令牌、令牌无效、过期或签名错误。`WWW-Authenticate` 头应该如你所述被包含。
-    
+
 - **`HTTP 403 Forbidden`**: 用于**授权失败**，即客户端提供了有效的令牌，但该令牌所拥有的权限（如 `scope`）不足以执行当前请求的操作。在这种情况下，服务器已经知道了用户的身份，但拒绝其访问。
 
 Token Audience Binding and Validation: MCP servers **MUST** validate that tokens presented to them were specifically issued for their use
@@ -104,3 +104,6 @@ Pixiu **必须**验证提供给它们的令牌是否是专门为其使用的。
 **核心声明验证**: 必须强制验证令牌的 `iss` (Issuer), `aud` (Audience), `exp` (Expiration Time) 声明。
 
 **缓存安全**: 元数据和公钥的缓存必须有明确的过期策略 (TTL)，以响应密钥轮换等安全事件。
+
+### 4. 设计方案 (Design & Implementation)
+
