@@ -11,7 +11,9 @@ draft: true
 ---
 ##   Authorization Flow  授权流程
 
-### Roles
+### 背景
+
+由于
 
 A protected _MCP server_ acts as an [OAuth 2.1 resource server](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-13.html#name-roles), capable of accepting and responding to protected resource requests using access tokens.
 
