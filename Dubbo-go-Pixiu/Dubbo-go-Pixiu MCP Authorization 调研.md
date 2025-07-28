@@ -54,7 +54,7 @@ Pixiu 需要验证访问令牌是否专门为其目标用户颁发。无效或�
 
 Token Audience Binding and Validation: MCP servers **MUST** validate that tokens presented to them were specifically issued for their use
 
-
+Pixiu **必须**验证提供给它们的令牌是否是专门为其使用的
 #### 流程图
 
 ```mermaid
