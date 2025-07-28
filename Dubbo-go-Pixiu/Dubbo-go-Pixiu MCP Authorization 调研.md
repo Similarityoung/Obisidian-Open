@@ -13,7 +13,7 @@ draft: true
 
 ### 背景
 
-由于
+由于 MCP 服务不仅局限于本地，而是在互联网上进行更大范围的使用，所以鉴权是很有意义且有必要的一件事，这关乎到 MCP Server 的安全性。目前在 Pixiu 网关中已经实现了将后端 API 包装成 MCP Server ，现在需要做的是利用网关本身的能力集成鉴权功能，实现 MCP 协议中的 Authorization 部分。
 
 A protected _MCP server_ acts as an [OAuth 2.1 resource server](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-13.html#name-roles), capable of accepting and responding to protected resource requests using access tokens.
 
