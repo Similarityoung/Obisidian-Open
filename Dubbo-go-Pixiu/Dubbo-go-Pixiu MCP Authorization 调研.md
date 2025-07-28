@@ -9,7 +9,7 @@ categories:
 date: 2025-07-26T21:56:41+08:00
 draft: true
 ---
-##   Authorization Flow  授权流程
+## Authorization Flow  授权流程
 
 ### 背景
 
