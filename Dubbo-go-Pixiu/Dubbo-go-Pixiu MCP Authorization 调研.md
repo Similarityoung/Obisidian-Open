@@ -202,54 +202,30 @@ pkg/filter/auth/
 
 ```go
 // 在 Factory.Apply() 中:
-
 // validator = internal.NewValidator(config.Providers)
-
 // 在 Filter.Decode() 中:
-
 // if path == "/.well-known/oauth-protected-resource":
-
 // return metadata_json
 
-
 // rule = find_matching_rule(path)
-
 // if rule == nil:
-
 // return Continue
-
   
 // token = extract_bearer_token(request)
-
 // if token == nil:
-
 // return 401_with_www_authenticate_header()
 
-  
-
 // validatedToken, err = validator.Validate(token)
-
 // if err != nil:
-
 // return 401_with_error()
-
-  
-
 // if !check_scopes(validatedToken.Scopes, rule.RequiredScopes):
-
 // return 403_forbidden()
-
   
-
 // return Continue
 
 ```
 
-  
-
-### 实施清单 (Implementation Checklist)
-
-  
+#### 4.4 实施清单 (Implementation Checklist)
 
 1. [ ] 在 `go.mod` 中，添加 `github.com/lestrrat-go/jwx/v2`。
 
@@ -266,4 +242,3 @@ pkg/filter/auth/
 7. [ ] 编写单元测试和集成测试，覆盖所有新功能，特别是声明验证、scope 检查和 `/.well-known` 端点。
 
 8. ~~[延后] 重构 `pkg/filter/auth/jwt/` 过滤器。~~)
-
