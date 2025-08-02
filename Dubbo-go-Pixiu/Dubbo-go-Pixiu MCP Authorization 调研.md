@@ -123,122 +123,113 @@ Pixiu **必须**验证提供给它们的令牌是否是专门为其使用的。
 
 本方案旨在通过引入 `github.com/lestrrat-go/jwx` 库，新增一个完全符合 MCP 规范的 OAuth 2.0 资源服务器过滤器 (`mcp_auth`)。为遵循务实、迭代的原则，**本次实施将集中于交付新的 `mcp_auth` 过滤器，对现有 `jwt` 过滤器的重构将暂缓**，作为后续的技术优化任务。
 
-#### 4.1. 架构与文件结构
+#### 4.1 架构与文件结构
 
 为避免过度设计，我们将核心的 JWT 验证逻辑内聚在 `mcp` 过滤器内部，采用 `internal` 包来明确其私有性。最终文件结构如下：
 
 ```text
 
 pkg/filter/auth/
-
-├── jwt/ # [保留, 本次不改动]
-│ └── ...
+├── jwt/                   # [保留, 本次不改动]
+│   └── ...
 │
-└── mcp/ # [新增] 新的 MCP 认证过滤器
-  ├── filter.go # 实现 MCP 协议流程
-  ├── config.go # MCP 过滤器相关配置
-  ├── internal/ # [新增] 存放 MCP 过滤器内部使用的逻辑
-  ├── validator/
-  ├── validator.go
-  └── config.go
+├── mcp/                   # [新增] 新的 MCP 认证过滤器
+│   ├── filter.go          # 实现 MCP 协议流程
+│   ├── config.go          # MCP 过滤器相关配置
+│   └── internal/          # [新增] 存放 MCP 过滤器内部使用的逻辑
+│       └── validator/
+│           ├── validator.go
+│           └── config.go
 
 ```
 
-#### 4.2. 核心验证器 (`mcp/internal/validator/`)
+#### 4.2 核心验证器 (`mcp/internal/validator/`)
 
 此包负责提供专供 `mcp` 过滤器使用的、基于 `jwx` 的令牌验证能力。
 
 **配置 (`config.go`)**:
-
-* 定义 `Provider` 结构，包含 `issuer`, `audiences` 和 `jwks_source` 等字段。
+*   定义 `Provider` 结构，包含 `issuer`, `audiences` 和 `jwks_source` 等字段。
 
 **验证器 (`validator.go`)**:
+*   **`NewValidator(providers)` (伪代码)**:
 
-* **`NewValidator(providers)` (伪代码)**:
+    ```go
+    // 接收Provider配置列表
+    // for each provider:
+    //   根据 jwks_source (remote/local)
+    //   创建 jwk.NewAutoRefresh() 或 jwk.Parse() 实例 (jwk.Set)
+    //   将 jwk.Set 和 provider 元数据存入 map
+    // return validator_instance
+    ```
 
-```go
-// 接收Provider配置列表
+*   **`Validate(providerName, tokenString)` (伪代码)**:
 
-// for each provider:
+    ```go
+    // providerRules = find_rules_for(providerName)
+    // jwt.Parse(token,
+    //   jwt.WithKeySet(providerRules.keySet),
+    //   jwt.WithIssuer(providerRules.issuer),
+    //   jwt.WithAnyAudience(providerRules.audiences...)
+    // )
+    // return token, err
+    ```
 
-// 根据 jwks_source (remote/local)
-
-// 创建 jwk.NewAutoRefresh() 或 jwk.Parse() 实例 (jwk.Set)
-
-// 将 jwk.Set 和 provider 元数据存入 map
-
-// return validator_instance
-
-```
-
-* **`Validate(tokenString)` (伪代码)**:
-
-```go
-// jwt.Parse(token,
-
-// jwt.WithKeySet(keySet),
-
-// jwt.WithIssuer(issuer),
-
-// jwt.WithAnyAudience(audiences...)
-
-// )
-
-// return token, err
-
-```
-
-#### 4.3. `mcp` 认证过滤器 (`mcp/`)
+#### 4.3 `mcp` 认证过滤器 (`mcp/`)
 
 **配置 (`config.go`)**:
-
-* 定义顶层 `Config` 结构，包含 `ResourceMetadata` 和 `Rules`。
-
-* `ResourceMetadata`: 定义 `/.well-known` 端点的内容，包括 `server_host` 和 `authorization_servers` 列表。
-
-* `Rules`: 定义 `path_prefix` 到 `required_scopes` 和 `provider_name` 的映射。
+*   定义顶层 `Config` 结构，包含 `ResourceMetadata` 和 `Rules`。
+*   `ResourceMetadata`: 定义 `/.well-known` 端点的内容，包括 `server_host` 和 `authorization_servers` 列表。
+*   `Rules`: 定义 `path_prefix` 到 `required_scopes` 和 `provider_name` 的映射。
 
 **过滤器逻辑 (`filter.go`)** (伪代码):
 
 ```go
 // 在 Factory.Apply() 中:
 // validator = internal.NewValidator(config.Providers)
+
 // 在 Filter.Decode() 中:
 // if path == "/.well-known/oauth-protected-resource":
-// return metadata_json
+//   return metadata_json
 
 // rule = find_matching_rule(path)
 // if rule == nil:
-// return Continue
-  
+//   return Continue
+
 // token = extract_bearer_token(request)
 // if token == nil:
-// return 401_with_www_authenticate_header()
+//   return 401_with_www_authenticate_header()
 
-// validatedToken, err = validator.Validate(token)
+// validatedToken, err = validator.Validate(rule.ProviderName, token)
 // if err != nil:
-// return 401_with_error()
-// if !check_scopes(validatedToken.Scopes, rule.RequiredScopes):
-// return 403_forbidden()
-  
-// return Continue
+//   return 401_with_standard_error_body("invalid_token", err)
 
+// // 注意: `scope` 声明是空格分隔的字符串, 实现时需分割处理
+// if !check_scopes(validatedToken.Scopes, rule.RequiredScopes):
+//   return 403_with_standard_error_body("insufficient_scope", "Token has insufficient scope")
+
+// return Continue
 ```
 
-#### 4.4 实施清单 (Implementation Checklist)
+#### 4.4 错误处理 (Error Handling)
 
-1. [ ] 在 `go.mod` 中，添加 `github.com/lestrrat-go/jwx/v2`。
+所有认证/授权相关的 `4xx` 错误响应，其响应体都应为 JSON 格式，并遵循 OAuth 2.0 规范，至少包含 `error` 和 `error_description` 字段，以提供清晰的客户端错误信息。
 
-2. [ ] 创建 `pkg/filter/auth/mcp/internal/validator/config.go` 并定义核心配置结构。
+```json
+// 示例: 403 Forbidden 响应
+{
+  "error": "insufficient_scope",
+  "error_description": "The request requires higher privileges than provided by the access token."
+}
+```
 
-3. [ ] 创建 `pkg/filter/auth/mcp/internal/validator/validator.go` 并实现 `NewValidator` 和 `Validate` 函数。
+#### 4.5 实施清单 (Implementation Checklist)
 
-4. [ ] 创建 `pkg/filter/auth/mcp/config.go` 并定义 MCP 过滤器配置结构。
-
-5. [ ] 创建 `pkg/filter/auth/mcp/filter.go` 并实现 MCP 认证流程调度逻辑。
-
-6. [ ] 在 Pixiu 的插件注册表中，注册新的 `mcp_auth` 过滤器。
-
-7. [ ] 编写单元测试和集成测试，覆盖所有新功能，特别是声明验证、scope 检查和 `/.well-known` 端点。
-
-8. ~~[延后] 重构 `pkg/filter/auth/jwt/` 过滤器。~~)
+1.  [ ] 在 `go.mod` 中，添加 `github.com/lestrrat-go/jwx/v2`。
+2.  [ ] 创建 `pkg/filter/auth/mcp/internal/validator/config.go` 并定义核心配置结构。
+3.  [ ] 创建 `pkg/filter/auth/mcp/internal/validator/validator.go` 并实现 `NewValidator` 和 `Validate` 函数。
+4.  [ ] 创建 `pkg/filter/auth/mcp/config.go` 并定义 MCP 过滤器配置结构。
+5.  [ ] 创建 `pkg/filter/auth/mcp/filter.go` 并实现 MCP 认证流程调度逻辑。
+6.  [ ] 在 `filter.go` 中实现标准的 OAuth 2.0 错误响应格式。
+7.  [ ] 在 Pixiu 的插件注册表中，注册新的 `mcp_auth` 过滤器。
+8.  [ ] 编写单元测试和集成测试，覆盖所有新功能，特别是声明验证、scope 检查和 `/.well-known` 端点。
+9.  ~~[延后] 重构 `pkg/filter/auth/jwt/` 过滤器。~~
