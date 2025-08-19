@@ -238,5 +238,39 @@ pkg/filter/auth/
 
 ### 实际交互流程
 
-```me
+```mermaid
+sequenceDiagram
+    participant C as "Client"
+    participant RS as "Resource Server (RS)"
+    participant AS as "Authorization Server (AS)"
+
+    C->>RS: "Request protected resource (no token)"
+    RS-->>C: "401 Unauthorized\n+ WWW-Authenticate (resource_metadata URL)"
+
+    C->>RS: "GET /.well-known/oauth-protected-resource"
+    RS-->>C: "Resource Metadata (resource, authorization_servers)"
+
+    C->>AS: "GET /.well-known/oauth-authorization-server (discover)"
+    AS-->>C: "AS Metadata (authorization_endpoint, token_endpoint, jwks_uri)"
+
+    C->>AS: "Authorization Request (authorization_endpoint)\n(client_id, redirect_uri, scope, state, PKCE)"
+    AS-->>C: "Authorization Code (after user auth/consent)"
+
+    C->>AS: "Token Request (token_endpoint)\n(code + client auth / PKCE)"
+    AS-->>C: "Access Token (+ optional refresh token)"
+
+    C->>RS: "GET /api... with Authorization: Bearer <access_token>"
+    RS->>AS: "(optional) Fetch JWKS from jwks_uri or use cached keys"
+    AS-->>RS: "JWKS"
+    RS->>RS: "Validate token: signature, iss, aud, exp/nbf, scope"
+
+    alt token valid && scopes sufficient
+        RS-->>C: "200 OK + resource"
+    else token invalid/missing
+        RS-->>C: "401 Unauthorized + WWW-Authenticate (resource metadata)"
+    else insufficient scope
+        RS-->>C: "403 Forbidden (insufficient_scope)"
+    end
+
+    note over C,AS: "Client credentials flow: client->AS(token_endpoint) -> AS returns token -> client->RS"
 ```
