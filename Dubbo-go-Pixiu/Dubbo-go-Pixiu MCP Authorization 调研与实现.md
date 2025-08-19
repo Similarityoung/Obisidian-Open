@@ -233,3 +233,10 @@ pkg/filter/auth/
 7.  [ ] 在 Pixiu 的插件注册表中，注册新的 `mcp_auth` 过滤器。
 8.  [ ] 编写单元测试和集成测试，覆盖所有新功能，特别是声明验证、scope 检查和 `/.well-known` 端点。
 9.  ~~[延后] 重构 `pkg/filter/auth/jwt/` 过滤器。~~
+
+## Authorization 实现
+
+### 实际交互流程
+
+```me
+```
