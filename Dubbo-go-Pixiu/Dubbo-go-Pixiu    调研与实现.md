@@ -236,8 +236,6 @@ pkg/filter/auth/
 
 ## Authorization 实现
 
-### 实际交互流程
-
 ```mermaid
 sequenceDiagram
     participant C as Client
@@ -273,3 +271,4 @@ sequenceDiagram
         RS-->>C: "401 Unauthorized + WWW-Authenticate (resource metadata)"
     end
 ```
+
