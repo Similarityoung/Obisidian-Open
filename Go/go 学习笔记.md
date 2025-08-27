@@ -941,3 +941,6 @@ func init() 是 Go 语言中的特殊函数，它会**自动执行**。具体来
 2. **多个文件中的** init() **函数**按照包的依赖顺序执行。
 
 3. **在同一个文件中**，init() 函数的执行顺序是从上到下执行，在全局变量初始化之后、main() 函数之前执行。
+
+
+[Go语言高性能编程手册（万字长文）](https://mp.weixin.qq.com/s?__biz=Mzg5Mjc3MjIyMA==&mid=2247544709&idx=1&sn=83390ee723b35dc4e5dda3cec91ffdab&source=41&poc_token=HILQrmijXGKaG7ax3rHBtemn9qIHm3Mo6jcwzdGB)
