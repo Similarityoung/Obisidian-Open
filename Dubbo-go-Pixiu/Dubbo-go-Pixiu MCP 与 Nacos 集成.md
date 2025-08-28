@@ -5,8 +5,6 @@ categories: []
 date: 2025-08-27T19:49:13+08:00
 draft: true
 ---
-# MCP Server与Nacos集成设计方案
-
 ## 概述
 
 本文档描述了Dubbo-go-pixiu中MCP Server与Nacos集成的设计方案，实现动态配置管理和服务发现能力。该方案通过扩展pkg/remote模块提供统一的远程通信抽象，并在pkg/adapter层创建mcpserver适配器来实现配置的动态转换和生命周期管理。
@@ -50,26 +48,16 @@ draft: true
 2. **pkg/adapter**: 配置转换和生命周期管理层
 
 3. **pkg/filter**: 协议处理层
-4. 
+
 ## 设计方案
 
-  
-
-### 1. 统一远程客户端抽象 (`pkg/remote`)
-
-  
+### 1. 统一远程客户端抽象 (`pkg/remote`)  
 
 本层负责**屏蔽底层具体远程存储（如 Nacos、etcd）的实现差异**，为上层提供一个稳定、统一的交互接口。
 
-  
-
 #### 1.1 核心接口定义
 
-  
-
-我们将定义一个核心的 `RemoteClient` 接口，它通过组合另外两个接口来获得所需的能力。
-
-  
+我们将定义一个核心的 `RemoteClient` 接口，它通过组合另外两个接口来获得所需的能力。  
 
 * **`RemoteClient` 接口**:
 
@@ -81,8 +69,6 @@ draft: true
 
 * `Stop() error`: 关闭客户端，释放所有资源。
 
-  
-
 * **`ServiceDiscovery` 接口**: 负责服务发现相关的所有操作。
 
 * **方法**:
@@ -92,8 +78,6 @@ draft: true
 * `Subscribe(serviceName string, callback func([]Instance)) error`: 订阅一个服务的实例变化。当实例列表发生变更时，将异步调用传入的 `callback` 函数。
 
 * `Unsubscribe(serviceName string) error`: 取消对某个服务的订阅。
-
-  
 
 * **`ConfigManagement` 接口**: 负责配置管理相关的所有操作。
 
@@ -105,15 +89,9 @@ draft: true
 
 * `StopListen(dataId, group string) error`: 取消对某份配置的监听。
 
-  
-
 #### 1.2 Nacos 客户端实现 (`UnifiedNacosClient`)
 
-  
-
 这是 `RemoteClient` 接口在 Nacos 场景下的具体实现。
-
-  
 
 * **结构**: `UnifiedNacosClient` 是一个结构体 (struct)。
 
@@ -131,23 +109,15 @@ draft: true
 
 * 其方法的内部逻辑非常简单：将调用**代理 (delegate)** 给内部持有的 `namingClient` 或 `configClient` 去完成实际工作，并对返回结果进行必要的格式转换，使其符合我们自己定义的 `Instance` 等中立结构。
 
-  
-
 ### 2. MCP Server 适配器 (`pkg/adapter/mcpserver`)
-
-  
 
 本层是连接**远程数据源**和**网关核心业务逻辑**的桥梁，负责将从 `pkg/remote` 获取的原始配置数据，转化为网关内部可以消费的业务对象。
 
-  
-
 #### 2.1 适配器核心 (`MCPServerAdapter`)
-
-  
 
 * **结构**: `MCPServerAdapter` 是一个结构体。
 
-* **核心字段**:
+##### 核心字段:
 
 * `remoteClient`: 持有一个 `remote.RemoteClient` 接口实例，它不知道底层是 Nacos 还是其他实现。
 
@@ -155,7 +125,7 @@ draft: true
 
 * `listeners`: 一个 `map`，用于管理所有 `ConfigListener` 实例，方便启停。
 
-* **职责**:
+##### 职责:
 
 * **初始化**: 通过 `Apply(config)` 方法接收配置，并创建出 `remoteClient` 实例。
 
@@ -165,15 +135,11 @@ draft: true
 
 * **处理变更**: 提供一个内部方法（如 `onConfigUpdate`），供 `ConfigListener` 回调。当收到更新时，它会调用 `ConfigConverter` 进行转换，并将转换后的结果应用到 `DynamicToolRegistry`、`RouterManager` 和 `ClusterManager`。
 
-  
-
 #### 2.2 配置监听器 (`ConfigListener`)
-
-  
 
 * **结构**: `ConfigListener` 是一个结构体，每个实例负责一个 MCP 服务的完整监听。
 
-* **核心字段**:
+##### 核心字段:
 
 * `serviceId`: 标识自己正在监听哪个 MCP 服务。
 
@@ -181,7 +147,7 @@ draft: true
 
 * `stopChan`: 一个 channel，用于接收停止信号。
 
-* **职责**:
+##### 职责:
 
 * 封装**级联监听**的复杂业务流程。在其 `watch()` 方法中，它会：
 
@@ -193,17 +159,15 @@ draft: true
 
 * 当所有相关配置（版本、规格、实例）都获取到或发生变化时，将这些零散的信息**聚合成一个完整的配置快照**，然后调用 `adapter.onConfigUpdate` 方法，将快照传递出去。
 
-  
-
 #### 2.3 配置转换器 (`ConfigConverter`)
-
-  
 
 * **结构**: `ConfigConverter` 是一个**无状态**的工具类结构体，只包含方法。
 
-* **职责**: 负责数据模型的转换。
+##### 职责: 
 
-* **核心方法**:
+负责数据模型的转换。
+
+##### 核心方法:
 
 * `ConvertToInternalModels(snapshot AggregatedConfig) (*InternalModels, error)`:
 
@@ -213,15 +177,9 @@ draft: true
 
 * 将这些转换好的对象打包成 `InternalModels` 结构体返回。
 
-  
-
 ### 3. 集成点设计
 
-  
-
 #### 3.1 与 MCP Filter 集成 (`DynamicToolRegistry`)
-
-  
 
 * **目标**: 让 MCP 过滤器能动态地感知工具的变化。
 
@@ -233,11 +191,8 @@ draft: true
 
 * `MCPServerAdapter` 在转换出新的工具列表后，会调用此方法。`DynamicToolRegistry` 内部会使用读写锁 (`sync.RWMutex`) 来安全地替换内存中的工具列表。
 
-  
-
 #### 3.2 路由与集群管理集成
 
-  
 
 * **目标**: 动态地创建、更新或删除与 MCP 工具相关的路由和后端集群。
 
