@@ -7,7 +7,7 @@ draft: true
 ---
 ## 概述
 
-本文档描述了Dubbo-go-pixiu中MCP Server与Nacos集成的设计方案，实现动态配置管理和服务发现能力。该方案通过扩展pkg/remote模块提供统一的远程通信抽象，并在pkg/adapter层创建mcpserver适配器来实现配置的动态转换和生命周期管理。
+本文档描述了 Dubbo-go-pixiu 中 MCP Server 与 Nacos 集成的设计方案，实现动态配置管理和服务发现能力。该方案通过扩展 pkg/remote 模块提供统一的远程通信抽象，并在 pkg/adapter 层创建 mcpserver 适配器来实现配置的动态转换和生命周期管理。
 
 ## 架构背景
 
@@ -181,9 +181,9 @@ draft: true
 
 #### 3.1 与 MCP Filter 集成 (`DynamicToolRegistry`)
 
-* **目标**: 让 MCP 过滤器能动态地感知工具的变化。
+**目标**: 让 MCP 过滤器能动态地感知工具的变化。
 
-* **实现**:
+**实现**:
 
 * 我们将改造现有的 `ToolRegistry`，使其成为 `DynamicToolRegistry`。
 
@@ -193,10 +193,9 @@ draft: true
 
 #### 3.2 路由与集群管理集成
 
+**目标**: 动态地创建、更新或删除与 MCP 工具相关的路由和后端集群。
 
-* **目标**: 动态地创建、更新或删除与 MCP 工具相关的路由和后端集群。
-
-* **实现**:
+**实现**:
 
 * `MCPServerAdapter` 在调用 `ConfigConverter` 得到 `model.Router` 和 `model.Cluster` 对象后，将直接调用网关全局的管理器：
 
@@ -205,155 +204,3 @@ draft: true
 * `server.GetClusterManager().SetCluster(cluster)`
 
 * 这些管理器已经具备了处理动态更新的能力，我们只需将正确的配置喂给它们即可。
-
-  
-
-## 配置格式
-
-  
-
-### Nacos配置结构
-
-  
-
-```yaml
-
-# MCP服务版本文件: {serviceId}-mcp-versions.json
-
-{
-
-"latestPublishedVersion": "v1.0.0",
-
-"versions": ["v1.0.0", "v0.9.0"]
-
-}
-
-  
-
-# MCP服务规格文件: {serviceId}-{version}-mcp-server.json
-
-{
-
-"serviceId": "user-service",
-
-"version": "v1.0.0",
-
-"protocol": "https",
-
-"serviceRef": "user-api-service",
-
-"endpoint": "/mcp"
-
-}
-
-  
-
-# MCP工具规格文件: {serviceId}-{version}-mcp-tools.json
-
-{
-
-"tools": [
-
-{
-
-"name": "get_user",
-
-"description": "Get user by ID",
-
-"cluster": "user-backend",
-
-"request": {
-
-"method": "GET",
-
-"path": "/api/users/{id}",
-
-"timeout": "10s"
-
-},
-
-"args": [
-
-{
-
-"name": "id",
-
-"type": "integer",
-
-"in": "path",
-
-"description": "User ID",
-
-"required": true
-
-}
-
-]
-
-}
-
-]
-
-}
-
-```
-
-  
-
-## 实施计划
-
-  
-
-本方案的实施将遵循分层、渐进的原则，确保每一步都构建在坚实的基础之上。
-
-  
-
-### 阶段一：奠定基础——统一远程客户端
-
-  
-
-1. **定义接口**: 在 `pkg/remote/` 目录下创建 `client.go`，精确定义 `RemoteClient`、`ServiceDiscovery`、`ConfigManagement` 接口及其所需的方法和数据结构（如 `Instance`）。
-
-2. **实现 Nacos 客户端**: 在 `pkg/remote/nacos/` 目录下创建 `unified_client.go`，完成 `UnifiedNacosClient` 的具体实现，确保它能正确地创建并代理 Nacos 的 `naming` 和 `config` 客户端。
-
-3. **单元测试**: 为 `UnifiedNacosClient` 编写详尽的单元测试，通过模拟 Nacos SDK 接口来验证其代理逻辑和数据转换的正确性。
-
-  
-
-### 阶段二：构建核心——MCP Server 适配器
-
-  
-
-1. **搭建骨架**: 在 `pkg/adapter/mcpserver/` 目录下创建 `adapter.go`、`listener.go` 和 `converter.go` 等文件，并定义 `MCPServerAdapter`、`ConfigListener` 和 `ConfigConverter` 的结构体。
-
-2. **实现监听器**: 优先实现 `ConfigListener` 的核心逻辑，特别是复杂的“级联监听”流程。此阶段可以先用日志打印来验证监听和回调是否被正确触发。
-
-3. **实现转换器**: 实现 `ConfigConverter` 的纯函数，确保它能将预期的 JSON/YAML 字符串正确地解析为内部模型。为 `ConfigConverter` 编写独立的单元测试。
-
-4. **组装适配器**: 实现 `MCPServerAdapter` 的 `Start`、`Stop` 和 `Apply` 方法，将 `ConfigListener` 和 `ConfigConverter` 组装起来，形成完整的数据处理流水线。
-
-  
-
-### 阶段三：打通端点——集成与重构
-
-  
-
-1. **改造 MCP 过滤器**: 修改 `pkg/filter/mcp/mcpserver`，引入 `DynamicToolRegistry`，并提供线程安全的工具更新机制。
-
-2. **集成管理器**: 在 `MCPServerAdapter` 中，调用 `RouterManager` 和 `ClusterManager`，完成路由和集群的动态下发。
-
-3. **重构旧代码**: 寻找项目中其他直接使用 Nacos SDK 的地方（如 `configcenter`），逐步将其重构为使用新的 `pkg/remote` 统一客户端。这是一个可选但强烈推荐的步骤，以统一技术栈。
-
-4. **端到端集成测试**: 编写一个完整的集成测试。该测试需要启动一个嵌入式的 Nacos 服务，通过代码向 Nacos 发布配置，然后验证 Pixiu 网关是否动态创建了正确的路由，并能成功代理请求。
-
-  
-
-## 总结
-
-  
-
-本设计方案通过扩展pkg/remote模块和创建pkg/adapter/mcpserver适配器，实现了MCP Server与Nacos的深度集成。该方案不仅解决了当前架构的不一致性问题，还为MCP Server提供了强大的动态配置能力，使其能够真正实现"配置即服务"的理念。
-
-  
-
-通过这种设计，开发者可以在Nacos中声明式地定义MCP服务和工具，网关将自动完成服务发现、配置同步、路由生成等所有工作，大大提升了系统的灵活性和可维护性。
