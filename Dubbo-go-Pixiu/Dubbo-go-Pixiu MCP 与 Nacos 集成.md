@@ -1,7 +1,7 @@
 ---
-title: Dubbo-go-Pixiu
-tags: []
-categories: []
+title: Dubbo-go-Pixiu MCP 与 Nacos 集成
+tags: 
+categories: 
 date: 2025-08-27T19:49:13+08:00
 draft: true
 ---
@@ -33,9 +33,9 @@ draft: true
 
 3. **缺乏统一抽象**
 
-- pkg/remote缺乏配置管理能力
+-  `pkg/remote` 缺乏配置管理能力
 
-- configcenter与pkg/remote职责重叠
+-  `configcenter` 与 `pkg/remote` 职责重叠
 
 - 没有统一的远程存储通信抽象
 
