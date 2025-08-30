@@ -49,6 +49,74 @@ draft: true
 
 3. **pkg/filter**: 协议处理层
 
+### 动态配置发现流程
+
+本节流程图聚焦于**配置发现的逻辑**，阐述了网关如何从 Nacos 中一步步发现并聚合一个完整 MCP 服务所需的全部信息。
+
+```mermaid
+
+sequenceDiagram
+
+participant Pixiu as Pixiu 网关
+
+participant Nacos
+
+  
+
+loop 定期服务发现
+
+Pixiu->>Nacos: 1. 搜索所有 MCP 服务<br>(查询 group='mcp-server-versions' 的配置)
+
+Nacos-->>Pixiu: 返回服务ID列表
+
+end
+
+  
+
+Note over Pixiu: 为每个新发现的服务启动一个独立的监听流程
+
+  
+
+Pixiu->>Nacos: 2. 监听服务版本<br>(Listen to `{serviceId}-mcp-versions.json`)
+
+Nacos-->>Pixiu: 推送版本更新 (例如: `latest: v1.0.0`)
+
+  
+
+Note over Pixiu: 收到新版本后，开始监听该版本的具体规格文件
+
+  
+
+Pixiu->>Nacos: 3. 监听服务与工具规格<br>(Listen to `...-v1.0.0-mcp-server.json`)<br>(Listen to `...-v1.0.0-mcp-tools.json`)
+
+Nacos-->>Pixiu: 推送服务规格 (Service Spec)
+
+Note over Pixiu: 从服务规格中解析出后端服务名 (`serviceRef`)
+
+  
+
+Pixiu->>Nacos: 4. 订阅后端服务实例<br>(Subscribe to `serviceRef`)
+
+Nacos-->>Pixiu: 推送实例列表 (e.g., [10.0.0.1, 10.0.0.2])
+
+  
+
+Nacos-->>Pixiu: 推送工具规格 (Tool Spec)
+
+  
+
+Note over Pixiu: 当版本、服务规格、工具规格、实例列表<br>这四份信息都就绪后...
+
+  
+
+Pixiu->>Pixiu: 5. 聚合生成完整的配置快照
+
+  
+
+Note over Pixiu: 快照已生成，准备在网关内部应用
+
+```
+
 ## 设计方案
 
 ### 1. 统一远程客户端抽象 (`pkg/remote`)  
