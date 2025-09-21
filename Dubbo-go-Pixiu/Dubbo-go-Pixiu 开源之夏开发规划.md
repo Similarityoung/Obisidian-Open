@@ -35,3 +35,8 @@ draft: true
 ### 测试
 
 - **测试工具**：采用官方推荐的 [`inspector` 工具](https://modelcontextprotocol.io/docs/tools/inspector#inspector)进行全面的协议兼容性和功能测试。
+  
+  TODO：记录
+
+1. 指纹 hash 来减少抖动和幂等
+2. 面对分布式系统中的瞬时故障放大问题，需要通过增加重试机制、错误恢复策略和更智能的差异检测来解决
