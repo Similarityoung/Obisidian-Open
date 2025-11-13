@@ -124,5 +124,5 @@ Streamable http 下与 Pixiu 的通信
 
 ![image.png](https://img.simi.host/20250611162057.png)
 
-    ⚠️upload failed, check dev console
+⚠️upload failed, check dev console
 ⚠️upload failed, check dev console
