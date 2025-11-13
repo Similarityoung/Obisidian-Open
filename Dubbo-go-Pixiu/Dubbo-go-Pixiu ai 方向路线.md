@@ -125,3 +125,8 @@ Streamable http 下与 Pixiu 的通信
 ![image.png](https://img.simi.host/20250611162057.png)
 
 ![Obsidian 2025-11-14 00.04.37.tiff](https://img.simi.host/Obsidian 2025-11-14 00.04.37.png)
+
+![image.png](https://img.simi.host/20251114002143836.png)
+
+
+![Obsidian 2025-11-14 00.16.49.tiff](https://img.simi.host/20251114002203946.png)
