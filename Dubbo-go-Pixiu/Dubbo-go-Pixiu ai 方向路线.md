@@ -123,10 +123,3 @@ Streamable http 下与 Pixiu 的通信
 3. **实现缓存同步**：利用 Redis 的 Pub/Sub（发布/订阅）机制，当数据更新时，通知所有实例清空各自的本地缓存，保证数据最终一致性。
 
 ![image.png](https://img.simi.host/20250611162057.png)
-
-![Obsidian 2025-11-14 00.04.37.tiff](https://img.simi.host/Obsidian 2025-11-14 00.04.37.png)
-
-![image.png](https://img.simi.host/20251114002143836.png)
-
-
-![Obsidian 2025-11-14 00.16.49.tiff](https://img.simi.host/20251114002203946.png)
