@@ -1,7 +1,10 @@
 ---
 title: Dubbo-go-Pixiu MCP 与 Nacos 集成
-tags: 
-categories: 
+tags:
+  - Dubbo
+categories:
+  - Dubbo
+  - Go
 date: 2025-08-27T19:49:13+08:00
 draft: true
 ---
