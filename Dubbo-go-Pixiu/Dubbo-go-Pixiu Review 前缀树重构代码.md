@@ -14,11 +14,13 @@ PR 链接： https://github.com/apache/dubbo-go-pixiu/pull/777
 
 社区的小伙伴重构了 Pixiu 的路由模块，遂进行读取瞻仰，希望能有所收获，
 
-### RouteSnapshot 路由存储策略
+### RouteSnapshot 
+
+#### 路由存储策略
 
 核心结构体 `RouteSnapshot` 将路由规则分为了**两大阵营**，以应对不同的匹配需求：
 
-#### 1. 基于路径的路由 (`MethodTries`)
+##### 1. 基于路径的路由 (`MethodTries`)
 
 - **数据结构**：`map[string]*trie.Trie`
 	
@@ -38,7 +40,7 @@ PR 链接： https://github.com/apache/dubbo-go-pixiu/pull/777
 	
 - **入选条件**：只要配置了 `Path`（精确路径）或 `Prefix`（前缀路径），无论是否包含 Header，都存入这里。
 
-#### 2. 纯 Header 路由 (`HeaderOnly`)
+##### 2. 纯 Header 路由 (`HeaderOnly`)
 
 - **数据结构**：`[]HeaderRoute` (切片/列表)
 
@@ -48,7 +50,7 @@ PR 链接： https://github.com/apache/dubbo-go-pixiu/pull/777
 
 - **入选条件**：**必须同时满足** `Path` 为空 **且** `Prefix` 为空。即“不看路径，只看 Header”的特殊路由。
 
-#### 3. 架构示意图 (Mermaid)
+##### 3. 架构示意图 (Mermaid)
 
 ``` mermaid
 graph TD
@@ -74,3 +76,19 @@ graph TD
     end
 ```
 
+#### 高并发配置更新机制对比
+
+**场景背景**：网关路由表（RouteSnapshot）。 **场景特征**：**读多写少**（每秒数万次读取，几小时一次更新）。 **核心目标**：在更新配置时，不能让正在处理的用户请求卡顿（Zero Downtime）。
+
+|**特性**|**sync.RWMutex (读写锁) 🔒**|**atomic.Pointer (原子指针) ⚡**|
+|---|---|---|
+|**工作原理**|**交通红绿灯**。写锁开启时，读锁必须等待；反之亦然。|**瞬间幻影移形**。直接替换指向数据的指针，新旧数据在内存中同时存在。|
+|**读操作体验**|**可能阻塞**。如果刚好赶上更新，请求必须排队等待锁释放。|**永不阻塞**。永远能拿到一个完整的快照（要么是旧的，要么是新的）。|
+|**写操作影响**|**"Stop the World"**。写操作期间，所有读操作暂停。容易造成**延迟毛刺 (Latency Spike)**。|**无感切换**。写操作只是一个 CPU 指令级的指针交换，耗时极短，不影响读操作。|
+|**适用场景**|读写频率相当，或者需要严格的数据实时一致性。|**读多写少**，且允许极短暂的数据版本共存（几纳秒的差异）。|
+
+所以 Pixiu 选取 `atomic.Pointer` 来进行配置更新
+
+```go
+
+```
