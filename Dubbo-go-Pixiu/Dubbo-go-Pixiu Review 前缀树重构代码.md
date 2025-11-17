@@ -90,5 +90,11 @@ graph TD
 所以 Pixiu 选取 `atomic.Pointer` 来进行配置更新
 
 ```go
-
+type SnapshotHolder struct {  
+    ptr atomic.Pointer[RouteSnapshot]  
+}  
+  
+func (h *SnapshotHolder) Load() *RouteSnapshot   { return h.ptr.Load() }  
+func (h *SnapshotHolder) Store(s *RouteSnapshot) { h.ptr.Store(s) }
 ```
+
