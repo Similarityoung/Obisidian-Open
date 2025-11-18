@@ -98,3 +98,44 @@ func (h *SnapshotHolder) Load() *RouteSnapshot   { return h.ptr.Load() }
 func (h *SnapshotHolder) Store(s *RouteSnapshot) { h.ptr.Store(s) }
 ```
 
+#### sync.Pool
+
+虽然标准库没有糖，但自从 Go 1.18 引入泛型后，开发者们通常会自己写一个包装器（Wrapper），让它变得像有语法糖一样**类型安全**，不用每次都写 `.(*Type)`。
+
+**这种写法在很多现代 Go 项目中很流行，可以学一下：**
+
+```go
+// 定义一个带泛型的 Pool
+type GenericPool[T any] struct {
+    pool sync.Pool
+}
+
+// 封装 New 函数
+func NewPool[T any](newFunc func() T) *GenericPool[T] {
+    return &GenericPool[T]{
+        pool: sync.Pool{
+            New: func() any { return newFunc() },
+        },
+    }
+}
+
+// 封装 Get：自动帮你转类型！这就算是“人工语法糖”
+func (p *GenericPool[T]) Get() T {
+    return p.pool.Get().(T)
+}
+
+// 封装 Put
+func (p *GenericPool[T]) Put(x T) {
+    p.pool.Put(x)
+}
+
+// --- 使用起来就甜了 ---
+// 1. 创建时指定类型
+var myPool = NewPool(func() *[]int { 
+    s := make([]int, 0, 10)
+    return &s 
+})
+
+// 2. 使用时不需要断言了！直接拿到就是 *[]int
+mySlice := myPool.Get()
+```
