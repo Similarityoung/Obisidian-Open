@@ -144,3 +144,59 @@ mySlice := myPool.Get()
 
 #### sync.Map
 
+我们可以把 `sync.Map` 理解为 Go 语言为了解决特定并发瓶颈而设计的一种“特种武器”。我们都知道，Go 原生的 `map` 是不具备并发安全性的，如果多个协程同时读写，程序会直接崩溃。通常我们的第一反应是给它加一把 `sync.RWMutex`（读写锁），这在大多数情况下都工作得很好。但是，当并发量极高，且拥有成千上万个核心都在疯狂读取同一个 Map 时，即便是读锁（RLock）也会因为竞争 CPU 缓存线而导致性能下降。这时候，`sync.Map` 就登场了。
+
+`sync.Map` 能够实现极高性能读取的秘密，在于它采用了一种“读写分离”的架构策略。它在内部维护了两份数据：一份是只读的 Read Map，另一份是包含全量数据的 Dirty Map。这就好比一家繁忙的酒店，Read Map 是前台的“贵宾名单”，前台服务员手里都有一份副本，查看时不需要排队（无锁原子操作），速度极快；而 Dirty Map 则是后台的“总档案室”，那里数据最全，但每次进去查都要申请钥匙（加锁）。
+
+当一个读请求进来时，它会优先去查无锁的 Read Map，只有当这里查不到时，才会通过加锁的方式去 Dirty Map 里查找。更有趣的是，它内部有一个“晋升机制”：如果系统发现去 Dirty Map 查数据的次数太多了，说明这些数据很热，它就会把 Dirty Map 直接升级替换成 Read Map。这种机制保证了那些频繁访问的数据最终都会停留在无锁的快速通道里。
+
+在使用上，`sync.Map` 和普通 map 最大的区别在于它是“弱类型”的。它的 Key 和 Value 都是 `any`（即 `interface{}`）类型，这意味着我们存取时不需要指定类型，但取出来使用时必须进行类型断言。下面是一段基础的操作演示：
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+func main() {
+    var m sync.Map
+
+    // 写入数据非常简单，直接 Store 即可，不需要关心锁
+    m.Store("user_1", "Gemini")
+    m.Store("user_2", "Claude")
+
+    // 读取数据时，Load 返回两个值：value 和是否存在的布尔值
+    // 注意：取出来的 value 是 any 类型，必须断言成 string 才能当字符串用
+    if v, ok := m.Load("user_1"); ok {
+        fmt.Println("Found user:", v.(string))
+    }
+
+    // 删除也是原子操作
+    m.Delete("user_2")
+}
+```
+
+在这些 API 中，最值得我们深入理解的是 `LoadOrStore` 方法。在并发编程中，我们经常遇到“如果缓存里没有，就计算并存进去”的需求。如果我们自己写 `if !exist { map[k] = v }`，在这两行代码之间可能会有别的协程插队修改数据，从而导致数据覆盖。`LoadOrStore` 完美地解决了这个问题，它将“检查”和“写入”合并成了一个不可分割的原子动作。这在实现像正则缓存这样的功能时非常关键：
+
+```go
+// 假设这是一个正则缓存场景
+func getOrCompileRegexp(m *sync.Map, pattern string) *regexp.Regexp {
+    // LoadOrStore 尝试读取。
+    // 如果 pattern 已存在，loaded 为 true，actual 返回旧值。
+    // 如果 pattern 不存在，它会把新编译的正则存进去，loaded 为 false，actual 返回新值。
+    newRe := regexp.MustCompile(pattern)
+    actual, loaded := m.LoadOrStore(pattern, newRe)
+
+    if loaded {
+        fmt.Println("直接复用缓存里的正则对象")
+    } else {
+        fmt.Println("缓存未命中，已存入新对象")
+    }
+    
+    return actual.(*regexp.Regexp)
+}
+```
+
+最后需要格外注意的是，`sync.Map` 并不是万能药。官方文档很明确地指出，它主要是为了优化“读多写少”或者“写操作不重叠”的场景。比如我们在网关代码里看到的正则缓存，一旦编译存入后几乎全是读取，这就是 `sync.Map` 的舒适区。但如果你面临的是一个读写都很频繁，且经常更新同一个 Key 的业务场景，普通的 `map` 配合 `RWMutex` 往往会有更好的性能表现，因为 `sync.Map` 在写入时涉及到的两层 Map 维护和数据迁移反而会带来额外的开销。
