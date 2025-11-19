@@ -100,6 +100,8 @@ func (h *SnapshotHolder) Store(s *RouteSnapshot) { h.ptr.Store(s) }
 
 #### sync.Pool
 
+用来缓解 GC 压力的方式，用就拿，用完就回收，不需要 GC 进行回收。
+
 虽然标准库没有糖，但自从 Go 1.18 引入泛型后，开发者们通常会自己写一个包装器（Wrapper），让它变得像有语法糖一样**类型安全**，不用每次都写 `.(*Type)`。
 
 **这种写法在很多现代 Go 项目中很流行，可以学一下：**
@@ -139,4 +141,6 @@ var myPool = NewPool(func() *[]int {
 // 2. 使用时不需要断言了！直接拿到就是 *[]int
 mySlice := myPool.Get()
 ```
+
+#### sync.Map
 
