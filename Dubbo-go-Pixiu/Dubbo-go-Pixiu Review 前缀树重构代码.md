@@ -139,3 +139,4 @@ var myPool = NewPool(func() *[]int {
 // 2. 使用时不需要断言了！直接拿到就是 *[]int
 mySlice := myPool.Get()
 ```
+
