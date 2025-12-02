@@ -14,7 +14,7 @@ PR 链接： https://github.com/apache/dubbo-go-pixiu/pull/777
 
 社区的小伙伴重构了 Pixiu 的路由模块，遂进行读取瞻仰，希望能有所收获，
 
-### RouteSnapshot 
+### RouteSnapshot 页面设计
 
 #### 路由存储策略
 
