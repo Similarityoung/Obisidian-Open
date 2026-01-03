@@ -19,3 +19,68 @@ draft: true
 
 ### 模板
 
+这是一个结合了高性能输入输出（Fast I/O）与基础算法逻辑的完整 Go 语言模板：
+
+```go
+package main
+
+import (
+    "bufio"
+    "fmt"
+    "os"
+    "strconv"
+)
+
+// 定义全局变量，以便在函数间共享
+var (
+    in  = bufio.NewScanner(os.Stdin)
+    out = bufio.NewWriter(os.Stdout)
+)
+
+func main() {
+    // 设置按“单词”分割输入，自动跳过空格和换行
+    in.Split(bufio.ScanWords)
+    // 必须延迟调用 Flush，否则缓冲区数据不会被写出
+    defer out.Flush()
+
+    // --- 算法逻辑开始 ---
+    n := nextInt() // 读取元素个数
+    nums := make([]int, 0, n)
+
+    for i := 0; i < n; i++ {
+        nums = append(nums, nextInt())
+    }
+
+    // 使用高性能 fmt.Fprintln 输出结果
+    fmt.Fprintln(out, "读取到的数组和为:", sum(nums))
+}
+
+// 高性能读取整数
+func nextInt() int {
+    in.Scan()
+    x, _ := strconv.Atoi(in.Text())
+    return x
+}
+
+// 高性能读取字符串
+func nextString() string {
+    in.Scan()
+    return in.Text()
+}
+
+func sum(nums []int) int {
+    res := 0
+    for _, v := range nums {
+        res += v
+    }
+    return res
+}
+```
+
+### 关键要点总结：
+
+1. **输入优化**：`bufio.NewScanner` 配合 `Split(bufio.ScanWords)` 比 `fmt.Scan` 快得多，因为它避免了频繁的系统调用和反射消耗。
+2. **输出优化**：`bufio.NewWriter` 会将数据先存入内存缓冲区，最后通过 `Flush()` 一次性写出。
+3. **类型转换**：利用 `strconv.Atoi` 将读取到的文本直接转为整数。
+
+这个模板足以应对大多数算法竞赛中的超时问题。接下来，你想了解如何在这个基础上实现一个**优先队列（堆）**，还是看看如何用切片高效模拟**双端队列（Deque）**？
