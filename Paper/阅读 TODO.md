@@ -100,7 +100,7 @@ draft: true
 2. SlimRAG : 逻辑最简单，它是对GraphRAG的简化。你的工作可以在它基础上做“加法”（加回轻量级结构），非常容易写出Comparative Analysis（对比实验）。
     
 3. LogicRAG : 效果最显著（Token减少），符合“低算力”叙事。修改重点在于“如何更便宜地获得逻辑图”。
-    
+
 
 #### **B. 仅适合作为基线/相关工作的论文 (Do Not Modify)**
 
@@ -109,7 +109,7 @@ draft: true
 - KET-RAG : 它的核心是关键词二分图，这种结构比较死板，改进空间不如语义图大。
     
 - **GraphRAG (Microsoft)**: 仅仅作为对比基线（Baseline）。因为它需要全量构建社区摘要，成本极高，不仅不能修改，还要在论文中作为“反面教材”来批判其高算力需求 。
-    
+
 
 #### **C. 毕业论文最稳妥的 3 个创新方向 (Safest Innovation Directions)**
 
