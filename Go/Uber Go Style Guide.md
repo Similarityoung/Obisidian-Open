@@ -1,7 +1,14 @@
 ---
 title: Uber Go Style Guide
-tags: [style guide]
-categories: [Go]
+aliases:
+  - Uber Go 规范
+  - Uber Go Style Notes
+tags:
+  - go
+  - style-guide
+  - best-practice
+categories:
+  - Go
 date: 2025-02-01T19:49:07+08:00
 draft: true
 ---
@@ -453,4 +460,3 @@ const (
     Completed              // iota的值为2，变为3
 )
 ```
-

@@ -1,7 +1,14 @@
 ---
 title: cursor rules
-tags: 
-categories: 
+aliases:
+  - Cursor Rules
+  - RIPER-5 规范
+tags:
+  - cursor
+  - prompt-engineering
+  - rules
+categories:
+  - Tools
 date: 2025-04-19T21:51:52+08:00
 draft: false
 ---

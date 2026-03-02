@@ -1,7 +1,12 @@
 ---
 title: Dubbo 集成 Spring Security 和 OAuth2
+aliases:
+  - Dubbo Security OAuth2 集成
+  - Dubbo + Spring Security
 tags:
-  - Dubbo
+  - dubbo
+  - spring-security
+  - oauth2
 categories:
   - Dubbo
 date: 2024-12-26T21:04:46+08:00

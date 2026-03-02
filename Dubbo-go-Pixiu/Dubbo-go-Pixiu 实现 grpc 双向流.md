@@ -1,7 +1,13 @@
 ---
 title: Dubbo-go-Pixiu 实现 grpc 双向流
+aliases:
+  - Pixiu gRPC 双向流方案
+  - Dubbo-go-Pixiu gRPC Stream 设计
 tags:
-  - Dubbo
+  - dubbo-go-pixiu
+  - grpc
+  - stream
+  - gateway
 categories:
   - Gateway
 date: 2025-05-27T21:54:03+08:00

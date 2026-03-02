@@ -1,7 +1,13 @@
 ---
 title: issue： 双向流模式中 dubbo-go 无法关闭 Tcp 连接
+aliases:
+  - dubbo-go 双向流 TCP 连接未关闭
+  - Dubbo-go BiStream 连接问题
 tags:
   - issue
+  - dubbo-go
+  - grpc
+  - 双向流
 categories:
   - Dubbo
 date: 2025-01-17T17:10:25+08:00

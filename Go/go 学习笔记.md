@@ -1,7 +1,12 @@
 ---
 title: go 学习笔记
+aliases:
+  - Golang 学习笔记
+  - Go Notes
 tags:
-  - learn
+  - go
+  - 学习笔记
+  - 编程语言
 categories:
   - Go
 date: 2024-08-29T14:09:53+08:00
