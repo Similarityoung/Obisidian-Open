@@ -1,4 +1,9 @@
 .obsidian/workspace
+.obsidian/workspace.json
+.obsidian/app.json
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/styles.css
+.obsidian/themes/*/theme.css
 
 # Compiled class file
 *.class
@@ -31,10 +36,6 @@ hs_err_pid*
 
 .trash/
 
-#不同步工作区
-.obsidian/workspace.json   
-
-
-.obsidian/app.json
+# 不同步工作区（历史保留）
 
 target
