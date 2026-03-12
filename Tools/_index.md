@@ -22,6 +22,7 @@ draft: false
 - [[Tools/一些较好的文章收藏]]
 - [[Tools/cursor prompt]]
 - [[Tools/cursor rules]]
+- [[Tools/Harness Engineering：OpenAI 智能体工程总结]]
 
 ## 入口
 
