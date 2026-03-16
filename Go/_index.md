@@ -16,6 +16,7 @@ draft: false
 ## 核心笔记
 
 - [[Go/go 学习笔记]]
+- [[Go/golang 面试]]
 - [[Go/go 设计哲学]]
 - [[Go/sync 库学习]]
 - [[Go/Zinx 框架学习笔记]]
