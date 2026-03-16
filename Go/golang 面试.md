@@ -7,6 +7,7 @@ tags:
   - go
   - 面试
   - slice
+  - map
 categories:
   - Go
 date: 2026-03-16
@@ -329,3 +330,173 @@ sub := s[i:j:j]
 - `append` 是否原地写，取决于容量是否足够
 - 触发扩容后，切片可能更换底层数组，所以必须接住返回值
 - 小切片长期引用大数组，会造成大对象持续存活，必要时要主动复制
+
+## 2. map（仅记录 Go 1.24+）
+
+> [!warning]
+> 这一节只记录 Go 1.24 及以后版本的当前口径。`hmap`、`bmap`、overflow bucket、same-size grow，以及 `sync.Map` 的 `read/dirty` 双表，都属于旧版本实现细节，不再作为当前标准答案。
+
+### 2.1 先记语言层结论
+
+从语言层面看，`map` 是“无序的键值集合”，规范保证的是语义，不保证具体底层结构。也就是说，面试里如果聊运行时实现，必须主动说明版本。
+
+几个稳定结论：
+
+- `map` 的 key 类型必须是可比较（comparable）的类型
+- 未初始化的 `map` 是 `nil`
+- `nil map` 可以读、可以 `range`、可以 `delete`，但不能写
+- `make(map[K]V, hint)` 里的 `hint` 只是容量提示，不是像 slice 那样可见的 `cap`
+- `range map` 的迭代顺序未指定，不能依赖顺序
+
+例如：
+
+```go
+var m map[string]int
+
+fmt.Println(m["k"]) // 0
+fmt.Println(len(m)) // 0
+
+for k, v := range m {
+    fmt.Println(k, v)
+}
+
+m["k"] = 1 // panic: assignment to entry in nil map
+```
+
+### 2.2 Go 1.24+ 的内建 `map`：Swiss Table
+
+从 Go 1.24 开始，内建 `map` 已经切换为基于 **Swiss Table** 的新实现。它的核心定位是：
+
+- 本质上仍然是哈希表
+- 采用 **open addressing（开放寻址）**
+- 冲突不再通过 overflow bucket 链解决，而是通过 **probe sequence** 继续探测
+
+当前运行时源码中，几个核心概念可以这样记：
+
+- **slot**：一个键值对的存储位置
+- **group**：一组 `8` 个 slot，再加一个控制字
+- **control word**：`8` 字节元数据；每个字节对应一个 slot，记录空位、删除标记，或该 slot 对应 key 的部分哈希
+- **H1 / H2**：哈希值会拆成两段；高位用于定位初始 group，低 `7` 位用于组内快速筛选候选槽位
+
+面试里可以这样描述查找过程：
+
+1. 先计算 `hash(key)`。
+2. 用高位哈希定位起始 group。
+3. 通过 control word 并行检查这一组 `8` 个槽位里，哪些槽位的 `H2` 可能匹配。
+4. 对候选槽位再做真正的 key 比较。
+5. 如果当前 group 没命中，就沿着 probe sequence 去下一个 group。
+
+一句话总结：
+
+> Go 1.24+ 的 `map` 已经不是“桶 + overflow bucket”的模型，而是 Swiss Table 风格的开放寻址哈希表。
+
+### 2.3 Go 1.24+ 的冲突、删除与增长
+
+#### 冲突处理
+
+当前版本里，哈希冲突的解决方式是：
+
+> **开放寻址 + 探测序列**
+
+运行时源码里明确写的是在 groups 上做 probing，并使用 **quadratic probing** 去走后续 group，而不是旧版本那种“主桶满了挂 overflow bucket”。
+
+#### 删除
+
+Swiss Table 的查找在遇到 empty slot 时可以停止，因此删除不能总是简单地把槽位直接标空。
+
+当前实现里：
+
+- 如果直接标空不会破坏 probe 链，可以设为空
+- 否则会打上 **tombstone（墓碑标记）**
+- tombstone 的彻底清理主要发生在 grow 期间
+
+#### 增长
+
+Go 1.24+ 的增长方式也和旧版不一样。
+
+当前运行时源码说明：
+
+- 单个 table 的探测序列依赖 group 数量，所以 table 一旦扩表，必须整体重排
+- 为了支持增量式增长，顶层 map 会把数据分散到多个 table
+- 顶层通过 **directory + extendible hashing** 选择 key 属于哪张 table
+- map 初始只有一张 table
+- 在单表还没到上限前，增长通常表现为 table 容量翻倍
+- 超过单表上限后，会把 table **split** 成两张 table，directory 也可能随之增大
+
+这意味着：
+
+> Go 1.24+ 仍然支持渐进式增长，但实现手段不再是旧版 `oldbuckets + nevacuate` 那套搬桶模型，而是基于多 table 和 directory 的增长/分裂机制。
+
+#### 小 map 优化
+
+当前源码里还有一个很实用的点：如果 map 始终只有很少的元素，运行时会走 **small map optimization**，直接把数据放进单个 group 里，而不必一开始就建完整 directory。
+
+### 2.4 为什么普通 `map` 仍然不是并发安全的
+
+虽然底层实现已经变成 Swiss Table，但这个结论没有变：
+
+> **普通 `map` 依然不能在没有同步的前提下并发读写。**
+
+当前运行时实现里仍然有写标记检查。源码中如果发现并发读写或并发写，会直接触发 fatal，例如：
+
+- `concurrent map read and map write`
+- `concurrent map writes`
+
+因此，正确结论仍然是：
+
+- 多 goroutine 并发访问普通 `map` 时，需要自己加 `Mutex` 或 `RWMutex`
+- 不能因为某次运行没报错，就认为代码是安全的
+
+### 2.5 `sync.Map`：只记当前版本答案
+
+当前版本的 `sync.Map` 已经不是旧资料里常见的 `read/dirty` 双表模型了。
+
+现在源码里：
+
+```go
+type Map struct {
+    _ noCopy
+    m isync.HashTrieMap[any, any]
+}
+```
+
+也就是说，当前 `sync.Map` 底层包装的是 `internal/sync.HashTrieMap`，实现思路更接近：
+
+> **基于并发 hash-trie 的并发安全 map。**
+
+面试里这块可以这样答：
+
+- `sync.Map` 是并发安全的
+- 当前实现基于 `HashTrieMap`
+- 它不是“分段锁”
+- 它也不是旧版本的 `read/dirty` 双表
+
+官方文档仍然强调：大多数业务代码，优先考虑 **普通 `map` + 自己加锁**。`sync.Map` 更适合两类场景：
+
+- key 基本只写一次，但会被读很多次
+- 多个 goroutine 操作的 key 集基本不重叠
+
+另外，`sync.Map.Range` 也要注意：
+
+- 不是一致性快照
+- 并发修改时，某个 key 看到的是 Range 过程中的任意时刻值
+- 但同一个 key 在一次 Range 中不会被访问多次
+
+### 2.6 面试速答版
+
+- 语言层只保证 `map` 是无序键值集合，具体底层实现属于运行时细节
+- Go 1.24+ 的内建 `map` 使用 Swiss Table
+- 当前冲突处理方式是开放寻址 + probe sequence，不再是 overflow bucket
+- 组内通过 control word 一次并行筛 `8` 个 slot，再做真实 key 比较
+- 当前增长机制依赖 table grow / split 和 directory，不再是旧版 `oldbuckets` 迁移
+- 普通 `map` 仍然不是并发安全的，并发访问要自己加锁
+- 当前 `sync.Map` 基于 `HashTrieMap`，不是分段锁，也不是旧版 `read/dirty` 双表
+- 多数业务场景仍然优先 `map + Mutex/RWMutex`
+
+### 2.7 参考资料
+
+- [Go 语言规范：Map types](https://go.dev/ref/spec)
+- [Faster Go maps with Swiss Tables](https://go.dev/blog/swisstable)
+- [Go 1.24+ runtime map 源码](https://go.dev/src/internal/runtime/maps/map.go)
+- [sync.Map 源码](https://go.dev/src/sync/map.go)
+- [sync 包文档](https://pkg.go.dev/sync)
