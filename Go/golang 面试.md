@@ -1207,3 +1207,226 @@ case <-ctx.Done():
 - [context 包文档](https://pkg.go.dev/context)
 - [Go Concurrency Patterns: Context](https://go.dev/blog/context)
 - [context 源码](https://go.dev/src/context/context.go)
+
+## 5. sync：`Mutex`、`RWMutex`、`WaitGroup`
+
+> [!note]
+> 这三个原语的定位可以先一句话记住：`Mutex` 负责互斥，`RWMutex` 负责读写分离，`WaitGroup` 负责等待一组任务结束。
+
+### 5.1 先记三者的定位
+
+- `Mutex`：互斥，任何时刻只允许一个 goroutine 进入临界区
+- `RWMutex`：读写锁，允许多个读者并发，但写者独占
+- `WaitGroup`：不是锁，而是“等一组任务结束”的计数同步器
+
+官方文档也提醒：大多数同步问题不必强行用 channel，适合用锁的时候，`Mutex` 往往更直接。
+
+### 5.2 `Mutex`：什么时候用
+
+当你要保护一段**共享可变状态**，而且读写逻辑并不天然适合消息传递时，用 `Mutex` 最直接。
+
+典型场景包括：
+
+- 保护 `map`
+- 保护计数器
+- 保护对象内部字段
+- 保护缓存状态
+
+`Mutex` 的几个基础点要记住：
+
+- 零值可直接使用
+- 使用后不能复制
+- 锁不绑定某个 goroutine，A goroutine 上锁、B goroutine 解锁在语义上是允许的
+
+最常见写法：
+
+```go
+mu.Lock()
+defer mu.Unlock()
+// 修改共享状态
+```
+
+如果临界区很短、读写比例没有明显“读远多于写”，通常优先用 `Mutex`，因为它语义简单，开销也更可控。
+
+### 5.3 `RWMutex`：什么时候用
+
+`RWMutex` 是读写锁，**可同时允许多个读者持有读锁，但写锁必须独占**。
+
+它适合“读多写少”的场景，例如：
+
+- 大量查询、少量更新的配置快照
+- 热点缓存元数据
+- 路由表
+
+官方文档强调：一旦有 goroutine 调用了 `Lock` 请求写锁，后续新的 `RLock` 会被阻塞，直到写者拿到并释放锁，这是为了保证写者最终能获得锁。
+
+这也带来几个面试高频点：
+
+- `RWMutex` **不支持锁升级**，拿着读锁不能直接升级成写锁
+- 不适合递归读锁，因为等待中的写者会阻止新的读锁进入
+- 如果写操作并不少，或者临界区很短，`RWMutex` 反而可能不如 `Mutex`
+
+经验上就是：
+
+> 只有在“读特别多、写比较少”时再考虑 `RWMutex`；否则默认先用 `Mutex`。
+
+### 5.4 `WaitGroup`：什么时候用
+
+`WaitGroup` 用来等待一组 goroutine 或任务完成。
+
+它不是互斥原语，不保护共享数据，只负责“计数到 0 时唤醒等待者”。
+
+典型场景：
+
+- main goroutine 等多个 worker 结束
+- 并行批处理后统一汇总
+- 服务关闭时等待后台任务优雅退出
+
+当前文档里既给出了传统 `Add/Done/Wait` 用法，也给出了 `WaitGroup.Go` 这种直接启动任务的写法。
+
+#### 传统写法
+
+```go
+var wg sync.WaitGroup
+wg.Add(1)
+go func() {
+    defer wg.Done()
+    // work
+}()
+wg.Wait()
+```
+
+#### 当前文档推荐的 `WaitGroup.Go`
+
+```go
+var wg sync.WaitGroup
+wg.Go(func() {
+    // work
+})
+wg.Wait()
+```
+
+要点可以记成：
+
+- `WaitGroup.Go` 会启动一个新 goroutine
+- 在启动前为任务计数加一
+- 当函数返回时自动把计数减一
+- 文档明确要求：传入的 `f` **不应该 panic**
+
+### 5.5 `WaitGroup` 的易错点
+
+当前文档里有几条非常容易考：
+
+- **正数的 `Add` 应该发生在对应 goroutine 启动之前**，否则 `Wait` 可能先返回
+- 一个 `WaitGroup` 若要复用到下一轮任务，新的 `Add` 必须发生在前一轮 `Wait` 返回之后
+- `Add` 把计数加成负数会直接 `panic`
+- `WaitGroup` 使用后不能复制
+
+所以 `WaitGroup` 的重点不是“线程安全计数器”这几个字，而是：
+
+> 它只负责协调“什么时候都结束了”，不负责保护共享数据。
+
+### 5.6 `WaitGroup` 的底层要点
+
+当前实现里，`WaitGroup` 内部有一个 64 位原子状态和一个信号量字段。
+
+可以粗略理解为：
+
+- 高 32 位是任务计数器
+- 低位里有 waiter 数量和 synctest 相关标志
+- 另有一个 `sema` 字段用于阻塞和唤醒等待者
+
+也就是说，`WaitGroup` 的本质不是锁，而是：
+
+> **原子计数 + 信号量唤醒**
+
+所以它能做的是：
+
+- `Add(delta)` 改计数
+- `Done()` 等价于 `Add(-1)`
+- `Wait()` 在计数不为 `0` 时睡眠，计数归零时被唤醒
+
+### 5.7 `Mutex` 的正常模式和饥饿模式
+
+这是很经典的源码题。当前 Go 的 `Mutex` 实现明确写了：
+
+> `Mutex` 有两种模式：**normal mode** 和 **starvation mode**。
+
+#### 正常模式
+
+在正常模式下，等待者按 FIFO 排队，但**被唤醒的 waiter 并不会直接拥有锁**，它还要和“新来的 goroutine”竞争。
+
+新来的 goroutine 已经在 CPU 上运行，所以经常更有优势，能更快抢到锁。这样做的好处是吞吐量更高，因为运行中的 goroutine 不用刚唤醒又重新调度。
+
+#### 饥饿模式
+
+如果某个 waiter 等得太久，`Mutex` 会切到饥饿模式。当前实现的阈值是 **等待超过约 `1ms`**。
+
+在饥饿模式下，锁的所有权会**直接从解锁者移交给队头等待者**，新来的 goroutine 不再去和老等待者抢锁。
+
+这样吞吐量可能差一点，但能避免个别 goroutine 长时间拿不到锁。
+
+#### 为什么要两种模式切换
+
+源码注释给出的动机非常明确：
+
+- 正常模式性能更好，但在高竞争下可能导致尾部 goroutine 一直输给新来的 goroutine，从而“饿死”
+- 饥饿模式更公平，但效率较低，因为锁会直接 handoff 给等待者
+
+#### 什么时候从饥饿模式退回正常模式
+
+当被唤醒的 waiter 发现自己已经是最后一个等待者，或者它等待时间其实没那么久了，mutex 会切回正常模式。
+
+源码注释的总结就是：正常模式明显更高效，因此 `Mutex` 会在条件允许时尽快退出 starvation mode。
+
+这一段可以压成一句话：
+
+> `Mutex` 默认追求吞吐，用正常模式让“新来的”和“被唤醒的”等待者一起竞争；如果某个等待者饿太久，就切到饥饿模式，直接把锁交给等待队列前面的 goroutine。
+
+### 5.8 `RWMutex` 的底层思路
+
+`RWMutex` 内部不是“很多把锁”，而是组合了一个普通 `Mutex` 和若干计数/信号量字段来协调读者和写者。
+
+对外暴露的关键语义是：
+
+- 可有任意多个 reader 或 1 个 writer
+- 若 writer 已经在等或持有锁，新的 reader 会被挡住
+- 这样保证 writer 最终能获得锁
+
+所以它的本质更像：
+
+> 读者计数 + 写者闸门 + 唤醒协调
+
+而不是“读操作完全无成本”。这也是为什么在写并不少时，`RWMutex` 不一定比 `Mutex` 更快。
+
+### 5.9 三者怎么选
+
+最实用的经验是：
+
+- **`Mutex`**：默认首选，保护共享状态最稳
+- **`RWMutex`**：只有在读明显多、且读临界区有一定成本时才考虑
+- **`WaitGroup`**：只负责等待任务完成，不负责保护共享数据
+
+很常见的组合就是：
+
+- 用 `Mutex/RWMutex` 保护共享数据
+- 用 `WaitGroup` 等待 goroutine 退出
+
+### 5.10 面试速答版
+
+- `Mutex` 适合保护共享可变状态，是默认首选的互斥原语
+- `RWMutex` 适合读多写少场景，允许多个 reader 并发，但 writer 独占
+- 一旦 writer 在等，新的 reader 会被阻塞，以保证写者最终拿到锁
+- `WaitGroup` 不是锁，而是等待一组任务完成的计数同步器
+- `WaitGroup` 的本质可以理解为“原子计数 + 信号量唤醒”
+- `Mutex` 当前实现有 normal mode 和 starvation mode 两种
+- 正常模式偏吞吐量，饥饿模式偏公平性
+- 一般先用 `Mutex`，只有读明显远多于写时再考虑 `RWMutex`
+
+### 5.11 参考资料
+
+- [sync 包文档](https://pkg.go.dev/sync)
+- [Go Wiki: Use a sync.Mutex or a channel?](https://go.dev/wiki/MutexOrChannel)
+- [RWMutex 源码](https://go.dev/src/sync/rwmutex.go)
+- [WaitGroup 源码](https://go.dev/src/sync/waitgroup.go)
+- [internal/sync/mutex.go](https://go.dev/src/internal/sync/mutex.go)
