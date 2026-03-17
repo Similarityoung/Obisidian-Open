@@ -9,6 +9,7 @@ tags:
   - slice
   - map
   - sync
+  - channel
 categories:
   - Go
 date: 2026-03-16
@@ -669,3 +670,225 @@ actual, loaded := m.LoadOrStore(key, value)
 - `sync.Map` 读路径以原子遍历为主，写路径是节点级加锁
 - `Range` 不是一致性快照
 - 多数业务场景仍然优先 `map + Mutex/RWMutex`
+
+### 2.7 参考资料
+
+- [Go 语言规范：Map types](https://go.dev/ref/spec)
+- [Faster Go maps with Swiss Tables](https://go.dev/blog/swisstable)
+- [Go 1.24+ runtime map 源码](https://go.dev/src/internal/runtime/maps/map.go)
+- [sync.Map 源码](https://go.dev/src/sync/map.go)
+- [HashTrieMap 源码](https://go.dev/src/internal/sync/hashtriemap.go)
+- [sync 包文档](https://pkg.go.dev/sync)
+
+## 3. channel（按当前 Go 运行时口径）
+
+> [!note]
+> 这一节重点记 `hchan`、缓冲区、等待队列、阻塞条件和 `close`/`panic` 语义。面试里如果要一句话概括，可以直接说：`channel = 带锁的同步结构 + 可选环形缓冲区 + sendq/recvq 等待队列`。
+
+### 3.1 Channel 的底层结构：`hchan`
+
+Go 运行时里，channel 的核心结构叫 **`hchan`**，实现位于 `runtime/chan.go`。
+
+它的关键字段可以分成三类：
+
+#### 环形缓冲区相关
+
+- `buf`：缓冲区指针
+- `dataqsiz`：缓冲区容量
+- `qcount`：当前缓冲区里已有多少个元素
+- `sendx`：下次发送写入的位置
+- `recvx`：下次接收读取的位置
+
+#### 等待队列
+
+- `recvq`：等待接收的 goroutine 队列
+- `sendq`：等待发送的 goroutine 队列
+
+#### 状态与同步
+
+- `closed`：是否已关闭
+- `lock`：保护 channel 内部状态的锁
+
+所以可以先把一个 channel 想成：
+
+> 一个带锁的结构，里面可能有一个环形队列，还挂着两条等待链表：发送等待队列和接收等待队列。
+
+### 3.2 什么是环形队列
+
+有缓冲 channel 里的数据不是随便放的，而是放在一个**环形缓冲区**里。
+
+- `sendx` 指向下一次发送应该写到哪里
+- `recvx` 指向下一次接收应该从哪里读
+- 到了数组末尾会绕回开头，所以叫环形队列
+
+你可以把它想成一个圆形传送带：
+
+- 发送时把数据写到 `sendx`
+- 接收时从 `recvx` 取数据
+- 指针一路往前走，走到末尾就回到开头
+
+这也是 channel 能高效做 FIFO 的原因。
+
+### 3.3 `sendq` 和 `recvq` 是什么
+
+如果当前这次发送或接收**不能立刻完成**，对应 goroutine 就不会原地空转，而是会被挂到等待队列里：
+
+- `sendq`：发送方暂时发不出去时，挂在这里
+- `recvq`：接收方暂时收不到时，挂在这里
+
+这两个队列里挂的不是值本身，而是等待中的 goroutine 相关信息。
+
+所以 channel 不只是“一个缓冲区”，它还是一个**同步点**。
+
+### 3.4 无缓冲 channel 和有缓冲 channel 的区别
+
+#### 无缓冲 channel
+
+无缓冲 channel 没有中间缓冲区，发送和接收必须**直接配对**。
+
+也就是说：
+
+- 发送时，必须同时有接收方准备好
+- 接收时，必须同时有发送方准备好
+
+Go 官方 Tour 对这个行为的总结很直接：默认情况下，发送和接收会阻塞，直到另一侧准备好。
+
+所以无缓冲 channel 更像：
+
+> 一次“当面交接”。你发的时候，对方得当场接走。
+
+#### 有缓冲 channel
+
+有缓冲 channel 有环形队列，可以先把值存进去。
+
+- 只要缓冲区没满，发送就可以先成功，不必立刻等接收方
+- 只要缓冲区不空，接收就可以直接取出，不必立刻等发送方
+
+所以有缓冲 channel 更像：
+
+> 一个带容量上限的收纳箱。发送方可以先放进去，接收方稍后再拿。
+
+### 3.5 发送的几种情况
+
+#### 情况 A：有等待中的接收者
+
+如果 `recvq` 里已经有人在等接收，那么发送可以**直接把值交给那个接收者**，甚至不一定先经过缓冲区。
+
+#### 情况 B：没有接收者，但缓冲区还有空位
+
+如果是有缓冲 channel，且 `qcount < dataqsiz`，发送就把值写进环形队列，然后返回。
+
+#### 情况 C：没有接收者，且缓冲区已满
+
+这时发送不能立刻完成，发送 goroutine 会阻塞，并进入 `sendq` 等待。
+
+### 3.6 接收的几种情况
+
+#### 情况 A：有等待中的发送者
+
+如果 `sendq` 里已经有发送者在等，那么接收可以直接从那个发送者拿到值。
+
+#### 情况 B：缓冲区里有数据
+
+如果 `qcount > 0`，接收就从环形队列当前位置读出一个元素，然后返回。
+
+#### 情况 C：没有发送者，缓冲区也空
+
+这时接收不能立刻完成，接收 goroutine 会阻塞，并进入 `recvq` 等待。
+
+### 3.7 常见阻塞场景
+
+这部分面试很爱问，可以直接背结论。
+
+#### 向 `nil channel` 发送
+
+会**永久阻塞**，因为 `nil` channel 根本没有底层 `hchan` 可操作。
+
+#### 从 `nil channel` 接收
+
+也会**永久阻塞**。
+
+#### 无缓冲 channel 发送时没有接收者
+
+会阻塞，直到有接收者出现。
+
+#### 无缓冲 channel 接收时没有发送者
+
+会阻塞，直到有发送者出现。
+
+#### 有缓冲 channel 发送时缓冲区已满
+
+会阻塞，直到有接收者取走数据腾出空间。
+
+#### 有缓冲 channel 接收时缓冲区为空，且没有发送者
+
+会阻塞，直到有新发送到来。
+
+### 3.8 `close` 之后会发生什么
+
+Go 内建 `close` 的语义可以概括成：
+
+- channel 关闭后，**已经发进去但还没被接收的数据**，仍然可以继续被接收
+- 当这些数据都取完后，再继续接收，会**立刻返回元素类型的零值**
+- 用 `v, ok := <-ch` 时，这时 `ok` 会变成 `false`
+
+所以关闭 channel 不是“把里面的数据清空”，而是：
+
+> 表示不会再有新值发送进来。
+
+### 3.9 哪些操作会 panic
+
+#### 向已关闭的 channel 发送
+
+一定会 panic。
+
+#### 重复关闭一个 channel
+
+会 panic，`close` 只能成功一次。
+
+#### 关闭 `nil channel`
+
+会 panic。
+
+### 3.10 哪些操作不会 panic，但行为容易搞错
+
+#### 从已关闭的 channel 接收
+
+**不会 panic**。
+
+它会先把缓冲区剩余值读完；读完后继续接收会立刻返回零值。
+
+#### 对 `nil channel` 收发
+
+**不会 panic**，但会一直阻塞。
+
+### 3.11 一个很重要的运行时不变量
+
+当前运行时源码在 `chan.go` 里写了几个不变量，其中两个很值得记：
+
+- 对于有缓冲 channel，`qcount > 0` 意味着 `recvq` 为空
+- 对于有缓冲 channel，`qcount < dataqsiz` 意味着 `sendq` 为空
+
+这背后的直觉是：
+
+- 缓冲区里已经有数据时，接收通常可以直接从缓冲区拿，不需要排队等
+- 缓冲区还没满时，发送通常可以直接写进去，也不需要排队等
+
+### 3.12 面试速答版
+
+- channel 的底层核心结构是 `hchan`
+- `hchan` 里既有缓冲区信息，也有 `sendq` / `recvq` 两条等待队列
+- 无缓冲 channel 必须发送接收直接配对
+- 有缓冲 channel 只在“满了不能发”或“空了不能收”时阻塞
+- 向 `nil channel` 收发会永久阻塞
+- 向已关闭 channel 发送、重复关闭 channel、关闭 `nil channel` 都会 panic
+- 从已关闭 channel 接收不会 panic；数据读完后会立刻返回零值，且 `ok == false`
+
+### 3.13 参考资料
+
+- [runtime/chan.go](https://go.dev/src/runtime/chan.go)
+- [runtime/chan.go 文本版](https://go.dev/src/runtime/chan.go?m=text)
+- [A Tour of Go: Channels](https://go.dev/tour/concurrency/2)
+- [A Tour of Go: Range and Close](https://go.dev/tour/concurrency/4)
+- [Go 语言规范](https://go.dev/ref/spec)
+- [builtin 包源码](https://go.dev/src/builtin/builtin.go?m=text)
