@@ -16,6 +16,7 @@ draft: false
 ## 核心笔记
 
 - [[Dubbo/Dubbo 学习记录]]
+- [[Dubbo/dubbo-admin 解析]]
 - [[Dubbo/Dubbo api]]
 - [[Dubbo/Dubbo 集成 Spring Security 和 OAuth2]]
 - [[Dubbo/Dubbo-go-Pixiu AI Rules]]
