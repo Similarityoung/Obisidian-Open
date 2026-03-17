@@ -10,6 +10,7 @@ tags:
   - map
   - sync
   - channel
+  - context
 categories:
   - Go
 date: 2026-03-16
@@ -892,3 +893,317 @@ Go 内建 `close` 的语义可以概括成：
 - [A Tour of Go: Range and Close](https://go.dev/tour/concurrency/4)
 - [Go 语言规范](https://go.dev/ref/spec)
 - [builtin 包源码](https://go.dev/src/builtin/builtin.go?m=text)
+
+## 4. context
+
+> [!note]
+> `context` 可以先理解成“一个随请求向下传递的控制器”。它最核心的作用是传递取消信号、超时/截止时间，以及少量请求级数据。
+
+### 4.1 `context` 是干什么的
+
+Go 标准库对 `context` 的定义很明确：
+
+> `Context` 用来在 API 边界和进程之间传递 **截止时间（deadline）**、**取消信号（cancellation signal）** 和 **请求级别的值（request-scoped values）**。
+
+你可以把它先理解成：
+
+> 一个随请求向下传递的“控制器”，用来告诉下面所有 goroutine：“这活别干了”，“超时了”，“请求已经结束了”。
+
+这也是它在“协程级联退出、超时控制”里特别关键的原因。
+
+### 4.2 它为什么能控制“级联退出”
+
+因为 `context` 是**有父子关系**的。
+
+`WithCancel`、`WithDeadline`、`WithTimeout`、`WithValue` 都会基于一个父 `Context` 创建子 `Context`。而且：
+
+> 当一个 `Context` 被取消时，所有从它派生出来的子 `Context` 也会一起被取消。
+
+这就是“级联退出”的本质。
+
+比如：
+
+```text
+reqCtx
+ ├─ dbCtx
+ ├─ cacheCtx
+ └─ streamCtx
+```
+
+如果最上层 `reqCtx` 被取消：
+
+- 数据库查询应该停
+- 缓存回源应该停
+- 流式输出应该停
+
+不用你一个个手动通知，子 `Context` 会一起收到取消信号。
+
+### 4.3 `Context` 最核心的 4 个能力
+
+#### `Done() <-chan struct{}`
+
+返回一个 channel。
+
+当这个 `Context` 被取消、超时、到达 deadline 时，这个 channel 会被关闭。
+
+所以在 goroutine 里最常见的写法就是：
+
+```go
+select {
+case <-ctx.Done():
+    return
+default:
+    // 继续工作
+}
+```
+
+这就是“优雅退出”的关键。
+
+#### `Err() error`
+
+当 `Done` 关闭后，`Err()` 会告诉你为什么结束：
+
+- 是被取消了
+- 还是超时了
+
+#### `Deadline() (time.Time, bool)`
+
+返回截止时间以及是否设置过 deadline。
+
+#### `Value(key any) any`
+
+读取请求级别的数据。
+
+但官方特别强调：**只用于 request-scoped data，不要拿它传普通业务参数。**
+
+### 4.4 最常用的几个创建方式
+
+#### `context.Background()`
+
+最顶层、空白的根 `Context`。
+
+通常 `main`、初始化逻辑、顶层请求入口会从它开始。
+
+#### `context.TODO()`
+
+也是一个占位根 `Context`。
+
+常用于“这里以后要改，但现在还没决定传哪个 ctx”。
+
+#### `context.WithCancel(parent)`
+
+创建一个可手动取消的子 `Context`。
+
+返回 `(ctx, cancel)`。调用 `cancel()` 后，这个 `ctx` 和它的子 `ctx` 都会被取消。
+
+#### `context.WithTimeout(parent, d)`
+
+创建一个带超时的子 `Context`。
+
+时间一到自动取消。
+
+#### `context.WithDeadline(parent, t)`
+
+和 `WithTimeout` 类似，只是直接指定绝对时间点。
+
+#### `context.WithValue(parent, key, val)`
+
+往 `Context` 里塞请求级数据，但只能少量、谨慎地用。
+
+### 4.5 为什么总说“要记得调用 cancel”
+
+这是官方文档里非常重要的一点：
+
+> 调用 `WithCancel` / `WithTimeout` / `WithDeadline` 后拿到的 `CancelFunc`，应该在所有控制路径上被调用。否则会让子 `Context` 及其关联资源一直挂着，直到父 `Context` 被取消。`go vet` 也会检查这个问题。
+
+也就是说：
+
+```go
+ctx, cancel := context.WithTimeout(parent, 5*time.Second)
+defer cancel()
+```
+
+这个 `defer cancel()` 不只是“礼貌”，而是为了：
+
+- 释放对子 `Context` 的引用
+- 停掉相关 timer
+- 避免资源泄漏
+
+### 4.6 在 goroutine 级联退出里怎么用
+
+这是 `context` 最经典的工程用途。
+
+假设一个请求进来后，你启动了多个 goroutine：
+
+- 一个拉模型流
+- 一个写日志
+- 一个写缓存
+- 一个监听客户端断开
+
+这时最上层请求一旦结束，就应该通知所有子 goroutine 收工。
+
+标准做法就是把同一个 `ctx` 传下去，然后在每个 goroutine 里监听：
+
+```go
+for {
+    select {
+    case <-ctx.Done():
+        return
+    default:
+        // do work
+    }
+}
+```
+
+这样：
+
+- 用户取消请求
+- 上游超时
+- 服务端主动终止
+
+都会沿着 `Context` 树往下传播。
+
+### 4.7 为什么它对“大模型流式长输出”特别关键
+
+这个场景和 `context` 天然契合。
+
+#### 用户中途断开连接
+
+比如前端正在接收模型流式输出，用户突然点了“停止生成”或者浏览器断开了。
+
+这时服务端不能还继续：
+
+- 向上游模型拉 token
+- 拼接输出
+- 持续写 socket
+- 占着 goroutine 不放
+
+正确做法是：HTTP 请求上下文一取消，下面负责拉流和转发的 goroutine 都通过 `ctx.Done()` 停掉。
+
+#### 上游模型响应太慢
+
+流式接口很容易遇到：
+
+- 首 token 太慢
+- 中途卡住
+- 某一段网络阻塞
+
+这时可以用：
+
+```go
+ctx, cancel := context.WithTimeout(req.Context(), 30*time.Second)
+defer cancel()
+```
+
+超过时间直接终止整条调用链。
+
+#### 一个请求带出多个下游调用
+
+比如用户问答时，你可能同时做：
+
+- 模型流式生成
+- RAG 检索
+- 埋点
+- 审计
+- 计费
+
+它们都应该挂在同一个请求 `ctx` 上。只要请求失效，整串工作都能停。
+
+### 4.8 在网络请求拦截里为什么也关键
+
+官方文档明确说：
+
+> Incoming requests to a server should create a `Context`, and outgoing calls to servers should accept a `Context`.
+
+翻成人话：
+
+- **入站请求**：拿到请求时就应该有一个 `ctx`
+- **出站请求**：你往下游 HTTP、RPC、DB 调用时，都应该把 `ctx` 继续传下去
+
+所以在“网络请求拦截”或中间件场景里，`context` 很适合做两件事：
+
+#### 超时拦截
+
+给整条请求链加统一 timeout。
+
+如果超时，就不用等所有下游慢慢返回，直接统一取消。
+
+#### 主动取消
+
+比如网关发现：
+
+- 用户权限不够
+- 风控命中
+- 客户端断连
+- 请求已无意义
+
+直接 cancel 上层 `ctx`，下面所有基于这个 `ctx` 的调用都能跟着停。
+
+### 4.9 `context` 和 channel 的关系
+
+`ctx.Done()` 本质上就是一个 **只读 channel**：
+
+```go
+Done() <-chan struct{}
+```
+
+只要 `Context` 被取消，这个 channel 就会关闭。
+
+所以它和 channel 模型结合得非常自然：
+
+- goroutine 里 `select`
+- 业务 channel 负责传数据
+- `ctx.Done()` 负责通知退出
+
+典型结构：
+
+```go
+select {
+case msg := <-dataCh:
+    // 处理数据
+case <-ctx.Done():
+    // 收到取消信号，退出
+    return
+}
+```
+
+这就是为什么 `context` 特别适合协调一组 goroutine 的生命周期。
+
+### 4.10 `WithValue` 要谨慎
+
+这块很容易被滥用。
+
+官方源码和文档都明确强调：
+
+> `Context` values 只应该用于**跨 API 边界、跨进程传递的 request-scoped data**，不要拿来传函数的可选参数。
+
+正确例子通常是：
+
+- trace id
+- request id
+- auth token
+- 用户身份
+- 日志链路字段
+
+不推荐拿它塞：
+
+- 业务配置
+- 大对象
+- 一堆可选参数
+
+### 4.11 面试速答版
+
+- `context` 的核心作用是向下传播取消信号、超时/截止时间，以及少量请求级数据
+- `Context` 是有父子关系的，父 `Context` 取消后，子 `Context` 会级联取消
+- 最核心的 4 个能力是 `Done`、`Err`、`Deadline`、`Value`
+- 常用派生方式是 `WithCancel`、`WithTimeout`、`WithDeadline`、`WithValue`
+- `WithCancel` / `WithTimeout` / `WithDeadline` 返回的 `cancel` 应该及时调用
+- 在 goroutine 里最常见的退出方式是 `select { case <-ctx.Done(): return }`
+- `ctx.Done()` 本质上是一个只读 channel，所以它和 goroutine、channel 能天然配合
+- `WithValue` 只适合传 request-scoped data，不适合传普通业务参数
+
+### 4.12 参考资料
+
+- [context 包文档](https://pkg.go.dev/context)
+- [Go Concurrency Patterns: Context](https://go.dev/blog/context)
+- [context 源码](https://go.dev/src/context/context.go)
