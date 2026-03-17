@@ -1430,3 +1430,531 @@ wg.Wait()
 - [RWMutex 源码](https://go.dev/src/sync/rwmutex.go)
 - [WaitGroup 源码](https://go.dev/src/sync/waitgroup.go)
 - [internal/sync/mutex.go](https://go.dev/src/internal/sync/mutex.go)
+
+## 6. 并发模型设计：EventLoop、单消费者串行队列、工具调用链
+
+> [!note]
+> 这一块更偏架构与工程设计，不是死记源码。可以先把它理解成：用 goroutine 提供并发执行单元，用 channel 提供有边界的消息流和同步点，再用 context / queue / state machine 把系统收束成稳定的执行模型。
+
+### 6.1 EventLoop 模型：核心思想是什么
+
+EventLoop 的本质不是“无限 `for-select` 很高级”，而是：
+
+> **把复杂状态收敛到一个 goroutine 内串行处理，外部世界通过 channel 把事件投递进来。**
+
+这样做的最大价值是：
+
+- 避免很多共享状态加锁
+- 让状态变更有严格顺序
+- 更容易做超时、取消、背压、优雅退出
+
+你可以先把它想成一个“单线程状态机”：
+
+```go
+for {
+    select {
+    case ev := <-inputCh:
+        handle(ev)
+    case cmd := <-controlCh:
+        handleControl(cmd)
+    case <-ctx.Done():
+        return
+    }
+}
+```
+
+这里真正关键的不是 `select`，而是：
+
+- **状态只在 loop 所在 goroutine 内修改**
+- 外部协程不直接碰状态，只发消息
+
+这会让系统稳定很多。
+
+#### EventLoop 适合什么场景
+
+很适合这些场景：
+
+- 连接管理
+- 会话状态机
+- actor 风格对象
+- 单实例任务调度器
+- LLM 流式输出聚合器
+- 工具调用过程编排器
+
+凡是“**有状态 + 顺序敏感 + 并发输入很多**”的地方，EventLoop 都很合适。
+
+#### EventLoop 的一个标准结构
+
+建议脑子里固定这个骨架：
+
+```go
+type Event struct {
+    Type string
+    Data any
+}
+
+type Loop struct {
+    ctx      context.Context
+    cancel   context.CancelFunc
+    inbox    chan Event
+    control  chan Event
+    done     chan struct{}
+
+    // 仅 loop goroutine 内访问
+    state MyState
+}
+
+func (l *Loop) Run() {
+    defer close(l.done)
+
+    for {
+        select {
+        case ev := <-l.inbox:
+            l.handleEvent(ev)
+
+        case cmd := <-l.control:
+            l.handleControl(cmd)
+
+        case <-l.ctx.Done():
+            l.cleanup()
+            return
+        }
+    }
+}
+```
+
+这里有几个要点：
+
+- `inbox`：业务事件
+- `control`：控制命令，比如 `stop` / `flush` / `reload`
+- `ctx.Done()`：统一退出
+- `state`：只能在 `Run()` 这条 goroutine 里读写
+
+#### EventLoop 为什么比“到处起 goroutine + 到处加锁”更稳
+
+因为它把问题从：
+
+- 多个 goroutine 同时改状态
+- 到处竞争锁
+- 顺序难推理
+
+变成：
+
+- 多个 goroutine 可以并发产生事件
+- 但**只有一个 goroutine 改状态**
+- 所有状态变化都有明确顺序
+
+这就是典型的“**并发输入，串行落地**”。
+
+### 6.2 单消费者串行队列：为什么它特别常用
+
+这个模型其实可以看成 EventLoop 的一个特例。
+
+核心思想是：
+
+> 多个生产者并发写入 channel，一个消费者 goroutine 按顺序取出并串行处理。
+
+结构很简单：
+
+```go
+jobs := make(chan Job, 1024)
+
+go func() {
+    for job := range jobs {
+        process(job)
+    }
+}()
+```
+
+#### 这个模型适合什么问题
+
+特别适合：
+
+- 写数据库 / 写文件 / 写日志
+- 顺序敏感的状态更新
+- 去抖 / 合并更新
+- 工具调用结果统一归档
+- 会话消息顺序处理
+- 限制下游服务并发压力
+
+它的核心价值是：
+
+> **把“很多人同时做”改成“很多人投递，一个人稳定做”。**
+
+#### 为什么单消费者往往更稳定
+
+因为很多系统真正不稳定的原因，不是“处理慢”，而是：
+
+- 多线程同时写同一个对象
+- 顺序乱
+- 重复执行
+- 重入
+- 锁粒度不清晰
+- 下游被瞬时打爆
+
+单消费者模型天然避免其中一大半问题。
+
+#### 这个模型的关键设计点
+
+##### 队列必须有边界
+
+不要轻易用无限制积压思维。要明确：
+
+- 队列容量多大
+- 满了怎么办
+- 是阻塞生产者、丢弃、降级、还是转储
+
+例如：
+
+```go
+select {
+case jobs <- job:
+    return nil
+default:
+    return ErrQueueFull
+}
+```
+
+这比无脑阻塞更可控。
+
+##### 处理必须可取消
+
+消费者里最好始终带 `ctx`：
+
+```go
+for {
+    select {
+    case job := <-jobs:
+        process(job)
+    case <-ctx.Done():
+        return
+    }
+}
+```
+
+##### 失败要分级
+
+不要所有错误都 `panic` 或 `retry forever`。建议区分：
+
+- 可重试错误
+- 不可重试错误
+- 需要人工介入错误
+
+#### 单消费者的一个常见增强版：批处理
+
+如果下游适合批量写入，可以做“聚合后批量提交”：
+
+```go
+var batch []Job
+ticker := time.NewTicker(100 * time.Millisecond)
+defer ticker.Stop()
+
+for {
+    select {
+    case job := <-jobs:
+        batch = append(batch, job)
+        if len(batch) >= maxBatch {
+            flush(batch)
+            batch = batch[:0]
+        }
+
+    case <-ticker.C:
+        if len(batch) > 0 {
+            flush(batch)
+            batch = batch[:0]
+        }
+
+    case <-ctx.Done():
+        if len(batch) > 0 {
+            flush(batch)
+        }
+        return
+    }
+}
+```
+
+这个模式在日志、指标、消息发送、工具结果落库里特别常见。
+
+### 6.3 高稳定的工具自主调用链：怎么设计
+
+这里说的“工具自主调用链”，可以理解成 LLM / agent 场景里这种流程：
+
+1. 用户请求进入
+2. 模型决定是否调用工具
+3. 调一个或多个工具
+4. 汇总工具结果
+5. 继续推理 / 输出
+6. 支持取消、超时、重试、审计
+
+这个场景最怕：
+
+- 调用链失控
+- 并发过度
+- 工具互相阻塞
+- 重试风暴
+- 流式输出和工具执行抢状态
+- 用户取消后后台还在跑
+
+所以这里特别适合“**EventLoop + 有界队列 + context**”。
+
+#### 最稳的总原则：把编排做成状态机
+
+不要让模型输出一条工具指令，你就临时起一个 goroutine 到处飞。
+
+更稳的方式是把整个调用链抽象成状态机：
+
+- `Init`
+- `Planning`
+- `CallingTool`
+- `WaitingToolResult`
+- `Synthesizing`
+- `Streaming`
+- `Done`
+- `Failed`
+
+然后由一个 loop 串行推进状态。
+
+这样每一步都可观察、可审计、可恢复。
+
+#### 推荐架构：控制面串行，执行面受限并发
+
+这个模式特别重要：
+
+> **控制面（状态推进）单线程串行**
+>
+> **执行面（工具调用）允许有限并发**
+
+也就是说：
+
+- 哪一步该调哪个工具，由一个 EventLoop 决定
+- 工具真正执行，可以放到 worker goroutine
+- 但结果必须回到 loop，由 loop 统一处理
+
+结构像这样：
+
+```go
+type ToolRequest struct {
+    CallID   string
+    ToolName string
+    Args     any
+}
+
+type ToolResult struct {
+    CallID string
+    Output any
+    Err    error
+}
+
+toolReqCh := make(chan ToolRequest, 64)
+toolResCh := make(chan ToolResult, 64)
+```
+
+Loop 负责：
+
+- 发请求到 `toolReqCh`
+- 收 `toolResCh`
+- 更新状态
+- 决定下一步
+
+Worker 负责：
+
+- 接工具请求
+- 执行
+- 把结果发回 `toolResCh`
+
+这样好处是：
+
+- 状态不乱
+- 工具执行可并发
+- 编排逻辑仍然单线可推理
+
+#### 为什么工具调用链要“有界并发”
+
+因为 agent 场景很容易失控：
+
+- 模型可能连续规划多个工具
+- 某些工具很慢
+- 某些工具会级联调用外部 API
+- 重试叠加后会形成雪崩
+
+所以一定要有并发限制，比如 semaphore：
+
+```go
+sem := make(chan struct{}, 8)
+
+go func(req ToolRequest) {
+    sem <- struct{}{}
+    defer func() { <-sem }()
+
+    res := callTool(req)
+    toolResCh <- res
+}(req)
+```
+
+这能防止某一次请求把整个系统拖死。
+
+#### 必须有统一的 `context`
+
+所有东西都应该挂在同一个请求 `ctx` 下：
+
+- 模型流式输出
+- 工具调用
+- 检索
+- 审计
+- 计费
+- 回调
+
+这样用户取消、超时、风控中断时，整条链都能一起停。
+
+工具执行必须支持：
+
+```go
+select {
+case <-ctx.Done():
+    return ctx.Err()
+default:
+}
+```
+
+或者直接把 `ctx` 透传给 HTTP / RPC / DB client。
+
+#### 工具调用结果不能直接改主状态
+
+这是一个很关键的稳定性原则。
+
+错误方式是：
+
+- 每个工具 goroutine 执行完后自己去改共享状态
+
+这会很快变成竞态和锁地狱。
+
+更稳的方式是：
+
+- 工具 goroutine **只返回结果**
+- 主状态只能由 EventLoop 统一更新
+
+也就是：
+
+> worker 不拥有主状态，worker 只产出事件。
+
+这和 actor / event-sourcing 的味道很像。
+
+#### 工具调用链需要哪些保护机制
+
+##### 调用深度限制
+
+防止模型无限自调用、循环调用。
+
+比如：
+
+- 最多 `8` 步
+- 最多 `3` 次工具轮次
+- 最多 `20` 秒链路生命周期
+
+##### 幂等 ID
+
+每次工具调用要有 `CallID`，这样：
+
+- 结果能对上
+- 重试不会搞混
+- 日志 / tracing 可追踪
+
+##### 超时隔离
+
+每个工具自己的 timeout，不能全靠总超时：
+
+- 总请求 `30s`
+- 搜索工具 `5s`
+- 数据库工具 `2s`
+- 网页抓取 `8s`
+
+##### 错误分级
+
+- 软错误：模型可继续推理
+- 硬错误：必须终止链路
+- 可降级错误：跳过该工具继续
+
+##### 背压
+
+如果工具结果消费不过来，系统不能无限堆积。结果通道、任务通道都要有容量控制和溢出策略。
+
+### 6.4 一个推荐的稳定模型
+
+下面是一个很实用的工程脑图。
+
+#### 输入侧
+
+- 用户请求
+- 上游消息
+- 网络回包
+- 工具结果
+
+都统一转成事件，投进 EventLoop。
+
+#### 控制侧
+
+一个 goroutine 持有会话状态，做：
+
+- 状态推进
+- 决策下一步
+- 写审计日志
+- 发工具请求
+- 处理取消 / 超时 / stop
+
+#### 执行侧
+
+一个受限并发的 worker 池做：
+
+- 工具执行
+- 外部网络请求
+- IO 型任务
+
+#### 收尾侧
+
+统一做：
+
+- flush 未发完流
+- 取消未完成工具
+- wait worker 退出
+- 记录 final status
+
+这是非常典型、稳定性也很高的一套设计。
+
+### 6.5 常见反模式
+
+这些很容易把系统做炸：
+
+#### 共享状态到处写
+
+多个 goroutine 同时改 session / memory / plan。
+
+#### 每个工具结果都直接回调改状态
+
+最后只能靠大锁兜底，逻辑会越来越乱。
+
+#### 无界 channel
+
+队列积压无上限，内存被慢慢吃光。
+
+#### 请求取消后后台仍继续跑
+
+最常见于流式输出、HTTP client、数据库查询没接 `ctx`。
+
+#### 用 `RWMutex` 过度优化
+
+很多状态机场景其实根本不需要读写锁，单 goroutine loop 更清晰。
+
+#### 工具失败后无限重试
+
+必须有 retry budget 和 backoff。
+
+### 6.6 面试速答版
+
+- 在 Go 里构建高稳定并发模型，一个核心思路是：goroutine 负责并发执行，channel 负责事件流和同步边界，复杂状态收敛到单 goroutine 的 EventLoop 中串行推进
+- EventLoop 适合“有状态 + 顺序敏感 + 并发输入很多”的场景，本质是并发输入、串行落地
+- 单消费者串行队列是 EventLoop 的常见特例：很多生产者投递，一个消费者顺序处理
+- 工程上要特别注意队列有界、失败分级、批处理、背压和可取消性
+- 工具自主调用链推荐“控制面串行，执行面受限并发”
+- 工具 worker 只产出结果事件，不直接改主状态
+- 所有链路都应挂在统一 `ctx` 下，支持超时、取消和优雅退出
+- 稳定系统最怕的反模式是：共享状态到处写、无界队列、取消后后台还继续跑、工具无限重试
