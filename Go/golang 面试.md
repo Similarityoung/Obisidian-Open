@@ -25,7 +25,7 @@ draft: false
 - [[Go/golang 面试 - 并发编程与同步控制]]
   主题：channel、context、sync、并发模型设计。
 - [[Go/golang 面试 - 运行时 (Runtime)]]
-  主题：GMP、调度器、运行时机制。
+  主题：GMP、调度器、GC、运行时机制。
 
 ## 使用建议
 
