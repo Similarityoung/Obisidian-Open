@@ -111,7 +111,7 @@ ServiceProviderMetadata
 
 输出：`rawResult + elapsedMs`。
 
-## 4. 重点：`/service/generic/invoke` 的完整链路
+## 4. 泛化调用链路设计
 
 这是这次 PR 最核心的接口。它真正把“方法语义”和“实例目标”汇合成一次调用。
 
@@ -168,15 +168,11 @@ ServiceProviderMetadata
 - 当前服务下，这个方法是否真实存在
 - 这个方法的参数类型到底是什么
 
-因此，`ServiceProviderMetadata` 实际上就是这次泛化调用的“方法语义来源”。它决定了这次调用到底在调什么。
-
 ### 参数解码
 
 在定位到目标方法之后，后端会先校验参数个数是否和 `parameterTypes` 对齐，然后再按参数类型去解码前端传来的 JSON 参数。
 
 这里的重点不是“能接收 JSON”，而是“把 JSON 转换成 Dubbo 泛化调用能接受的参数对象”。例如基础数值类型、字符类型、数组类型，都会按目标参数类型做显式转换，而不是原样透传。
-
-所以这一步解决的是：前端传的是可编辑 JSON，后端落地的是有类型语义的调用参数。
 
 ### 调用目标解析
 
@@ -190,8 +186,6 @@ ServiceProviderMetadata
 所以这条链路本质上是在做一层映射：
 
 `控制台实例 -> 注册中心实例 -> 真实调用目标`
-
-也正因为这样，这个接口才能同时满足“用户可理解的实例选择”和“底层真实可调用”的要求。
 
 ### 执行与返回
 
@@ -218,12 +212,6 @@ ServiceProviderMetadata
 ### 给 invoke 设计 dubbo-go client 池
 
 当前实现里每次调用都会新建 dubbo-go instance/client。后续可以设计一个 client 池，把创建和复用抽出来，减少重复初始化开销。
-
-## 6. 总结
-
-这次 PR 不只是新增了 4 个接口。它真正补齐的是一条从 `ServiceProviderMetadata` 出发，经过 `Instance / RPCInstance`，最终落到真实泛化调用的服务调试链路。
-
-也正因为这条主链路已经成立，后面继续做接口清理和 client 池优化，才有了一个清晰的收敛方向。
 
 ---
 
