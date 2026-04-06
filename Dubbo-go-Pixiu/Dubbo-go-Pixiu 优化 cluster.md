@@ -2,6 +2,21 @@
 
 ## 背景：Pixiu 目前已有的并发优化
 
+```txt
+客户端
+  -> 入口层
+     accept / read / TLS / request body read
+  -> 路由层
+     path / method / header match
+  -> 过滤器层
+     auth / ratelimit / rewrite / transform / policy
+  -> 上游层
+     cluster pick -> conn pool -> dial/TLS -> RTT -> backend -> retry
+  -> 回包层
+     decode / transform / write / flush
+  -> 客户端
+```
+
 Pixiu 不是没有性能基础，而是高并发优化目前主要集中在入口、路由、连接复用和保护性治理这几层，cluster 热路径还没有收紧。
 
 ### 1. 入口层已经具备基础抗压能力
