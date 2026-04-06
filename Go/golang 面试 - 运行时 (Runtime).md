@@ -174,6 +174,8 @@ P3 -> [G6, G7, ...]
 > [!note]
 > 这一节先记主线：**Go 当前 GC 是并发三色标记-清扫（concurrent tri-color mark-sweep）**。GC 周期里主要有两个很短的 STW，一个在开始标记前做准备，一个在结束标记前做收尾；并发标记期间靠混合写屏障避免漏标。
 
+![image.png](https://img.simi.host/20260406180803883.png)
+
 ### 2.1 Go GC 的总体模型
 
 当前 Go 运行时源码把一个 GC 周期概括成 4 个阶段：
