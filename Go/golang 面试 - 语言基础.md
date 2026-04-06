@@ -339,6 +339,8 @@ sub := s[i:j:j]
 > [!warning]
 > 这一节只记录 Go 1.24 及以后版本的当前口径。`hmap`、`bmap`、overflow bucket、same-size grow，以及 `sync.Map` 的 `read/dirty` 双表，都属于旧版本实现细节，不再作为当前标准答案。
 
+![image.png](https://img.simi.host/20260406180149328.png)
+
 ### 2.1 先记语言层结论
 
 从语言层面看，`map` 是“无序的键值集合”，规范保证的是语义，不保证具体底层结构。也就是说，面试里如果聊运行时实现，必须主动说明版本。

@@ -20,6 +20,8 @@ draft: false
 
 [[Go/golang 面试]]
 
+![image.png](https://img.simi.host/20260406175947212.png)
+
 ## 1. GMP：为什么要有 P
 
 > [!note]
