@@ -5,7 +5,7 @@ tags:
 categories:
   - Dubbo
 date: 2025-11-17T23:55:10+08:00
-draft: true
+draft: false
 ---
 
 ## Review Update Route Mechanism
