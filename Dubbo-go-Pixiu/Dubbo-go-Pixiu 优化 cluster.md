@@ -1,4 +1,3 @@
-# Dubbo-go-Pixiu 优化 cluster
 
 ## 背景：Pixiu 已有的并发优化基础
 
