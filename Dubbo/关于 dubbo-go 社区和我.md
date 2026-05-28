@@ -7,7 +7,7 @@ draft: true
 ---
 ## 自我介绍
 
-杨泽睿，江苏海安人，Apache/Dubbo Committer，GitHub ID：alanxtl。北京理工大学计算机学院研一学生。专注于云原生、微服务与分布式领域，特别关注并参与 Dubbo-Go-Pixiu 的 AI 网关能力建设。
+杨泽睿，江苏海安人，Apache/Dubbo Committer，GitHub ID： Similarityoung。 南京理工大学计算机学院研二学生。专注于云原生、微服务和 agent 领域，关注并参与 Dubbo-Go-Pixiu 的 AI 网关能力建设。
 
 ## 采访
 ### 1. 请分享你是如何了解到 dubbogo 项目的？
