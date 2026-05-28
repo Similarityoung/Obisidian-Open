@@ -5,6 +5,10 @@ categories: []
 date: 2026-05-28T11:26:01+08:00
 draft: true
 ---
+## 自我介绍
+
+杨泽睿，江苏海安人，Apache/Dubbo Committer，GitHub ID：alanxtl。北京理工大学计算机学院研一学生。专注于云原生、微服务与分布式领域，特别关注并参与 Dubbo-Go-Pixiu 的 AI 网关能力建设。
+
 ## 采访
 ### 1. 请分享你是如何了解到 dubbogo 项目的？
 
@@ -32,3 +36,4 @@ draft: true
 
 ### 6. 除了 dubbogo，还有没有参与其他的开源项目呢？
 
+目前主要就是参加 dubbogo 社区的一些项目，dubbo-go，dubbo-go-pixiu，dubbo-admin，之前 seata-go 那也做过一些简单的工作。之前在做 pixiu mcp 与 nacos 适配的时候也给 nacos 提交过 pr。未来可能会在 dubbo-go 社区之外看看一些 agent 相关项目，看看有没有机会做些贡献。
