@@ -25,4 +25,4 @@ draft: false
 
 ## 模板
 
-- [[_Templates/hugo博客模板]]
+- [[template]]
