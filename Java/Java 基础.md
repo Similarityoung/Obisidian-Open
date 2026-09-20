@@ -1,5 +1,5 @@
 ---
-title: java 基础
+title: Java 基础
 tags:
   - java
 categories:
@@ -7,6 +7,8 @@ categories:
 date: 2024-10-31T18:31:07+08:00
 draft: true
 ---
+
+# Java 基础
 
 ### 参数传递
 
@@ -103,28 +105,28 @@ class PassByValueExample {
 - 简单的泛型接口
 
 ```
-interface Info<T>{        // 在接口上定义泛型  
-    public T getVar() ; // 定义抽象方法，抽象方法的返回值就是泛型类型  
-}  
-class InfoImpl<T> implements Info<T>{   // 定义泛型接口的子类  
-    private T var ;             // 定义属性  
-    public InfoImpl(T var){     // 通过构造方法设置属性内容  
-        this.setVar(var) ;    
-    }  
-    public void setVar(T var){  
-        this.var = var ;  
-    }  
-    public T getVar(){  
-        return this.var ;  
-    }  
-} 
-public class GenericsDemo24{  
-    public static void main(String arsg[]){  
-        Info<String> i = null;        // 声明接口对象  
-        i = new InfoImpl<String>("汤姆") ;  // 通过子类实例化对象  
-        System.out.println("内容：" + i.getVar()) ;  
-    }  
-}  
+interface Info<T>{        // 在接口上定义泛型
+    public T getVar() ; // 定义抽象方法，抽象方法的返回值就是泛型类型
+}
+class InfoImpl<T> implements Info<T>{   // 定义泛型接口的子类
+    private T var ;             // 定义属性
+    public InfoImpl(T var){     // 通过构造方法设置属性内容
+        this.setVar(var) ;
+    }
+    public void setVar(T var){
+        this.var = var ;
+    }
+    public T getVar(){
+        return this.var ;
+    }
+}
+public class GenericsDemo24{
+    public static void main(String arsg[]){
+        Info<String> i = null;        // 声明接口对象
+        i = new InfoImpl<String>("汤姆") ;  // 通过子类实例化对象
+        System.out.println("内容：" + i.getVar()) ;
+    }
+}
 ```
 
 ## Stream
@@ -156,8 +158,8 @@ List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); List<Stri
 **示例代码：**
 
 ```java
-List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave"); 
-String result = names.stream()                      
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Dave");
+String result = names.stream()
 	.filter(name -> name.length() > 3)
 	.collect(Collectors.joining(", ")); // 结果："Alice, Charlie, Dave"
 ```
@@ -169,15 +171,15 @@ String result = names.stream()
 - **`map`**（中间操作）: 对流中的每个元素应用一个函数，并将结果作为新的流元素。常用于转换元素。
 
     ```java
-List<Integer> lengths = names.stream()                              
-    .map(String::length)                              
+List<Integer> lengths = names.stream()
+    .map(String::length)
     .collect(Collectors.toList()); // 将名字转换为它们的长度
     ```
 
 - **`flatMap`**（中间操作）: 用于将流中的每个元素转换成一个流，然后将这些流“扁平化”为一个新的流。
 
     ```java
-List<List<String>> listOfLists = Arrays.asList(Arrays.asList("a","b"),Arrays.asList("c", "d")); 
+List<List<String>> listOfLists = Arrays.asList(Arrays.asList("a","b"),Arrays.asList("c", "d"));
 List<String> flatList = listOfLists.stream()
     .flatMap(List::stream)
     .collect(Collectors.toList()); // 结果：["a", "b", "c", "d"]
@@ -220,4 +222,3 @@ names.stream()
 int sum = Stream.of(1, 2, 3, 4)
 	.reduce(0, (a, b) -> a + b); // 结果：10
 ```
-

@@ -13,11 +13,11 @@ draft: false
 ## NewServer 为什么返回接口
 
 ```go
-/* 创建一个服务器句柄 */ 
-func NewServer (name string) ziface.IServer { 
+/* 创建一个服务器句柄 */
+func NewServer (name string) ziface.IServer {
 	s:= &Server {
 	Name :name, IPVersion:"tcp4", IP:"0.0.0.0", Port:7777, }
-	return s 
+	return s
 }
 ```
 
@@ -58,11 +58,11 @@ func applyToStrings(f ProcessFunc, inputs []string) []int {
 
 func main() {
     strings := []string{"hello", "world", "go", "programming"}
-    
+
     // 使用countBytes函数
     lengths := applyToStrings(countBytes, strings)
     fmt.Println("字符串字节数：", lengths)
-    
+
     // 使用fixedValue函数
     values := applyToStrings(fixedValue, strings)
     fmt.Println("固定值：", values)

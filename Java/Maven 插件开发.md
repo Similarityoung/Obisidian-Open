@@ -24,11 +24,11 @@ Mojo 是插件目标（Goal）的实现。`@Mojo` 提供目标名称和执行相
 | `threadSafe` | 声明实现是否支持并行构建；不会自动让代码线程安全 |
 
 ```java
-@Mojo(  
-    name = "compile",  
-    defaultPhase = LifecyclePhase.GENERATE_SOURCES,  
-    requiresDependencyResolution = ResolutionScope.COMPILE,  
-    threadSafe = true  
+@Mojo(
+    name = "compile",
+    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+    requiresDependencyResolution = ResolutionScope.COMPILE,
+    threadSafe = true
 )
 ```
 

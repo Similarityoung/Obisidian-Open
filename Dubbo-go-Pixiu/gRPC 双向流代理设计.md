@@ -1,5 +1,5 @@
 ---
-title: Dubbo-go-Pixiu 实现 grpc 双向流
+title: gRPC 双向流代理设计
 aliases:
   - Pixiu gRPC 双向流方案
   - Dubbo-go-Pixiu gRPC Stream 设计
@@ -13,6 +13,9 @@ categories:
 date: 2025-05-27T21:54:03+08:00
 draft: false
 ---
+
+# gRPC 双向流代理设计
+
 ## 1. 引言
 
 本文档旨在探讨在 `dubbo-go-pixiu` 网关中，基于现有的 `Http2ListenerService` 实现对原生 gRPC 流式传输（包括客户端流、服务端流和双向流）支持的几种设计方案。核心目标是使 Pixiu 能够接收来自 gRPC 客户端的流式请求，并利用 `grpcdynamic` 库动态地将这些请求代理到后端的 gRPC 服务。
@@ -22,13 +25,13 @@ draft: false
 在讨论具体方案之前，我们明确以下通用前提和将要使用的核心组件：
 
 - **Listener 配置**: Pixiu 网关配置了一个 `protocol_type: GRPC` 或 `protocol_type: HTTP2` 的 Listener。这将默认或间接使用 `Http2ListenerService` (位于 `pkg/listener/http2/http2_listener.go`) 来处理底层的 HTTP/2 连接。
-    
+
 - **`grpcdynamic` 库**: 用于在网关内部动态地构建和发送 gRPC 请求到后端服务，以及解析响应，无需预编译的 gRPC Stub。
-    
+
 - **方法描述符 (`desc.MethodDescriptor`)**: 网关需要有能力获取目标后端 gRPC 服务的方法描述符。这可以通过 gRPC 反射机制、在网关加载 `.proto` 文件或 `FileDescriptorSet` 文件，或通过其他配置服务来实现。
-    
+
 - **网络过滤器链 (`NetworkFilterChain`)**: 请求在 `Http2ListenerService` 接收后，会经过此处理链。我们需要在这里集成 gRPC 流处理逻辑。
-    
+
 
 ## 3. 设计方案嵌入式标准 gRPC 服务器与 `grpc.UnknownServiceHandler`
 
@@ -39,11 +42,11 @@ draft: false
 ### 3.2. 工作流程
 
 1. **Listener 初始化**:
-    
+
     - 在 `Http2ListenerService` 启动时，不再使用通用的 `h2c.NewHandler(http.Handler, *http2.Server)`，而是创建一个 `grpc.Server` 实例。
 
 2. **请求处理**:
-    
+
     - 当一个 gRPC 客户端连接到此 Listener 并发起 RPC 调用时，请求直接由这个嵌入的 `grpcServer` 处理。
 
     - 由于没有服务被显式注册到 `grpcServer` 上，所有调用都会被路由到 `UnknownServiceHandler`。
@@ -51,11 +54,11 @@ draft: false
 3. **`UnknownServiceHandler` 函数**:
 
     - **解析请求**: 从 `serverStream.Context()` 和 `grpc.MethodFromServerStream(serverStream)` 获取完整方法名（如 `/package.Service/Method`）、元数据等。
-        
+
     - **路由与服务发现**: 根据方法名中的服务部分，查询 Pixiu 路由配置，找到目标后端集群。
-        
+
     - **获取方法描述符**: 获取目标方法的 `MethodDescriptor`。
-        
+
     - **后端连接**: 获取到目标集群的 `grpc.ClientConn`。
 
 ### 3.3. 伪代码
@@ -132,7 +135,7 @@ FUNCTION getOrCreateConnection(后端地址):
     // 确定需要创建新连接
     日志("创建到 %s 的新连接", 后端地址)
     新连接 = createConnection(后端地址)
-    
+
     // 将新连接存入池中
     ConnectionPool.Set(后端地址, 新连接)
 
@@ -151,7 +154,7 @@ FUNCTION monitorConnection(连接, 地址):
     LOOP FOREVER:
         等待定时器触发
         连接状态 = 连接.获取当前状态()
-        
+
         // 如果连接已关闭或出现故障
         IF 连接状态 IS "Shutdown" OR "TransientFailure":
             日志("连接 %s 状态异常，从池中移除", 地址)
@@ -165,7 +168,7 @@ END FUNCTION
 // 5. Close - 过滤器关闭时的清理逻辑
 FUNCTION Close():
     日志("开始关闭所有后端连接...")
-    
+
     // 遍历连接池中的所有连接
     FOREACH 连接 IN ConnectionPool:
         // 安全地关闭每一个连接
@@ -269,7 +272,7 @@ END FUNCTION
 // 4. ShutDown / Close - 关闭和清理
 FUNCTION ShutDown(等待组):
     日志("开始优雅关闭...")
-    
+
     // 1. 标记为拒绝新请求
     ls.ShutdownConfig.拒绝请求 = TRUE
 
@@ -287,7 +290,7 @@ END FUNCTION
 
 FUNCTION Close():
     日志("强制关闭...")
-    
+
     // 立即停止 gRPC 服务器，中断所有连接
     ls.Server.Stop()
 

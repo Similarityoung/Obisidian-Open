@@ -1,5 +1,5 @@
 ---
-title: issue： 双向流模式中 dubbo-go 无法关闭 Tcp 连接
+title: Dubbo-go 双向流连接排查
 aliases:
   - dubbo-go 双向流 TCP 连接未关闭
   - Dubbo-go BiStream 连接问题
@@ -13,67 +13,70 @@ categories:
 date: 2025-01-17T17:10:25+08:00
 draft: false
 ---
-### [issue 关联](https://github.com/apache/dubbo-go/discussions/2756)
 
-> client: dubbo-go: v3.2.0-rc2  
-> server: dubbo v3.3.0     
+# Dubbo-go 双向流连接排查
+
+## [issue 关联](https://github.com/apache/dubbo-go/discussions/2756)
+
+> client: dubbo-go: v3.2.0-rc2
+> server: dubbo v3.3.0
 > registry: zookeeper
 
 问题 1：biStream 客户端没有关闭长连接的接口；如果服务端不调用 onCompleted，那么 Receive 会永久 block
 
 - 客户端应当具有主动 Close 能力才对，底层使用的是 grpc，而 grpc 客户端是能够主动关闭连接的。
 
-问题 2：Java 服务端调用 onCompleted() 后，biStream.Receive 返回 EOF  
+问题 2：Java 服务端调用 onCompleted() 后，biStream.Receive 返回 EOF
 
 - 但是和服务端的 TCP 连接仍然存在；我知道 dubbo client 内部是连接池，但是我测试了一下，TCP 连接似乎并没有被复用
 
-### 源码分析
+## 源码分析
 
 ```go
-func TestBiDiStream2(svc greet.GreetService) error {  
-    fmt.Printf("start to test triple bidi stream 2\n")  
-    stream, err := svc.GreetStream(context.Background())  
-    if err != nil {  
-       return err  
-    }  
-    if sendErr := stream.Send(&greet.GreetStreamRequest{Name: "stream client!"}); sendErr != nil {  
-       return err  
-    }  
-  
-    resp, err := stream.Recv()  
-    if err != nil {  
-       return err  
-    }  
-    fmt.Printf("triple bidi stream2 resp: %s\n", resp.Greeting)  
-    if err := stream.CloseRequest(); err != nil {  
-       return err  
-    }  
-    if err := stream.CloseResponse(); err != nil {  
-       return err  
-    }  
-    fmt.Printf("========>TestBiDiStream end, close stream...\n")  
-    return nil  
+func TestBiDiStream2(svc greet.GreetService) error {
+    fmt.Printf("start to test triple bidi stream 2\n")
+    stream, err := svc.GreetStream(context.Background())
+    if err != nil {
+       return err
+    }
+    if sendErr := stream.Send(&greet.GreetStreamRequest{Name: "stream client!"}); sendErr != nil {
+       return err
+    }
+
+    resp, err := stream.Recv()
+    if err != nil {
+       return err
+    }
+    fmt.Printf("triple bidi stream2 resp: %s\n", resp.Greeting)
+    if err := stream.CloseRequest(); err != nil {
+       return err
+    }
+    if err := stream.CloseResponse(); err != nil {
+       return err
+    }
+    fmt.Printf("========>TestBiDiStream end, close stream...\n")
+    return nil
 }
 ```
 
 在其中
 
 ```go
-if err := stream.CloseRequest(); err != nil {  
-       return err  
-    }  
-    if err := stream.CloseResponse(); err != nil {  
-       return err  
-    } 
+if err := stream.CloseRequest(); err != nil {
+       return err
+    }
+    if err := stream.CloseResponse(); err != nil {
+       return err
+    }
 ```
 
 1. 客户端调用 `CloseRequest()` 关闭请求部分，表示不再发送更多的请求。
-    
+
 2. 客户端调用 `CloseResponse()` 关闭响应部分，表示不再接收更多的响应。
 
 下面从`closeRequest( )`开始进行源码分析
 
-### closeRequest( )
+## closeRequest( )
 
  `CloseRequest` 方法的作用：**关闭流的发送端**。在双向流通信中，流的发送端用于客户端向服务器发送数据，关闭发送端意味着客户端不再发送更多的数据。
 
@@ -90,8 +93,8 @@ func (b *BidiStreamForClient) CloseRequest() error {
 步入 ` b.conn.CloseRequest()`
 
 ```go
-func (cc *errorTranslatingClientConn) CloseRequest() error {  
-    return cc.fromWire(cc.StreamingClientConn.CloseRequest())  
+func (cc *errorTranslatingClientConn) CloseRequest() error {
+    return cc.fromWire(cc.StreamingClientConn.CloseRequest())
 }
 ```
 
@@ -106,13 +109,13 @@ func (cc *errorTranslatingClientConn) CloseRequest() error {
 接着步入就来到了
 
 ```go
-func (cc *grpcClientConn) CloseRequest() error {  
-    return cc.duplexCall.CloseWrite()  
+func (cc *grpcClientConn) CloseRequest() error {
+    return cc.duplexCall.CloseWrite()
 }
 ```
 
 开始观察核心代码 `duplexCall` (双工通信)
-#### duplex_http_call.go
+### duplex_http_call.go
 
 ```go
 package triple_protocol
@@ -322,21 +325,21 @@ func cloneURL(oldURL *url.URL) *url.URL {
 分析方法 `Write(data []byte)` 来研究发送的实现
 
 ```go
-func (d *duplexHTTPCall) Write(data []byte) (int, error) {  
-    // ensure stream has been initialized  
-    d.ensureRequestMade()  
-    // Before we send any data, check if the context has been canceled.  
-    if err := d.ctx.Err(); err != nil {  
-       d.SetError(err)  
-       return 0, wrapIfContextError(err)  
-    }  
-    // It's safe to write to this side of the pipe while net/http concurrently  
-    // reads from the other side.    
-    bytesWritten, err := d.requestBodyWriter.Write(data)  
-    if err != nil && errors.Is(err, io.ErrClosedPipe) {  
-	    return bytesWritten, io.EOF  
-    }  
-    return bytesWritten, err  
+func (d *duplexHTTPCall) Write(data []byte) (int, error) {
+    // ensure stream has been initialized
+    d.ensureRequestMade()
+    // Before we send any data, check if the context has been canceled.
+    if err := d.ctx.Err(); err != nil {
+       d.SetError(err)
+       return 0, wrapIfContextError(err)
+    }
+    // It's safe to write to this side of the pipe while net/http concurrently
+    // reads from the other side.
+    bytesWritten, err := d.requestBodyWriter.Write(data)
+    if err != nil && errors.Is(err, io.ErrClosedPipe) {
+	    return bytesWritten, io.EOF
+    }
+    return bytesWritten, err
 }
 ```
 
@@ -344,14 +347,14 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 
 而 `d.ensureRequestMade()` 是 `httpClient` 用来读数据并发送请求的，这段代码在写数据前是因为， `pipe` 是无缓冲的通道，所以在读数据时会阻塞直到写入数据。
 
-##### 数据流动过程
-###### **步骤 1：初始化**
+#### 数据流动过程
+##### **步骤 1：初始化**
 
 - 创建 `duplexHTTPCall` 实例，初始化 `io.Pipe`。
 
 - 将 `d.request.Body` 设置为 `pipeReader`。
 
-###### **步骤 2：调用 `ensureRequestMade`**
+##### **步骤 2：调用 `ensureRequestMade`**
 
 - 在 `Write` 方法中，首先调用 `d.ensureRequestMade()`。
 
@@ -359,35 +362,35 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 
 - `d.httpClient.Do(d.request)` 开始执行，并尝试从 `pipeReader` 读取数据。
 
-###### **步骤 3：写入数据**
+##### **步骤 3：写入数据**
 
 - 客户端调用 `Write` 方法，向 `pipeWriter` 写入数据。
-    
+
 - 写入的数据会立即被 `pipeReader` 读取，并作为请求体发送到服务器。
-    
-###### **步骤 4：HTTP 客户端发送请求**
+
+##### **步骤 4：HTTP 客户端发送请求**
 
 - HTTP 客户端从 `pipeReader` 读取数据，并将其封装到 HTTP 请求体中。
-    
+
 - 请求被发送到服务器。
-    
-###### **步骤 5：服务器处理请求**
+
+##### **步骤 5：服务器处理请求**
 
 - 服务器从请求体中读取客户端发送的数据。
-    
+
 - 服务器处理数据后，通过响应体返回结果。
-    
-###### **步骤 6：客户端读取响应**
+
+##### **步骤 6：客户端读取响应**
 
 - 客户端通过 `Read` 方法从响应体中读取服务器返回的数据。
 
-#### io.Pipe()
+### io.Pipe()
 
 `io.Pipe()` 创建同步、无内部缓冲的内存管道。读端等待数据，写端等待对应数据被读取。这里把 `pipeReader` 作为 HTTP 请求体，再通过 `pipeWriter` 持续提供流数据。
 
 因此，先让 `ensureRequestMade()` 启动发送，再向管道写入，否则可能等不到读取方。
 
-### 双向流通信的核心机制与资源管理要点解析
+## 双向流通信的核心机制与资源管理要点解析
 
 一、双向流通信的核心机制 在HTTP/2协议下，双向流的本质是通过`d.httpClient.Do(d.request)`建立持久化连接实现的。该接口会创建底层TCP连接，同时维护请求/响应双工通道，其中：
 
@@ -398,18 +401,18 @@ func (d *duplexHTTPCall) Write(data []byte) (int, error) {
 - CloseRequest()方法的核心职责：
 
 	- 关闭管道写入端：`d.requestBodyWriter.Close()`
-    
+
     - 向服务端发送流结束信号
-    
+
     - 触发服务端onCompleted回调（Java示例中的响应终止处理）
-    
+
 你可以在 java 的 server 端进行如下操作：
 
 ```java
-@Override  
-public void onCompleted() {  
-      responseObserver.onCompleted();  
-      System.out.println("biStream completed");  
+@Override
+public void onCompleted() {
+      responseObserver.onCompleted();
+      System.out.println("biStream completed");
 }
 ```
 1. 响应端管理：
@@ -421,43 +424,43 @@ public void onCompleted() {
 二、客户端关闭流程的测试示例：
 
 ```go
-func TestBiDiStream2(svc greet.GreetService) error {  
-    // 初始化流通道  
-    stream, err := svc.GreetStream(context.Background())  
-    if err != nil {  
-        return err  
-    }  
-​  
-    // 异步响应处理协程  
-    waitc := make(chan struct{})  
-    go func() {  
-        defer close(waitc)  
-        for {  
-            in, err := stream.Recv()  
-            if err != nil { // 捕获EOF或其他错误  
-                fmt.Printf("Recv terminal: %v\n", err)  
-                return  
-            }  
-            fmt.Printf("Response: %s\n", in.Greeting)  
-        }  
-    }()  
-​  
-    // 同步发送阶段  
-    for i := 0; i < 5; i++ {  
-        if err := stream.Send(&greet.GreetStreamRequest{  
-            Name: "stream client!"  
-        }); err != nil {  
-            return err  
-        }  
-    }  
-​  
-    // 优雅关闭流程  
-    stream.CloseRequest()  // 主动终止发送  
-    <-waitc               // 等待响应处理完成  
-    defer stream.CloseResponse() // 最终资源清理  
-​  
-    fmt.Println("Stream closed properly")  
-    return nil  
+func TestBiDiStream2(svc greet.GreetService) error {
+    // 初始化流通道
+    stream, err := svc.GreetStream(context.Background())
+    if err != nil {
+        return err
+    }
+​
+    // 异步响应处理协程
+    waitc := make(chan struct{})
+    go func() {
+        defer close(waitc)
+        for {
+            in, err := stream.Recv()
+            if err != nil { // 捕获EOF或其他错误
+                fmt.Printf("Recv terminal: %v\n", err)
+                return
+            }
+            fmt.Printf("Response: %s\n", in.Greeting)
+        }
+    }()
+​
+    // 同步发送阶段
+    for i := 0; i < 5; i++ {
+        if err := stream.Send(&greet.GreetStreamRequest{
+            Name: "stream client!"
+        }); err != nil {
+            return err
+        }
+    }
+​
+    // 优雅关闭流程
+    stream.CloseRequest()  // 主动终止发送
+    <-waitc               // 等待响应处理完成
+    defer stream.CloseResponse() // 最终资源清理
+​
+    fmt.Println("Stream closed properly")
+    return nil
 }
 ```
 
@@ -466,44 +469,44 @@ func TestBiDiStream2(svc greet.GreetService) error {
 为什么需要stream.CloseResponse()，我在[相关文章](https://blog.csdn.net/cljdsc/article/details/125027270)找到了如下解释
 
 > 为什么需要response.Body.Close()
-> 
+>
 > **resp.Body.Close() 做了什么？**
-> 
+>
 > 如果返回值`res`的主体未关闭，`client` 下层的 `RoundTripper` 接口（一般为 `Transport` 类型）可能无法重用 `res` 主体下层保持的 TCP 连接去执行之后的请求。所以它的作用就是用来确保body读干净，释放出该连接
-> 
+>
 > **为什么这样做？**
-> 
+>
 > 连接复用
-> 
+>
 > **如果不这么做会发生什么？**
-> 
+>
 > 第一则是：无法重新使用与服务器的持久 TCP 连接来进行后续的“保持活动”请求，在下次发起HTTP请求的时候，就会重新建立TCP连接
-> 
+>
 > 第二如果不关闭当前请求，readLoop 和 writeLoop 两个 goroutine 在 写入请求并获取 response 返回后，并没有跳出 for 循环，而继续阻塞在下一次 for 循环的 select 语句里面，goroutine 一直无法被回收，cpu 和 memory 全部打满。发生goroutine内存泄漏
-> 
+>
 > 第三如果请求完成后，对端关闭了连接（对端的HTTP服务器向我发送了FIN），如果这边不调用`response.Body.Close()`，那么可以看到与这个请求相关的TCP连接的状态一直处于`CLOSE_WAIT`状态，态，不会被系统回收，则文件描述符不会被释放，出现资源泄漏。
 
-### 关于客户端管理与TCP连接复用的澄清说明
+## 关于客户端管理与TCP连接复用的澄清说明
 
 一、命名误解与技术本质
 
 1. **客户端创建的核心逻辑** `NewGreetService` 的命名虽可能引起误解，但其技术本质是**创建客户端实例**而非直接建立TCP连接。通过源码分析可见：
 
 ```go
-svc, err := greet.NewGreetService(cli)    
-// 实际调用链：    
-// => newClientManager(url)    
-//    => 初始化 transport (http.RoundTripper) 
-```    
+svc, err := greet.NewGreetService(cli)
+// 实际调用链：
+// => newClientManager(url)
+//    => 初始化 transport (http.RoundTripper)
+```
 
 每个客户端实例内部维护独立的**连接池（Transport）**，负责管理底层TCP连接的复用。
 
 2. **与gRPC设计的对标性** gRPC的经典实现方式与当前方案高度一致：
 
 ```go
-conn := grpc.NewClient(addr)          // 物理连接管理    
-    client := pb.NewRouteGuideClient(conn) // 逻辑客户端    
-    runRouteChat(client)                  // 复用连接  
+conn := grpc.NewClient(addr)          // 物理连接管理
+    client := pb.NewRouteGuideClient(conn) // 逻辑客户端
+    runRouteChat(client)                  // 复用连接
 ```
 
 二者的核心差异仅体现在**API抽象层级**，而非连接管理机制。
@@ -511,21 +514,21 @@ conn := grpc.NewClient(addr)          // 物理连接管理  
 二、连接复用的实现机制
 
 1. **Transport 的核心作用**
-    
+
     - 作为 `http.RoundTripper` 接口实现，管理HTTP/2连接池
-    
+
     - **自动复用空闲TCP连接**，减少三次握手开销
-    
+
     - 通过 `MaxIdleConns` 等参数控制连接池行为
-    
+
 2. **客户端生命周期管理**
 
 ```go
-// 正确用法：单例客户端复用    
-    client := NewGreetService()    
-    for i := 0; i < 10; i++ {    
-        runBiDiStream(client) // 复用同一Transport    
-    }  
+// 正确用法：单例客户端复用
+    client := NewGreetService()
+    for i := 0; i < 10; i++ {
+        runBiDiStream(client) // 复用同一Transport
+    }
 ```
 
   **关键准则**：避免重复创建客户端实例，防止产生冗余连接池。

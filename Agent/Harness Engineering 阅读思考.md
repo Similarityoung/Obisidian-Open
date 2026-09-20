@@ -1,5 +1,5 @@
 ---
-title: Harness Engineering：OpenAI 智能体工程总结
+title: Harness Engineering 阅读思考
 aliases:
   - Harness Engineering
   - OpenAI Harness Engineering
@@ -16,7 +16,7 @@ draft: false
 source: https://openai.com/zh-Hans-CN/index/harness-engineering/
 ---
 
-# Harness Engineering：OpenAI 智能体工程总结
+# Harness Engineering 阅读思考
 
 > [!abstract]
 > 这篇文章真正讨论的重点，不是“AI 会不会写代码”，而是“怎样搭建一个让智能体持续稳定地产出代码、测试、文档与修复的工程系统”。

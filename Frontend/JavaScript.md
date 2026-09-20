@@ -12,6 +12,9 @@ categories:
 date: 2024-08-07T22:17:44+08:00
 draft: false
 ---
+
+# JavaScript
+
 ## JavaScript 教程
 
 在 HTML 中，可以通过 `<script>` 内联 JavaScript，也可以用 `src` 引入脚本文件。
@@ -441,9 +444,9 @@ bind() 方法**不会调用函数**，但是可以改变函数内部的 this 指
 参数：
 
 - 第一个参数：在 fn1 函数运行时，指定 fn1 函数的this 指向。如果不需要改变 this 指向，则传 null。
-  
+
 - 其他参数：fn1 函数的实参。
-  
+
 
 解释：它不会调用 fn1 函数，但会返回 由指定this 和指定实参的**原函数拷贝**。可以看出， bind() 方法是有返回值的。
 
@@ -469,11 +472,11 @@ js 的类并不是对象，它是 js ==对象的模板==。
 
 > [!NOTE] 简介
 > "I will call back later!"
-> 
+>
 > 回调 (callback) 是作为==参数传递给另一个函数的函数==
-> 
+>
 > 这种技术允许函数调用另一个函数
-> 
+>
 > 回调函数可以在另一个函数完成后运行
 
 **==将函数作为入参，只要函数名称即可，不用加其他任何东西==**
@@ -520,9 +523,9 @@ getFile(myDisplayer);
 #### JavaScript Promise
 
 > [!NOTE] 简介
-> 
+>
 > "I Promise a Result!"
-> 
+>
 >"Producing code（生产代码）" 是需要一些时间的代码
 >
 >"Consuming code（消费代码）" 是必须等待结果的代码
@@ -548,11 +551,11 @@ myPromise.then(
 
 #### JavaScript Async
 
-> [!NOTE] 
+> [!NOTE]
 > "async and await make promises easier to write"
-> 
+>
 > _async_ 使函数返回 Promise
-> 
+>
 > _await_ 使函数等待 Promise
 
 函数前的关键字 `async` 使函数返回 promise：
@@ -593,16 +596,16 @@ async function myFunction() {
 
 ```js
 function animateElement() {
-  var animatedElement = document.getElementById("animate");   
+  var animatedElement = document.getElementById("animate");
   var position = 0;
   var intervalId = setInterval(updatePosition, 5);
   function updatePosition() {
     if (position == 350) {
       clearInterval(intervalId);
     } else {
-      position++; 
-      animatedElement.style.top = position + "px"; 
-      animatedElement.style.left = position + "px"; 
+      position++;
+      animatedElement.style.top = position + "px";
+      animatedElement.style.left = position + "px";
     }
   }
 }
@@ -643,7 +646,7 @@ button.addEventListener("mouseout", myThirdFunction);
 ## AJAX 简介
 
 > AJAX 是开发者的梦想，因为您能够：
-> 
+>
 > - 不刷新页面更新网页
 > - 在页面加载后从服务器请求数据
 > - 在页面加载后从服务器接收数据
@@ -703,15 +706,15 @@ xhttp.send();
 ### JSON 简介
 
 > **JSON: ==J==ava==S==cript ==O==bject ==N==otation（JavaScript 对象标记法）。**
-> 
+>
 > **JSON 是一种存储和交换数据的语法。**
-> 
+>
 > **JSON 是通过 JavaScript 对象标记法书写的文本。**
 
 通过 `JSON.parse()` 解析数据，这些数据会成为 JavaScript 对象。
 
 通过 `JSON.stringify()` 把 JavaScript 对象转换为字符串。
 
-##  jQuery DOM 选择器
+## jQuery DOM 选择器
 
 都有 JavaScript 语法与其对应，以后再说

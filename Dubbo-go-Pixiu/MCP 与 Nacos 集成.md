@@ -1,5 +1,5 @@
 ---
-title: Dubbo-go-Pixiu MCP 与 Nacos 集成
+title: MCP 与 Nacos 集成
 tags:
   - Dubbo
 categories:
@@ -8,6 +8,9 @@ categories:
 date: 2025-08-27T19:49:13+08:00
 draft: false
 ---
+
+# MCP 与 Nacos 集成
+
 ## 概述
 
 本文档描述了 Dubbo-go-pixiu 中 MCP Server 与 Nacos 集成的设计方案，实现动态配置管理和服务发现能力。该方案通过扩展 pkg/remote 模块提供统一的远程通信抽象，并在 pkg/adapter 层创建 mcpserver 适配器来实现配置的动态转换和生命周期管理。
@@ -64,7 +67,7 @@ participant Pixiu as Pixiu 网关
 
 participant Nacos
 
-  
+
 
 loop 定期服务发现
 
@@ -74,21 +77,21 @@ Nacos-->>Pixiu: 返回服务ID列表
 
 end
 
-  
+
 
 Note over Pixiu: 为每个新发现的服务启动一个独立的监听流程
 
-  
+
 
 Pixiu->>Nacos: 2. 监听服务版本<br>(Listen to `{serviceId}-mcp-versions.json`)
 
 Nacos-->>Pixiu: 推送版本更新 (例如: `latest: v1.0.0`)
 
-  
+
 
 Note over Pixiu: 收到新版本后，开始监听该版本的具体规格文件
 
-  
+
 
 Pixiu->>Nacos: 3. 监听服务与工具规格<br>(Listen to `...-v1.0.0-mcp-server.json`)<br>(Listen to `...-v1.0.0-mcp-tools.json`)
 
@@ -96,25 +99,25 @@ Nacos-->>Pixiu: 推送服务规格 (Service Spec)
 
 Note over Pixiu: 从服务规格中解析出后端服务名 (`serviceRef`)
 
-  
+
 
 Pixiu->>Nacos: 4. 订阅后端服务实例<br>(Subscribe to `serviceRef`)
 
 Nacos-->>Pixiu: 推送实例列表 (e.g., [10.0.0.1, 10.0.0.2])
 
-  
+
 
 Nacos-->>Pixiu: 推送工具规格 (Tool Spec)
 
-  
+
 
 Note over Pixiu: 当版本、服务规格、工具规格、实例列表<br>这四份信息都就绪后...
 
-  
+
 
 Pixiu->>Pixiu: 5. 聚合生成完整的配置快照
 
-  
+
 
 Note over Pixiu: 快照已生成，准备在网关内部应用
 
@@ -122,13 +125,13 @@ Note over Pixiu: 快照已生成，准备在网关内部应用
 
 ## 设计方案
 
-### 1. 统一远程客户端抽象 (`pkg/remote`)  
+### 1. 统一远程客户端抽象 (`pkg/remote`)
 
 本层负责**屏蔽底层具体远程存储（如 Nacos、etcd）的实现差异**，为上层提供一个稳定、统一的交互接口。
 
 #### 1.1 核心接口定义
 
-我们将定义一个核心的 `RemoteClient` 接口，它通过组合另外两个接口来获得所需的能力。  
+我们将定义一个核心的 `RemoteClient` 接口，它通过组合另外两个接口来获得所需的能力。
 
 * **`RemoteClient` 接口**:
 
@@ -234,7 +237,7 @@ Note over Pixiu: 快照已生成，准备在网关内部应用
 
 * **结构**: `ConfigConverter` 是一个**无状态**的工具类结构体，只包含方法。
 
-##### 职责: 
+##### 职责:
 
 负责数据模型的转换。
 

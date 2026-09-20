@@ -1,5 +1,5 @@
 ---
-title: dubbo-admin 泛化调用链路梳理
+title: Dubbo Admin 泛化调用链路
 aliases:
   - dubbo-admin 泛化调用实现
   - Dubbo Admin 泛化调用链路
@@ -13,7 +13,7 @@ date: 2026-03-29
 draft: false
 ---
 
-# dubbo-admin 泛化调用链路梳理
+# Dubbo Admin 泛化调用链路
 
 > [!abstract]
 > 这次 PR 的核心不是单独新增 4 个接口，而是补齐 Dubbo Admin 的服务调试后端链路。它从 `ServiceProviderMetadata` 出发，把“方法语义”和“实例调用目标”汇合到 `/service/generic/invoke`。

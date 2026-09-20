@@ -1,5 +1,5 @@
 ---
-title: Dubbo ai 方向路线
+title: AI 网关演进设想
 tags:
   - Dubbo
 categories:
@@ -7,7 +7,8 @@ categories:
 date: 2025-04-04T19:39:21+08:00
 draft: false
 ---
-# Pixiu AI 演进
+
+# AI 网关演进设想
 
 ## AI 应用架构新范式
 
@@ -23,7 +24,7 @@ draft: false
 4. 因为MCP网关处可能维护了很多MCP信息，可以借助LLM缩小MCP范围，减少Token消耗，所以向AI网关（云原生API网关）发请求和LLM交互。（这一步可选）
 5. MCP网关将确定好范围的MCPServer及MCP Tool的信息List返回给AIAgent。
 6. AI Agent将用户的请求信息及从MCP网关拿到的所有MCP信息通过AI网关发送给LLM。
-7. 经过LLM推理后，返回解决问题的唯一MCP Server和MCP Tool信息。
+7. LLM 根据当前任务选择本轮需要调用的 MCP Server 和 MCP Tool。
 8. AI Agent拿到确定的MCP Server和MCP Tool信息后通过MCP网关对该MCP Tool做请求。
 
 实际生产中 ③-⑧ 步会多次循环交互
@@ -32,9 +33,9 @@ draft: false
 
 > [!注释]
 > 南北走向流量为 client-server 的流量
-> 
+>
 > 东西走向流量为 server-sever 流量
-> 
+>
 > Web Application Firewall，Web应用防火墙，简称WAF
 
 传统的流量网关和 API 网关集成的微服务网关（SpringCloud Gateway）注重于同 k8s 中的 Pod 进行交互，有东西走向流量和南北走向流量。
@@ -83,7 +84,7 @@ sequenceDiagram
     %% 2. 客户端请求
     Note over Client,Server: 客户端请求 (Client Request)
     Client->>Server: POST ... request ... (Header: Mcp-Session-Id: 1868a90c...)
-    
+
     alt 单个 HTTP 响应 (Single HTTP Response)
         Server-->>Client: ... response ...
     else 服务器打开 SSE 流 (Server Opens SSE Stream)

@@ -1,5 +1,5 @@
 ---
-title: go 学习笔记
+title: Go 语言学习笔记
 aliases:
   - Golang 学习笔记
   - Go Notes
@@ -12,26 +12,29 @@ categories:
 date: 2024-08-29T14:09:53+08:00
 draft: false
 ---
-### go 学习路线
+
+# Go 语言学习笔记
+
+## go 学习路线
 
 ![image.png](https://img.simi.host/20241208220701.png)
 
-### GoLang语法新奇
+## GoLang语法新奇
 
 golang 中的表达式，加";"与不加都可以，建议不加
 
 另外函数方法中的{}，符合 java 中的标准，需要放在函数名后面
 
-#### 变量声明
+### 变量声明
 
 ```go
-package main  
-  
-import "fmt"  
-  
-/*  
-四种变量声明方式  
-*/  
+package main
+
+import "fmt"
+
+/*
+四种变量声明方式
+*/
 
 
 var x, y int
@@ -43,34 +46,34 @@ a int
 b bool
 
 )
-  
-func main() {  
-    //声明变量 默认为 0    var count int  
-    fmt.Println("count = ", count)  
-  
-    // 方法二 声明变量，并初始化  
-    var score int = 100  
-    fmt.Println("score = ", score)  
-  
-    //方法三 （不推荐） 初始化省去数据类型，通过值来自动匹配数据类型  
-    var value = 100  
-    fmt.Println("value = ", value)  
-  
-    // 方法四：（最常用的方法）,只能用在函数体内  
-    temperature := 100  
-    fmt.Println("temperature = ", temperature)  
-    fmt.Printf("type of temperature = %T", temperature)  
+
+func main() {
+    //声明变量 默认为 0    var count int
+    fmt.Println("count = ", count)
+
+    // 方法二 声明变量，并初始化
+    var score int = 100
+    fmt.Println("score = ", score)
+
+    //方法三 （不推荐） 初始化省去数据类型，通过值来自动匹配数据类型
+    var value = 100
+    fmt.Println("value = ", value)
+
+    // 方法四：（最常用的方法）,只能用在函数体内
+    temperature := 100
+    fmt.Println("temperature = ", temperature)
+    fmt.Printf("type of temperature = %T", temperature)
 }
 ```
 
-#### 常量声明
+### 常量声明
 
 ```go
 package main
-import "unsafe" 
-const ( a = "abc" b = len(a) c = unsafe.Sizeof(a) ) 
+import "unsafe"
+const ( a = "abc" b = len(a) c = unsafe.Sizeof(a) )
 func main(){
-println(a, b, c) 
+println(a, b, c)
 }
 ```
 
@@ -88,77 +91,77 @@ Elderberry, Fig
 )
 ```
 
-#### 函数
+### 函数
 
-##### 返回值
+#### 返回值
 
 ```go
-package main  
-  
-import "fmt"  
-  
-func printMessageWithValue(message string, value int) int {  
-    fmt.Println("message:", message, "value:", value)  
-  
-    result := 1024  
-  
-    return result  
-}  
-  
-// 可以返回多个返回值，匿名  
-func calculateDoubleValues(message string, value int) (int, int) {  
-    fmt.Println("message:", message, "value:", value)  
-  
-    baseValue := 1024  
-  
-    return baseValue, baseValue  
-}  
-  
-// 可以返回多个返回值，有形参名称  
-func calculateSingleAndDouble(message string, value int) (singleValue int, doubleValue int) {  
-    fmt.Println("message:", message, "value:", value)  
-  
-    baseResult := 1024  
-  
-    singleValue = baseResult  
-    doubleValue = baseResult * 2  
-  
-    return  
-}  
-  
-// 形参名称可以一起定义，都有默认值 0func getDefaultValues() (firstValue, secondValue int) {  
-    firstValue = 1  
-    secondValue = 2  
-    return  
-}  
-  
-func main() {  
-  
-    result := printMessageWithValue("hello", 100)  
-    fmt.Println(result)  
-  
-    returnValue1, returnValue2 := calculateDoubleValues("hello", 100)  
-    fmt.Println("returnValue1:", returnValue1, "returnValue2:", returnValue2)  
-  
-    returnValue1, returnValue2 = calculateSingleAndDouble("hello", 100)  
-    fmt.Println("returnValue1:", returnValue1, "returnValue2:", returnValue2)  
+package main
+
+import "fmt"
+
+func printMessageWithValue(message string, value int) int {
+    fmt.Println("message:", message, "value:", value)
+
+    result := 1024
+
+    return result
+}
+
+// 可以返回多个返回值，匿名
+func calculateDoubleValues(message string, value int) (int, int) {
+    fmt.Println("message:", message, "value:", value)
+
+    baseValue := 1024
+
+    return baseValue, baseValue
+}
+
+// 可以返回多个返回值，有形参名称
+func calculateSingleAndDouble(message string, value int) (singleValue int, doubleValue int) {
+    fmt.Println("message:", message, "value:", value)
+
+    baseResult := 1024
+
+    singleValue = baseResult
+    doubleValue = baseResult * 2
+
+    return
+}
+
+// 形参名称可以一起定义，都有默认值 0func getDefaultValues() (firstValue, secondValue int) {
+    firstValue = 1
+    secondValue = 2
+    return
+}
+
+func main() {
+
+    result := printMessageWithValue("hello", 100)
+    fmt.Println(result)
+
+    returnValue1, returnValue2 := calculateDoubleValues("hello", 100)
+    fmt.Println("returnValue1:", returnValue1, "returnValue2:", returnValue2)
+
+    returnValue1, returnValue2 = calculateSingleAndDouble("hello", 100)
+    fmt.Println("returnValue1:", returnValue1, "returnValue2:", returnValue2)
 }
 ```
 
-##### import
+#### import
 
-golang里面有两个保留的函数：init函数（能够应用于所有的package）和main函数（只能应用于package main）。这两个函数在定义时不能有任何的参数和返回值。  
-  
-虽然一个package里面可以写任意多个init函数，但这无论是对于可读性还是以后的可维护性来说，我们都强烈建议用户在一个package中每个文件只写一个init函数。  
-  
-go程序会自动调用init()和main()，所以你不需要在任何地方调用这两个函数。每个package中的init函数都是可选的，但package main就必须包含一个main函数。  
-  
-程序的初始化和执行都起始于main包。  
-  
-如果main包还导入了其它的包，那么就会在编译时将它们依次导入。有时一个包会被多个包同时导入，那么它只会被导入一次（例如很多包可能都会用到fmt包，但它只会被导入一次，因为没有必要导入多次）。  
-  
-当一个包被导入时，如果该包还导入了其它的包，那么会先将其它包导入进来，然后再对这些包中的包级常量和变量进行初始化，接着执行init函数（如果有的话），依次类推。  
-  
+golang里面有两个保留的函数：init函数（能够应用于所有的package）和main函数（只能应用于package main）。这两个函数在定义时不能有任何的参数和返回值。
+
+虽然一个package里面可以写任意多个init函数，但这无论是对于可读性还是以后的可维护性来说，我们都强烈建议用户在一个package中每个文件只写一个init函数。
+
+go程序会自动调用init()和main()，所以你不需要在任何地方调用这两个函数。每个package中的init函数都是可选的，但package main就必须包含一个main函数。
+
+程序的初始化和执行都起始于main包。
+
+如果main包还导入了其它的包，那么就会在编译时将它们依次导入。有时一个包会被多个包同时导入，那么它只会被导入一次（例如很多包可能都会用到fmt包，但它只会被导入一次，因为没有必要导入多次）。
+
+当一个包被导入时，如果该包还导入了其它的包，那么会先将其它包导入进来，然后再对这些包中的包级常量和变量进行初始化，接着执行init函数（如果有的话），依次类推。
+
 等所有被导入的包都加载完毕了，就会开始对main包中的包级常量和变量进行初始化，然后执行main包中的init函数（如果存在的话），最后执行main函数。下图详细地解释了整个执行过程：
 
 ![](https://img.simi.host/image-20240830200220684.png)
@@ -171,11 +174,11 @@ go程序会自动调用init()和main()，所以你不需要在任何地方调用
 
 `import . "fmt"`将当前fmt 包中的全部方法，导入到当前本包中，fmt 包中的所有方法可以直接使用 API 进行调用，无需使用 `fmt.API` 的形式
 
-##### 指针
+#### 指针
 
 跟 c 类似，这里就不做阐述
 
-##### panic
+#### panic
 
 `panic` 是 Go 的内置函数，用于触发一个运行时错误（称为 "panic"），它会立即中止当前函数的执行，开始进行错误处理流程，最终结束程序（除非通过 `recover` 捕获并处理该 panic）。
 
@@ -193,10 +196,10 @@ func (m MyImplementation) DoSomething() {
 }
 ```
 
-#### defer
+### defer
 
 > 相当于 Java 中的 `finally` ，用于最后执行的东西。
-> 
+>
 > `defer` 在 `return` 后面执行
 
 `defer` 语句属于压栈的模式，先进后出
@@ -205,23 +208,23 @@ func (m MyImplementation) DoSomething() {
 
 defer语句会将其后的函数调用推迟到当前函数执行结束时执行。这个特性常用于处理成对的操作，如打开/关闭文件、获取/释放锁、连接/断开连接等，确保资源被适当地释放，即使在发生错误或提前返回的情况下也能保证执行。
 
-#### 切片 slice
+### 切片 slice
 
-Go 语言切片是对数组的抽象。  
-  
+Go 语言切片是对数组的抽象。
+
 Go 数组的**长度不可改变**，在特定场景中这样的集合就不太适用，Go中提供了一种灵活，功能强悍的内置类型切片("动态数组"),与数组相比切片的长度是不固定的，可以追加元素，在追加时可能使切片的容量增大。
 
-##### 定义切片  
-  
-你可以声明一个未指定大小的数组来定义切片：  
-  
+#### 定义切片
+
+你可以声明一个未指定大小的数组来定义切片：
+
 ```go
 var identifier []type
 ```
 
-切片不需要说明长度。    
+切片不需要说明长度。
 
-或使用make()函数来创建切片:  
+或使用make()函数来创建切片:
 
 ```go
 var slice1 []type = make([]type, len)
@@ -241,7 +244,7 @@ make([]T, length, capacity)
 
 这里 len 是数组的长度并且也是切片的初始长度。
 
-##### 判断是否为空
+#### 判断是否为空
 
 ```go
 // 判断 slice 是否为空
@@ -254,7 +257,7 @@ if slice == nil {
 
 好奇怪，在 go 里这个关键字叫 `nil`
 
-##### 切片的添加
+#### 切片的添加
 
 使用 `append` 方法
 
@@ -281,7 +284,7 @@ numbers = append(numbers, 2,3,4)
 
 printSlice(numbers)
 ```
-##### 切片的截取
+#### 切片的截取
 
 ```go
 s1 := s[0:2] // 是左闭右开的区间，不写就默认头或尾
@@ -299,9 +302,9 @@ numbers1 := make([]int, len(numbers), (cap(numbers))*2)
 copy(numbers1,numbers)
 ```
 
-#### map
+### map
 
-##### map 的声明
+#### map 的声明
 
 ```go
 //第一种声明,key 是 string, value 也是 string
@@ -330,7 +333,7 @@ test2["two"] = "golang"
 
 test2["three"] = "java"
 
-fmt.Println(test2) //map[one:php two:golang three:java]  
+fmt.Println(test2) //map[one:php two:golang three:java]
 
 //第三种声明
 
@@ -347,7 +350,7 @@ test3 := map[string]string{
 fmt.Println(test3) //map[one:php two:golang three:java]
 ```
 
-##### map 的操作
+#### map 的操作
 
 ```go
 language := make(map[string]map[string]string)
@@ -400,7 +403,7 @@ for _, value := range language {
 
 map存储是无序的，遍历 Map 时返回的键值对的顺序是不确定
 
-#### 结构体 struct
+### 结构体 struct
 
 结构体的样式和 c 很像，类似于
 
@@ -408,13 +411,13 @@ map存储是无序的，遍历 Map 时返回的键值对的顺序是不确定
 type Book sturct {
 	title string
 	auth string
-} 
+}
 
 // 创建新对象
 var book1 Book
 ```
 
-##### 结构体标签
+#### 结构体标签
 
 在结构体标签中，有类似于文档注释的东西，方便你了解怎么使用
 
@@ -444,7 +447,7 @@ func findDoc(stru interface{}) map[string]string {
 	return doc
 }
 
-  
+
 
 func main() {
 
@@ -455,16 +458,16 @@ func main() {
 }
 ```
 
-##### 结构体标签应用
+#### 结构体标签应用
 
 在标签处添加 json 编解码
 
 orm 映射关系
 
 这些需要时再去了解
-#### interface与类型断言
+### interface与类型断言
 
-##### interface接口的使用/多态
+#### interface接口的使用/多态
 
 接口的创建方式（父类）
 
@@ -501,11 +504,11 @@ func (this *Cat) GetType() string {
 
 ```go
 var animal Animal // 接口的数据类型，父类指针，注意是指针！
-animal = &Cat{"Green"} 
+animal = &Cat{"Green"}
 animal.Sleep() // 这里调用的将会是 Cat 的 Sleep() 方法，多态的体现了，因为本身是 Animal 类
 ```
 
-##### interface() 空接口
+#### interface() 空接口
 
 这是一个通用万能类型
 
@@ -528,7 +531,7 @@ func main() {
 
 这些都能够成功输出，所以这个函数的入参什么都可以
 
-##### 类型断言
+#### 类型断言
 
 > Golang的语言中提供了断言的功能。golang中的所有程序都实现了interface{}的接口，这意味着，所有的类型如string,int,int64甚至是自定义的struct类型都就此拥有了interface{}的接口，这种做法和java中的Object类型比较类似。那么在一个数据通过func funcName(interface{})的方式传进来的时候，也就意味着这个参数被自动的转为interface{}的类型。
 
@@ -554,19 +557,19 @@ var a interface{}
 value, ok := a.(string) //前面是接受接口的值，后面是判断类型是否正确，是 bool
 ```
 
-#### 反射reflect
+### 反射reflect
 
-##### 变量的结构
+#### 变量的结构
 
 `type` 和 `value` 组成的` pair` 是变量的结构
 
 其中 `type` 可以分为 `static type` 和 `concrete type`，前者是基本的类型，比如 int，string，后者是具体的数据类型，虽然我并不是很清楚什么是具体（具体创造的类？）
 
- 断言有两步：得到动态类型 type，判断 type 是否实现了目标接口。 
+ 断言有两步：得到动态类型 type，判断 type 是否实现了目标接口。
 
 反射的原理就是基于interface 的 **pair** 来实现的
 
-##### 反射的应用
+#### 反射的应用
 
 jreflect.Value是通过reflect.ValueOf(X)获得的，只有当X是指针的时候，才可以通过reflec.Value修改实际变量X的值，即：要修改反射类型的对象就一定要保证其值是“addressable”的。
 
@@ -600,13 +603,13 @@ func main() {
 
 	pointer = reflect.ValueOf(num)
 
-	// newValue = pointer.Elem() 
+	// newValue = pointer.Elem()
 	// 如果非指针，这里直接panic，
 	// “panic: reflect: call of reflect.Value.Elem on float64 Value”
 
 }
 
-  
+
 
 运行结果：
 
@@ -619,17 +622,17 @@ settability of pointer: true
 new value of pointer: 77
 ```
 
-### GoLang 高阶
+## GoLang 高阶
 
-#### 并发的基本认识
+### 并发的基本认识
 
 Goroutine 是 Go 运行时调度的执行单元，多个 goroutine 可以复用操作系统线程。并发任务既可以通过 channel 通信，也可以用锁保护共享状态；使用 channel 并不自动消除所有数据竞争。
 
 调度和 I/O 的具体行为要看运行时与调用方式，不能把所有同步 I/O 都理解成“完全不阻塞线程”。
 
-#### Goroutine
+### Goroutine
 
-##### 核心语法
+#### 核心语法
 
 **在 `func` 前添加 `go`** ，只需在函数调⽤语句前添加 go 关键字，就可创建并发执⾏单元。开发⼈员无需了解任何执⾏细节，调度器会自动将其安排到合适的系统线程上执行。
 
@@ -665,26 +668,26 @@ func main() {
 
 主 `goroutine` 退出后，其它的工作 `goroutine` 也会自动退出
 
-#### Channel
+### Channel
 
-##### channel 的定义
+#### channel 的定义
 
-channel是Go语言中的一个核心类型，可以把它看成管道。并发核心单元通过它就可以发送或者接收数据进行通讯，这在一定程度上又进一步降低了编程的难度。  
-  
-channel是一个数据类型，主要用来解决go程的同步问题以及go程之间数据共享（数据传递）的问题。  
-  
-goroutine运行在相同的地址空间，因此访问共享内存必须做好同步。goroutine 奉行通过通信来共享内存，而不是共享内存来通信。  
-  
+channel是Go语言中的一个核心类型，可以把它看成管道。并发核心单元通过它就可以发送或者接收数据进行通讯，这在一定程度上又进一步降低了编程的难度。
+
+channel是一个数据类型，主要用来解决go程的同步问题以及go程之间数据共享（数据传递）的问题。
+
+goroutine运行在相同的地址空间，因此访问共享内存必须做好同步。goroutine 奉行通过通信来共享内存，而不是共享内存来通信。
+
 引⽤类型 channel可用于多个 goroutine 通讯。其内部实现了同步，确保并发安全。
 
-##### 定义 channel 变量
+#### 定义 channel 变量
 
-和 `map` 类似，`channel` 也一个对应 `make` 创建的底层数据结构的引用。  
-  
-当我们复制一个 `channel` 或用于函数参数传递时，我们只是拷贝了一个 `channel` **引用**，因此调用者和被调用者将引用同一个 `channel` 对象。和其它的引用类型一样，`channel` 的零值也是 `nil` 。  
-  
-定义一个 `channel` 时，也需要定义发送到 `channel` 的值的类型。`channel` 可以使用内置的 `make()` 函数来创建：  
-  
+和 `map` 类似，`channel` 也一个对应 `make` 创建的底层数据结构的引用。
+
+当我们复制一个 `channel` 或用于函数参数传递时，我们只是拷贝了一个 `channel` **引用**，因此调用者和被调用者将引用同一个 `channel` 对象。和其它的引用类型一样，`channel` 的零值也是 `nil` 。
+
+定义一个 `channel` 时，也需要定义发送到 `channel` 的值的类型。`channel` 可以使用内置的 `make()` 函数来创建：
+
 `chan` 是创建 `channel` 所需使用的关键字。`Type` 代表指定 `channel` 收发数据的类型。
 
 ```go
@@ -697,7 +700,7 @@ make(chan Type, capacity)
 
 > 我个人的理解就是，类似于信号量对于线程之间的进行互斥和同步的操作。
 
-##### channel 的通信
+#### channel 的通信
 
 channel非常像生活中的管道，一边可以存放东西，另一边可以取出东西。channel通过操作符 <- 来接收和发送数据，发送和接收数据语法：
 
@@ -709,12 +712,12 @@ x, ok := <-channel //功能同上，同时检查通道是否已关闭或者是�
 ```
 
 > 仔细分析 `channel` 的 `ok` 的各种情况
-> 
+>
 > 当通道是 **打开状态** 且有值发送时，`ok` 为 `true`。此时 `x` 将接收到通道中的值。
-> 
+>
 > 当通道 **开启但是没有数据** 时，`ok` 并不会立即返回，而是会阻塞，直到通道中有数据可读或者
 > 通道被关闭。当有数据时，`ok` 变成 `true`；`如果channel` 被关闭，`ok` 变成 `false`
-> 
+>
 >当通道 **关闭但是有数据** 时，`ok` 返回 `true`
 >
 >当通道 **关闭并且没有数据** 时， `ok` 返回 `false`
@@ -745,15 +748,15 @@ emmm ，我觉得我说的有些问题。因为互斥锁是限制 `P` 的，而�
 
 ![image-20240914193526299](https://img.simi.host/image-20240914193526299.png)
 
-- 在第 1 步，两个 goroutine 都到达通道，但哪个都没有开始执行发送或者接收。  
-- 在第 2 步，左侧的 goroutine 将它的手伸进了通道，这模拟了向通道发送数据的行为。这时，这个 goroutine 会在通道中被锁住，直到交换完成。  
-- 在第 3 步，右侧的 goroutine 将它的手放入通道，这模拟了从通道里接收数据。这个 goroutine 一样也会在通道中被锁住，直到交换完成。  
+- 在第 1 步，两个 goroutine 都到达通道，但哪个都没有开始执行发送或者接收。
+- 在第 2 步，左侧的 goroutine 将它的手伸进了通道，这模拟了向通道发送数据的行为。这时，这个 goroutine 会在通道中被锁住，直到交换完成。
+- 在第 3 步，右侧的 goroutine 将它的手放入通道，这模拟了从通道里接收数据。这个 goroutine 一样也会在通道中被锁住，直到交换完成。
 - 在第 4 步和第 5 步，进行交换，并最终，在第 6 步，两个 goroutine 都将它们的手从通道里拿出来，这模拟了被锁住的 goroutine 得到释放。两个 goroutine 现在都可以去做其他事情了。
 
 **当 `capacity` 不为 0 时
 
-通道就是异步的。只要缓冲区有未使用空间用于发送数据，或还包含可以接收的数据，那么其通信就会无阻塞地进行。  
-  
+通道就是异步的。只要缓冲区有未使用空间用于发送数据，或还包含可以接收的数据，那么其通信就会无阻塞地进行。
+
 借助函数 `len(ch)` 求取缓冲区中剩余元素个数， `cap(ch)` 求取缓冲区元素容量大小。
 
 ```go
@@ -761,7 +764,7 @@ bufferedChannel := make(chan int, 3) //带缓冲的通道
 fmt.Printf("子go程正在运行[%d]: len(bufferedChannel)=%d, cap(bufferedChannel)=%d\n", i, len(bufferedChannel), cap(bufferedChannel))
 ```
 
-##### 关闭 channel
+#### 关闭 channel
 
 如果发送者知道，没有更多的值需要发送到 `channel` 的话，那么让接收者也能及时知道没有多余的值可接收将是有用的，因为接收者可以停止不必要的接收等待。这可以通过内置的 `close` 函数来关闭 `channel` 实现。
 
@@ -770,7 +773,7 @@ intChannel := make(chan int) // 创建 channel
 close(intChannel) // 关闭 channel
 ```
 
-##### 单向 channel
+#### 单向 channel
 
 单向channel变量的声明非常简单，如下：
 
@@ -780,7 +783,7 @@ var writeOnlyChannel chan<- float64 // writeOnlyChannel是单向channel，只用
 var readOnlyChannel <-chan int // readOnlyChannel是单向channel，只用于读int数据
 ```
 
-这么看我觉得挺抽象的，我感觉得看下面这个，具体语法就是 进去的是输入 `chan<- ` ，出来的是输出 `<-chan` 
+这么看我觉得挺抽象的，我感觉得看下面这个，具体语法就是 进去的是输入 `chan<- ` ，出来的是输出 `<-chan`
 
 ```go
 baseChannel := make(chan int, 3)
@@ -823,16 +826,16 @@ func main() {
 }
 ```
 
-#### Select
+### Select
 
-##### select作用
+#### select作用
 
-Go里面提供了一个关键字select，通过select可以监听channel上的数据流动。  
-  
-有时候我们希望能够借助channel发送或接收数据，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。  
-  
-select的用法与switch语言非常类似，由select开始一个新的选择块，每个选择条件由case语句来描述。  
-  
+Go里面提供了一个关键字select，通过select可以监听channel上的数据流动。
+
+有时候我们希望能够借助channel发送或接收数据，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。
+
+select的用法与switch语言非常类似，由select开始一个新的选择块，每个选择条件由case语句来描述。
+
 与switch语句相比，select有比较多的限制，其中最大的一条限制就是每个case语句里必须是一个IO操作，大致的结构如下：
 
 ```go
@@ -846,19 +849,19 @@ select {
 }
 ```
 
-在一个select语句中，Go语言会按顺序从头至尾评估每一个发送和接收的语句。  
-  
-如果其中的任意一语句可以继续执行(即没有被阻塞)，那么就从那些可以执行的语句中任意选择一条来使用。  
-  
-如果没有任意一条语句可以执行(即所有的通道都被阻塞)，那么有两种可能的情况：  
-  
-- 如果给出了default语句，那么就会执行default语句，同时程序的执行会从select语句后的语句中恢复。  
-  
+在一个select语句中，Go语言会按顺序从头至尾评估每一个发送和接收的语句。
+
+如果其中的任意一语句可以继续执行(即没有被阻塞)，那么就从那些可以执行的语句中任意选择一条来使用。
+
+如果没有任意一条语句可以执行(即所有的通道都被阻塞)，那么有两种可能的情况：
+
+- 如果给出了default语句，那么就会执行default语句，同时程序的执行会从select语句后的语句中恢复。
+
 - 如果没有default语句，那么select语句将被阻塞，直到至少有一个通信可以进行下去。
 
-#### Go Modules
+### Go Modules
 
-##### go mod 命令
+#### go mod 命令
 
 | 命令            | 作用                             |
 | --------------- | -------------------------------- |
@@ -871,45 +874,45 @@ select {
 | go mod verify   | 校验一个模块是否被篡改过         |
 | go mod why      | 查看为什么需要依赖某模块         |
 
-##### go mod环境变量
+#### go mod环境变量
 
 可以通过 `go env` 命令来进行查看
 
 ```bash
 $ go env GO111MODULE="auto"
 GOPROXY="https://proxy.golang.org,direct"
-GONOPROXY="" GOSUMDB="sum.golang.org" 
-GONOSUMDB="" GOPRIVATE="" 
+GONOPROXY="" GOSUMDB="sum.golang.org"
+GONOSUMDB="" GOPRIVATE=""
 ...
 ```
 
-##### GOPROXY  
-  
-这个环境变量主要是用于设置 Go 模块代理（Go module proxy）,其作用是用于使 Go 在后续拉取模块版本时直接通过镜像站点来快速拉取。  
-  
-GOPROXY 的默认值是：https://proxy.golang.org,direct  
-  
-proxy.golang.org国内访问不了,需要设置国内的代理.  
-  
-- 阿里云 [https://mirrors.aliyun.com/goproxy/](https://mirrors.aliyun.com/goproxy/)  
+#### GOPROXY
+
+这个环境变量主要是用于设置 Go 模块代理（Go module proxy）,其作用是用于使 Go 在后续拉取模块版本时直接通过镜像站点来快速拉取。
+
+GOPROXY 的默认值是：https://proxy.golang.org,direct
+
+proxy.golang.org国内访问不了,需要设置国内的代理.
+
+- 阿里云 [https://mirrors.aliyun.com/goproxy/](https://mirrors.aliyun.com/goproxy/)
 
 - 七牛云 [https://goproxy.cn](https://goproxy.cn/),direct
 
-而在刚刚设置的值中，我们可以发现值列表中有 “direct” 标识，它又有什么作用呢？  
-  
+而在刚刚设置的值中，我们可以发现值列表中有 “direct” 标识，它又有什么作用呢？
+
 实际上 “direct” 是一个特殊指示符，用于指示 Go 回源到模块版本的源地址去抓取（比如 GitHub 等），场景如下：当值列表中上一个 Go 模块代理返回 404 或 410 错误时，Go 自动尝试列表中的下一个，遇见 “direct” 时回源，也就是回到源地址去抓取，而遇见 EOF 时终止并抛出类似 “invalid version: unknown revision...” 的错误。
 
-##### GOSUMDB
+#### GOSUMDB
 
 它的值是一个 Go checksum database，用于在拉取模块版本时（无论是从源站拉取还是通过 Go module proxy 拉取）保证拉取到的模块版本数据未经过篡改，若发现不一致，也就是可能存在篡改，将会立即中止。
 
-##### GONOPROXY/GONOSUMDB/GOPRIVATE
+#### GONOPROXY/GONOSUMDB/GOPRIVATE
 
 这三个环境变量都是用在当前项目依赖了私有模块，例如像是你公司的私有 git 仓库，又或是 github 中的私有库，都是属于私有模块，都是要进行设置的，否则会拉取失败。
 
-#### 实践 即时通讯项目
+### 实践 即时通讯项目
 
-##### func init()
+#### func init()
 
 func init() 是 Go 语言中的特殊函数，它会**自动执行**。具体来说，init() 函数的执行时间是程序启动时，在 main() 函数运行之前执行。你不需要显式调用 init()，Go 运行时会自动调用它。
 
