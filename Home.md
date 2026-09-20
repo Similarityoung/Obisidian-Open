@@ -15,7 +15,6 @@ draft: false
 
 ## 核心分区
 
-- 面试：[[Interview/_index|面试专区]]
 - 算法：[[Algorithm/_index|Algorithm 索引]]
 - Go：[[Go/_index|Go 索引]]
 - Dubbo：[[Dubbo/_index|Dubbo 索引]]
