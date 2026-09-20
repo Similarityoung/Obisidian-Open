@@ -1,7 +1,5 @@
 ---
-title: MySQL 面试整理
-aliases:
-  - MySQL 面试
+title: MySQL
 tags:
   - interview
   - prepare

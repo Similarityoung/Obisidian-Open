@@ -1,8 +1,5 @@
 ---
-title: golang 面试：并发编程与同步控制
-aliases:
-  - Go 面试并发篇
-  - Golang 并发编程与同步控制
+title: Go 并发编程
 tags:
   - go
   - 面试

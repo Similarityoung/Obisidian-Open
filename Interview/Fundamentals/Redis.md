@@ -1,7 +1,5 @@
 ---
-title: Redis 面试整理
-aliases:
-  - Redis 面试
+title: Redis
 tags:
   - interview
   - prepare

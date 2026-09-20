@@ -38,7 +38,8 @@ hs_err_pid*
 
 # 面试基础知识与算法同步；个人准备与面试记录不同步
 Interview/*
-!Interview/基础知识/
-!Interview/算法/
+!Interview/Fundamentals/
+!Interview/Algorithms/
+!Interview/面试题库.md
 
 target

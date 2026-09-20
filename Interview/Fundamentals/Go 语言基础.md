@@ -1,8 +1,5 @@
 ---
-title: golang 面试：语言基础
-aliases:
-  - Go 面试语言基础
-  - Golang 面试语言基础
+title: Go 语言基础
 tags:
   - go
   - 面试

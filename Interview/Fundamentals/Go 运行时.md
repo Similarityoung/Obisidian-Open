@@ -1,8 +1,5 @@
 ---
-title: golang 面试：运行时（Runtime）
-aliases:
-  - Go 面试运行时
-  - Golang Runtime 面试
+title: Go 运行时
 tags:
   - go
   - 面试
