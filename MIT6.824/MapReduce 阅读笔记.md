@@ -60,11 +60,9 @@ reduce (k2,list(v2)) -> list(v2)
 
 ps: 至于为什么 `list(k2,v2)` 与 `list(v2)` 不相同是因为在 `reduce` 函数里默认是 `k2` 这个键下的内容
 
-##### 域的作用和意义（Domain）
+##### 类型转换
 
-不同的域有助于清晰地区分 `MapReduce` 处理过程中不同阶段的数据类型和结构，使得程序能够正确地处理数据在各个阶段的转换和操作。
-用户在编写 `Map` 和 `Reduce` 函数时，需要根据这些域的定义来正确处理数据类型的转换（因为 C++ 实现传递的是字符串，用户代码要负责在字符串和实际合适的数据类型之间转换），以确保整个 `MapReduce` 作业能够准确地计算和生成期望的结果。
-例如，在 Map 函数中，要将输入的字符串类型的文档内容正确解析为单词等合适的数据类型，然后以符合中间键值对域要求的格式输出中间结果；在 Reduce 函数中，要正确处理来自相同域的中间键值对数据，最终生成符合输出键值对域要求的结果。
+不同阶段使用不同的键值类型。论文中的 C++ 接口以字符串传值，用户代码负责解析和转换；例如 Map 拆分文档，Reduce 将计数字符串转成整数求和。
 
 ### 3. 实现细节（Implementation）
 
@@ -73,80 +71,15 @@ ps: 至于为什么 `list(k2,v2)` 与 `list(v2)` 不相同是因为在 `reduce` 
 ![image.png](https://img.simi.host/20241229162643.png)
 Figure 1: Execution overview
 
-这张图展示了一个 MapReduce 计算模型的工作流程。MapReduce 是一种用于处理大规模数据集的编程模型，它通过将任务分解成多个子任务，并在集群中的多个节点上并行执行，最后将结果合并起来。以下是对图中各个部分的详细解释：
+输入被拆成 M 个分片，用户程序启动 master 和多个 worker：
 
-1. **User Program（用户程序）**：
-    
-    - 位于图的顶部，是整个流程的起点。用户程序启动并控制整个 MapReduce 作业。
-    - 用户程序通过`fork`操作创建一个`Master`进程和多个`worker`进程。
+1. Master 把 Map 或 Reduce 任务分配给空闲 worker，记录任务状态。
+2. Map worker 读取输入分片，执行 Map，将中间键值对先缓存在内存，再按分区写入本地磁盘的 R 个区域。
+3. Map worker 把各区域的位置和大小报告给 master，master 增量通知对应的 Reduce worker。
+4. Reduce worker 从 Map worker 拉取数据，排序并按相同 key 分组，再调用用户的 Reduce。
+5. 最终得到 R 个输出文件，后续分布式任务可以直接消费这些分区，不必先合成一个文件。
 
-2. **Master（主进程）**：
-
-    - Master 负责将输入数据分成多个`split`，并将`map`和`reduce`任务分配给各个`worker`。
-
-     **主节点的信息传递角色**：
-     
-	- 在`MapReduce`计算中，存在大量的中间数据。当`Map`任务处理完输入数据的一个分片后，会产生中间结果并存储为中间文件。这些中间文件可能分布在不同的节点上，而主节点就像是一个信息枢纽（conduit）。
-	- 它负责将这些中间文件的位置信息（例如在哪个节点的哪个磁盘路径下）从完成 `Map` 任务的节点传递到需要这些数据的 `Reduce` 任务所在的节点。这是因为 `Reduce` 任务需要知道从哪里获取与自己相关的中间数据来进行进一步处理。
-
-     **主节点对Map任务信息的存储**： 
-     
-	- 对于每个完成的 `Map` 任务，主节点会记录该任务产生的中间文件区域的相关信息。这里的“R个中间文件区域”表示根据用户指定的 `Reduce` 任务数量（R）， `Map` 任务会将中间数据分成R个部分（分区）存储。例如，如果R = 5，那么Map任务可能会将中间数据分成5个区域存储，每个区域对应一个 `Reduce` 任务可能需要处理的数据。
-	- 主节点存储这些区域的位置（如节点IP、磁盘路径等）和大小信息。这有助于主节点有效地管理和协调数据的传输，以及在 `Reduce` 任务需要数据时能够准确地提供信息。
-
-     **信息更新与推送机制**： 
-     
-	- 随着 `Map` 任务的逐步完成，主节点会不断收到关于新完成的 `Map` 任务的中间文件位置和大小的更新信息。这些更新是实时的，以便主节点能够及时掌握数据的分布情况。
-	- 一旦主节点获取到这些更新信息，它会将相关的中间文件位置信息推送给正在进行 `Reduce` 任务的工作节点。这种推送是增量式的（incrementally），即只推送与当前正在进行的 `Reduce` 任务相关的新完成的 `Map` 任务的信息，避免不必要的数据传输和节点资源浪费。这样， `Reduce` 任务所在的工作节点就能够准确地知道从哪里获取所需的中间数据，从而顺利进行后续的处理操作，最终实现整个 `MapReduce` 计算的高效执行。
-
-3. **Worker（工作进程）**：
-    
-    - 图中有多个`worker`进程，分布在图的中间和底部。
-    - `worker`进程负责执行`map`和`reduce`任务。
-
-4. **Input Files（输入文件）**：
-    
-    - 位于图的左下角，代表原始输入数据。
-    - 输入数据被分成多个`split`（数据分片），如`split 0`、`split 1`等。
-
-5. **Map Phase（映射阶段）**：
-    
-    - 每个`worker`读取一个`split`（通过`read`操作），然后执行`map`任务。
-    - `map`任务的结果以中间文件（`Intermediate files`）的形式存储在本地磁盘上。
-
-6. **Intermediate Files（中间文件）**：
-    
-    - 位于图的中间偏右位置，代表`map`阶段的输出。
-    - 这些中间文件存储在本地磁盘上，供`reduce`阶段使用。
-
-7. **Reduce Phase（归约阶段）**：
-    
-    - `worker`进程从本地磁盘上读取中间文件（通过`remote read`操作），然后执行`reduce`任务。
-    - `reduce`任务的结果被写入`Output files`。
-
-8. **Output Files（输出文件）**：
-    
-    - 位于图的右下角，代表最终的输出结果。
-    - 这些文件是`reduce`阶段的输出，包含了最终的计算结果。
-
-成功完成后，MapReduce 执行的输出可在 R 输出文件中获取（每个归约任务一个文件，文件名由用户指定）。通常，用户不需要将这些 R 输出文件合并为一个文件——他们经常将这些文件作为另一个 MapReduce 调用的输入，或者在另一个能够处理被划分到多个文件中的输入的分布式应用程序中使用它们。
-
-整个流程通过`worker`进程之间的协作和数据交换，实现了大规模数据的并行处理和计算。`Master`进程负责协调和分配任务，确保整个作业的顺利进行。
-
-##### Master 和 Worker 的角色与任务分配
-
-`Master`: 
-
-There are M map tasks and R reduce tasks to assign. The master picks idle workers and assigns each one a map task or a reduce task.
-有 M map 任务和 R reduce 任务要分配。master 选择空闲的 worker 并为每个 worker 分配一个 map 任务或一个 reduce 任务。
-
-`Worker`:  
-
-A worker who is assigned a map task reads the contents of the corresponding input split. It parses key/value pairs out of the input data and passes each pair to the user-defined $Map$ function. The intermediate key/value pairs produced by the Map function are buffered in memory.
-被分配了映射（map）任务的工作进程（worker）读取相应输入分片（input split）的内容。它从输入数据中解析出键/值对，并将每一对传递给用户定义的映射函数（$Map$ function）。由映射函数生成的中间键/值对被缓存在内存中。
-
-The reduce worker iterates over the sorted intermediate data and for each unique intermediate key encountered, it passes the key and the corresponding set of intermediate values to the user’s Reduce function. The output of the Reduce function is appended to a final output file for this reduce partition.
-执行归约（reduce）任务的工作进程（worker）会遍历已排序的中间数据，对于遇到的每个唯一的中间键（intermediate key），它会将该键以及相应的一组中间值传递给用户的归约函数（Reduce function）。归约函数的输出会被追加到这个归约分区的最终输出文件中。
+Master 负责调度和中间数据位置的协调，不承担全部数据传输。
 
 #### 容错机制（Fault Tolerance）
 
@@ -192,7 +125,7 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 ###### 较弱语意？
 
-~~并不是很清楚，下次再来看看~~
+这里还没弄清：非确定性的 Map / Reduce 遇到重试时，论文所说的较弱语义具体保证什么？下次继续看。
 
 #### 本地性优化（Data Locality）
 
@@ -200,13 +133,9 @@ Since the MapReduce library is designed to help process very large amounts of da
 
 #### 任务粒度与动态负载平衡
 
-**任务粒度**： 是指任务被划分的精细程度。在 `MapReduce` 中，通过将整个计算过程划分为映射（Map）和归约（Reduce）两个主要阶段，并进一步将这两个阶段细分，来控制任务粒度。将 `Map` 阶段细分为 `M` 个部分，`Reduce` 阶段细分为 `R` 个部分。这种细分使得每个部分成为一个相对独立的任务单元，这些任务单元的大小和数量决定了任务粒度。
+将计算拆成 M 个 Map 任务和 R 个 Reduce 任务，通常使任务数大于 worker 数。这样空闲 worker 可以继续领取任务，失败 worker 上的任务也能分散给多台机器重做。
 
-**理想任务粒度的设定**： 理想情况下，`M` 和 `R` 应该远大于工作节点（worker machines）的数量。这是因为较细的任务粒度可以让每个工作节点有机会执行多个不同的任务。如果任务粒度太粗，即 `M` 和 `R` 接近或小于工作节点数量，可能会导致某些工作节点在完成自身分配的少量任务后处于闲置状态，而其他节点可能因任务过重而成为瓶颈，从而无法充分利用集群的计算资源。较细的任务粒度能够实现更好的动态负载均衡，使工作节点的资源得到更充分的利用，提高系统的整体性能。
-
-**任务粒度对动态负载均衡的影响**：每个工作节点执行多个不同任务有助于动态负载均衡。在实际运行中，不同的任务可能具有不同的执行时间和资源需求。当任务粒度较细时，工作节点可以根据自身的负载情况动态地从任务队列中获取新的任务。如果某个工作节点完成了一个任务并且当前负载较低，它可以立即从众多的剩余任务中选择一个执行，这样可以避免工作节点之间的负载不均衡，使得整个集群的计算资源能够得到更合理的分配和利用，提高系统的运行效率。
-
-**任务粒度对故障恢复的作用**：较细的任务粒度在工作节点出现故障时能够加速系统的恢复。当一个工作节点失败时，它已经完成的许多 `Map` 任务可以分散到其他所有工作节点上。由于任务粒度较细，有多个 `Map` 任务可供重新分配，这些任务可以在其他正常工作的节点上继续进行后续处理，而不需要重新执行整个任务。这大大减少了因节点故障而导致的计算损失，加快了系统从故障中恢复的速度，提高了系统的容错性和可靠性。
+任务过粗会增加负载不均和恢复成本；划分更细也会增加 master 的调度和状态管理开销。
 
 ### 4. 优化与扩展（Refinements）
 
@@ -279,11 +208,6 @@ Since the MapReduce library is designed to help process very large amounts of da
 - **简化代码**：使用MapReduce后，处理容错、分布和并行化的代码被隐藏在库中，使得索引代码更简单、更小且更易于理解。例如，某一计算阶段的代码量从约3800行C++代码减少到约700行。 
 - **便于更改索引过程**：MapReduce库性能良好，使得可以将概念上不相关的计算分开，而不是混合在一起以避免多次处理数据，这使得更改索引过程变得容易。例如，在旧系统中需要数月才能完成的更改，在新系统中仅需几天即可实现。 
 - **操作更便捷**：MapReduce库自动处理了大部分由机器故障、慢速机器和网络问题引起的问题，无需操作员干预，使得索引过程更易于操作。此外，通过向索引集群添加新机器可轻松提高性能，体现了良好的可扩展性和鲁棒性，确保了索引系统在大规模数据处理场景下的高效稳定运行。
-
-### 7. 相关工作（Related Work）
-
-- 相关编程模型（如 Bulk Synchronous Programming、MPI）
-- 比较与创新点
 
 ### 8. 总结（Conclusions）
 

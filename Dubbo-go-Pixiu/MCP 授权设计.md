@@ -13,7 +13,7 @@ draft: false
 
 ### 1. 背景(Background)
 
-随着模型上下文协议 (Model Context Protocol, MCP) 的应用场景x从本地环境扩展到开放的互联网，对服务进行访问控制和身份验证变得至关重要。这直接关系到 MCP Server 的核心安全性。当前，Pixiu 网关已经具备将后端 API 包装为 MCP Server 的能力，下一步的核心任务是利用网关的现有能力，集成一套标准的鉴权机制，以完整实现 MCP 规范中的授权 (Authorization) 要求。
+随着模型上下文协议 (Model Context Protocol, MCP) 的应用场景从本地环境扩展到开放的互联网，对服务进行访问控制和身份验证变得至关重要。这直接关系到 MCP Server 的核心安全性。当前，Pixiu 网关已经具备将后端 API 包装为 MCP Server 的能力，下一步的核心任务是利用网关的现有能力，集成一套标准的鉴权机制，以完整实现 MCP 规范中的授权 (Authorization) 要求。
 
 MCP 规范明确指出：
 
@@ -88,7 +88,7 @@ Pixiu 在返回 401 的时候，需要通过 `WWW-Authenticate` 指示资源服�
 
 MCP servers, acting in their role as an OAuth 2.1 resource server, **MUST** validate access tokens as described in [OAuth 2.1 Section 5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-5.2). MCP servers **MUST** validate that access tokens were issued specifically for them as the intended audience, according to [RFC 8707 Section 2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2). If validation fails, servers **MUST** respond according to [OAuth 2.1 Section 5.3](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-5.3) error handling requirements. Invalid or expired tokens **MUST** receive a HTTP 401 response.
 
-Pixiu 需要验证访问令牌是否专门为其目标用户颁发。无效或过期的令牌**必须**收到 HTTP 401 响应。
+Pixiu 需要验证令牌的目标接收方（audience）是否包含自身资源服务器。无效或过期的令牌**必须**收到 HTTP 401 响应。
 
 - **`HTTP 401 Unauthorized`**: 用于**认证失败**，即客户端没有提供令牌、令牌无效、过期或签名错误。`WWW-Authenticate` 头应该如你所述被包含。
 
@@ -108,17 +108,9 @@ Pixiu **必须**验证提供给它们的令牌是否是专门为其使用的。
 
 #### 3.3 技术选型
 
-在对多个 JWT 库进行深入评估后，我们决定采用 **`github.com/lestrrat-go/jwx`** 作为我们项目的核心 JOSE (Javascript Object Signing and Encryption) 库。这是一个战略性的技术升级，主要原因如下：
+方案选择 `github.com/lestrrat-go/jwx`，主要考虑 JOSE 能力、JWKS 获取与缓存可放在同一套库中，减少分散的依赖。
 
-1. **功能全面且统一**: `jwx` 是一个完整的 JOSE 协议栈实现，原生支持 JWS (签名)、JWE (加密)、JWK (密钥) 和 JWA (算法)。这为我们提供了一个一站式的解决方案，避免了为了实现不同功能而组合多个库的复杂性，确保了 API 和设计理念的一致性。
-
-2. **简化依赖管理**: `jwx` 内置了对 JWKS (JSON Web Key Set) 的完整支持，包括从 `jwks_uri` 动态获取公钥、自动刷新和缓存管理。这意味着我们可以**移除现有的 `github.com/MicahParks/keyfunc` 依赖**，从而简化项目的依赖树，减少潜在的版本冲突和维护成本。
-
-3. **架构前瞻性与可扩展性**: 我们的目标是构建一个健壮、可扩展的系统。`jwx` 不仅能完美满足当前作为 OAuth 2.0 资源服务器的需求，其内置的 JWE (加密) 等高级功能，也为未来可能出现的更复杂的安全场景（如 OpenID Connect, FAPI, 加密令牌等）做好了充分准备，避免了未来的技术栈重构。
-
-4. **严格遵循标准**: 该库的设计严格遵循相关的 RFC 规范，确保了其行为的正确性和互操作性。这对于实现一个标准的、可与任何 OAuth 2.0 授权服务器对接的资源服务器至关重要。
-
-综上所述，尽管切换库会带来一定的初期工作量，但选择 `lestrrat-go/jwx` 能显著提升项目的架构水平、简化依赖关系并增强未来的扩展能力。
+本次先实现 `mcp_auth` 过滤器；现有 JWT 过滤器的依赖清理和重构留在后续，不把计划中的能力写成已经完成的结果。
 
 ### 4. 设计方案 (Design & Implementation)
 

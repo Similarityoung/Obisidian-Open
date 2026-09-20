@@ -7,120 +7,49 @@ categories:
 date: 2024-09-24T13:19:50+08:00
 draft: false
 ---
-## 说明
 
-文档中使用的关键字「MUST」,「MUST NOT」,「REQUIRED」,「SHALL」,「SHALL
-NOT」,「SHOULD」,「SHOULD NOT」,「RECOMMENDED」,「MAY」和「OPTIONAL」在 [RFC2119](http://oss.org.cn/man/develop/rfc/RFC2119.txt) 中有说明。
+# Markdown 编写规范
 
-**还未定稿，对规范中提及的点有不赞同的欢迎[提出 issues](https://github.com/fex-team/styleguide/issues/new)（请添加 `markdown` 标签）讨论。**
+这份笔记摘自 FEX 风格规范，并保留常用写作参考。
 
-## 规则
+## 常用格式
 
-* 后缀必须「MUST」使用 `.md`。
-* 文件名必须「MUST」使用小写，多个单词之间使用`-`分隔。
-* 文件编码必须「MUST」用 UTF-8。
-* 文档标题应该「SHOULD」这样写。
+- 使用 UTF-8 编码和 `.md` 扩展名。
+- 用 `#` 表示标题，按层级使用 `##`、`###`；标题后留一个空行。
+- 代码使用围栏，并标明语言。
+- 并列信息用列表，需要比较时再用表格。
+- 中英文和数字间适当留空格，中文语句使用中文标点。
 
-    ```
-    Markdown 编写规范
-    ==========================
-    ```
-* 章节标题必须「MUST」以 `##` 开始，而不是 `#`。
-* 章节标题必须「MUST」在 `#` 后加一个空格，且后面没有 `#`。
+````markdown
+# 文档标题
 
-    ```
-    // bad
-    ##章节1
+## 章节
 
-    // bad
-    ## 章节1 ##
+正文。
 
-    // good
-    ## 章节1
-    ```
+```go
+fmt.Println("hello")
+```
+````
 
-* 章节标题和内容间必须「MUST」有一个空行。
+FEX 原规范还约定小写连字符文件名和特定标题写法，这些属于该项目的风格选择。
 
-    ```
-    // bad
-    ## 章节1
-    内容
-    ## 章节2
+## 表达
 
-    // good
-    ## 章节1
+一段说清一个主要意思。使用主动语态，删掉不必要的词，并列内容保持相同结构。先交代问题和结论，再补充例子与依据。
 
-    内容
+## 编辑快捷键
 
-    ## 章节2
-    ```
+下面是常见 Windows 编辑器中的按键，具体行为以编辑器设置为准：
 
-* 代码段的必须「MUST」使用 Fenced code blocks 风格，如下所示：
+- `Home` / `End`：跳到行首 / 行尾。
+- `Ctrl + ← / →`：按词移动。
+- `Ctrl + Home / End`：跳到文档开头 / 结尾。
+- `Page Up / Page Down`：向前 / 后翻页。
 
-        ```
-        console.log("");
-        ```
+## 参考
 
-* 表格的写法应该「SHOULD」参考 [GFM](https://help.github.com/articles/github-flavored-markdown)，如下所示：
-
-    ```
-    First Header  | Second Header
-    ------------- | -------------
-    Content Cell  | Content Cell
-    Content Cell  | Content Cell
-
-    | Left-Aligned  | Center Aligned  | Right Aligned |
-    | :------------ |:---------------:| -----:|
-    | col 3 is      | some wordy text | $1600 |
-    | col 2 is      | centered        |   $12 |
-    | zebra stripes | are neat        |    $1 |
-    ```
-
-* 中英文混排应该「SHOULD」采用如下规则：
-    - 英文和数字使用半角字符
-    - 中文文字之间不加空格
-    - 中文文字与英文、阿拉伯数字及 @ # $ % ^ & * . ( ) 等符号之间加空格
-    - 中文标点之间不加空格
-    - 中文标点与前后字符（无论全角或半角）之间不加空格
-    - 如果括号内有中文，则使用中文括号
-    - 如果括号中的内容全部都是英文，则使用半角英文括号 
-    - 当半角符号 / 表示「或者」之意时，与前后的字符之间均不加空格
-    - 其它具体例子推荐[阅读这里](https://github.com/sparanoid/chinese-copywriting-guidelines)
-
-* 中文符号应该「SHOULD」使用如下写法：
-    - 用直角引号（「」）代替双引号（“”），不同输入法的具体设置方法请[参考这里](http://www.zhihu.com/question/19755746)
-    - 省略号使用「……」，而「。。。」仅用于表示停顿
-    - 其它可以参考[知乎规范](http://www.zhihu.com/question/20414919)
-
-* 表达方式，应当「SHOULD」遵循《The Element of Style》：
-    * 使段落成为文章的单元：一个段落只表达一个主题
-    * 通常在每一段落开始要点题，在段落结尾要扣题
-    * 使用主动语态
-    * 陈述句中使用肯定说法
-    * 删除不必要的词
-    * 避免连续使用松散的句子
-    * 使用相同的结构表达并列的意思
-    * 将相关的词放在一起
-    * 在总结中，要用同一种时态（这里指英文中的时态，中文不适用，所以可以不理会）
-    * 将强调的词放在句末
-
-## 扩展阅读
-
-* Google 后来也出了 [Markdown 规范](https://github.com/google/styleguide/blob/gh-pages/docguide/style.md)，很多和这里是一样的，但也增加了一些约定，可以参考
-
-
-## Ob快捷键
-
-Home：   光标跳转至行首
-End：     光标跳转至行尾
-PgUp：    光标跳转至首行
-PgDn：    光标跳转至末行
-Ctrl + ← / → (方向键)：    光标向左/向右跳转一个单词
-Ctrl + Home：    光标跳转至首行首个字符前面 (文件开头)
-Ctrl + End：    光标跳转至末行最后一个字符后面 (文件结尾) Home：   光标跳转至行首
-End：     光标跳转至行尾
-PgUp：    光标跳转至首行
-PgDn：    光标跳转至末行
-Ctrl + ← / → (方向键)：    光标向左/向右跳转一个单词
-Ctrl + Home：    光标跳转至首行首个字符前面 (文件开头)
-Ctrl + End：    光标跳转至末行最后一个字符后面 (文件结尾)
+- [FEX 风格规范](https://github.com/fex-team/styleguide)
+- [Google Markdown 规范](https://github.com/google/styleguide/blob/gh-pages/docguide/style.md)
+- [GitHub Flavored Markdown](https://help.github.com/articles/github-flavored-markdown)
+- [中文排版指南](https://github.com/sparanoid/chinese-copywriting-guidelines)
