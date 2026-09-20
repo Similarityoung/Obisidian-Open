@@ -1,7 +1,8 @@
 ---
-title: 接口幂等
+title: HTTP 与接口
 tags:
   - interview
+  - http
   - idempotency
 categories:
   - Interview
@@ -9,7 +10,15 @@ date: 2026-04-02
 draft: false
 ---
 
-# 接口幂等
+# HTTP 与接口
+
+## Cookie 与 Session
+
+HTTP 请求本身不保存会话状态。Cookie 是浏览器保存、在满足域名和路径等条件时随请求携带的数据；Session 通常是服务端保存的会话状态。
+
+常见登录流程：服务端建立 Session，把 Session ID 通过 Cookie 返回；浏览器后续携带该 ID，服务端据此查找登录状态。Cookie 是载体，Session 是状态管理方式；使用 Token 的认证方案也可能借助 Cookie 传输。
+
+## 接口幂等
 
 同一业务操作执行一次或多次，产生的业务效果相同。常见于支付回调、消息重复投递和接口超时重试；不要求每次响应内容完全一致。
 
