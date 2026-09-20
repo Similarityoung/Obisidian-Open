@@ -18,43 +18,9 @@ draft: false
 > [!abstract]
 > 这次 PR 的核心不是单独新增 4 个接口，而是补齐 Dubbo Admin 的服务调试后端链路。它从 `ServiceProviderMetadata` 出发，把“方法语义”和“实例调用目标”汇合到 `/service/generic/invoke`。
 
-## 1. 项目背景
+## 项目背景
 
-为了理解这次 PR，先只保留最小必要背景。
-
-在这个项目里：
-
-- 服务更接近 `serviceName + version + group`
-- `ServiceProviderMetadata` 承载 provider app、方法签名、参数类型、返回类型、关联类型
-- `Instance` 是控制台展示给用户选择的实例
-- `RPCInstance` 是真正承载注册与调用端点信息的实例
-- 这次 PR 的本质，就是把“服务视角”和“实例调用视角”接起来
-
-```text
-服务身份
-serviceName + version + group
-             |
-             v
-ServiceProviderMetadata
-   |                    |
-   | 提供者关系         | 方法/类型信息
-   v                    v
-providerAppName      methods / signature / types
-   |
-   v
-Instance
-控制台展示实例
-   |
-   v
-RPCInstance
-注册中心调用实例
-```
-
-可以把这张图理解成三层：
-
-- 服务相关的信息主要挂在 `ServiceProviderMetadata`
-- 用户在控制台里选择的是 `Instance`
-- 真正发起调用时依赖的是 `RPCInstance`
+服务身份是 `serviceName + version + group`。方法和类型信息来自 `ServiceProviderMetadata`，用户选择 `Instance`，实际调用目标由对应的 `RPCInstance` 提供。实体关系见 [[Dubbo/Dubbo Admin 应用与实例模型]]。
 
 ## 2. PR 总览
 
@@ -217,4 +183,4 @@ ServiceProviderMetadata
 
 关联阅读：
 
-- [[Dubbo/dubbo-admin 解析]]
+- [[Dubbo/Dubbo Admin 应用与实例模型]]
