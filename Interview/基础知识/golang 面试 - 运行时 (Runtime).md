@@ -18,7 +18,7 @@ draft: false
 
 # golang 面试：运行时（Runtime）
 
-[[Go/golang 面试]]
+[[Interview/基础知识/golang 面试]]
 
 ![image.png](https://img.simi.host/20260406175947212.png)
 

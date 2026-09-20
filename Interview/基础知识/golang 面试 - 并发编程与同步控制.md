@@ -18,7 +18,7 @@ draft: false
 
 # golang 面试：并发编程与同步控制
 
-[[Go/golang 面试]]
+[[Interview/基础知识/golang 面试]]
 
 ## 1. channel（按当前 Go 运行时口径）
 

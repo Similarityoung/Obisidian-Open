@@ -17,7 +17,7 @@ draft: false
 
 # golang 面试：语言基础
 
-[[Go/golang 面试]]
+[[Interview/基础知识/golang 面试]]
 
 ## 1. 切片的本质：对底层数组连续区间的描述
 
