@@ -1,8 +1,8 @@
 ---
 title: RIPER-5 编程提示词
-aliases:
-  - Cursor Rules
-  - RIPER-5 规范
+type: notes
+slug: riper-5-programming-prompt
+summary: "存档 RIPER-5 编程提示词的模式划分与使用约束。"
 tags:
   - cursor
   - prompt-engineering

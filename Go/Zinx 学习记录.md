@@ -1,5 +1,8 @@
 ---
 title: Zinx 学习记录
+type: notes
+slug: go-zinx-study-notes
+summary: "借 Zinx 的接口、函数类型和 Worker 队列示例理解 Go 代码组织。"
 tags:
   - learn
 categories:

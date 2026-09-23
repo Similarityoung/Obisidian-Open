@@ -1,8 +1,8 @@
 ---
 title: Dubbo-go 双向流连接排查
-aliases:
-  - dubbo-go 双向流 TCP 连接未关闭
-  - Dubbo-go BiStream 连接问题
+type: notes
+slug: dubbo-go-bidirectional-stream-connection
+summary: "追踪 Dubbo-go 双向流的关闭流程，并讨论响应体关闭与 TCP 连接复用。"
 tags:
   - issue
   - dubbo-go

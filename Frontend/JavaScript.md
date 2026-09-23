@@ -1,14 +1,14 @@
 ---
 title: JavaScript
-aliases:
-  - JS 学习笔记
-  - JavaScript 教程笔记
+type: notes
+slug: frontend-javascript
+summary: "整理 JavaScript 模块、函数、对象、this 和页面交互等基础知识。"
 tags:
   - javascript
   - frontend
   - 学习笔记
 categories:
-  - Front
+  - Frontend
 date: 2024-08-07T22:17:44+08:00
 draft: false
 ---

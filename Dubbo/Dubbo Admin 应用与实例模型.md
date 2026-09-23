@@ -1,7 +1,8 @@
 ---
 title: Dubbo Admin 应用与实例模型
-aliases:
-  - Dubbo Admin 解析
+type: notes
+slug: dubbo-admin-application-instance-model
+summary: "梳理 Dubbo Admin 中应用、服务、运行时实例和注册实例的关系。"
 tags:
   - Dubbo
   - dubbo-admin

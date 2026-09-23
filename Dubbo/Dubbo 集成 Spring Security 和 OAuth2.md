@@ -1,8 +1,8 @@
 ---
 title: Dubbo 集成 Spring Security 和 OAuth2
-aliases:
-  - Dubbo Security OAuth2 集成
-  - Dubbo + Spring Security
+type: notes
+slug: dubbo-spring-security-oauth2
+summary: "记录 Dubbo REST 请求接入 Spring Security 和 OAuth2 令牌校验的示例。"
 tags:
   - dubbo
   - spring-security

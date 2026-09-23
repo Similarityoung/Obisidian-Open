@@ -1,10 +1,14 @@
 ---
 title: Agent 架构与工具
+type: notes
+slug: interview-agent-architecture-tools
+summary: "归纳 Agent 架构、工具调用、工作流、Skills 和多 Agent 协作的面试要点。"
+date: 2026-09-20
 tags:
   - interview
   - ai
 categories:
-  - Interview
+  - Agent
 draft: false
 ---
 

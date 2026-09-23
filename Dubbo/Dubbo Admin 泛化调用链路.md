@@ -1,8 +1,8 @@
 ---
 title: Dubbo Admin 泛化调用链路
-aliases:
-  - dubbo-admin 泛化调用实现
-  - Dubbo Admin 泛化调用链路
+type: notes
+slug: dubbo-admin-generic-invoke
+summary: "记录 Dubbo Admin 从服务元数据和目标实例发起泛化调用的后端链路。"
 tags:
   - Dubbo
   - dubbo-admin

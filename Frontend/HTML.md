@@ -1,9 +1,12 @@
 ---
 title: HTML
+type: notes
+slug: frontend-html
+summary: "记录 HTML 中 div、span、表格和 iframe 的用途与基础示例。"
 tags:
   - html学习笔记
 categories:
-  - Front
+  - Frontend
 date: 2024-06-27T22:17:44+08:00
 draft: false
 ---

@@ -1,5 +1,8 @@
 ---
 title: Git 约定式提交（Conventional Commits）
+type: notes
+slug: conventional-commits
+summary: "记录约定式提交的消息格式、常见类型和示例。"
 tags:
   - git
   - commit

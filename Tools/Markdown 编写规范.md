@@ -1,5 +1,8 @@
 ---
 title: Markdown 编写规范
+type: notes
+slug: markdown-writing-conventions
+summary: "整理 Markdown 常用格式、表达规则和编辑参考。"
 tags:
   - md
 categories:

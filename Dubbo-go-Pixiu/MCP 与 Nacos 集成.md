@@ -1,5 +1,8 @@
 ---
 title: MCP 与 Nacos 集成
+type: notes
+slug: pixiu-mcp-nacos-integration
+summary: "设计 Pixiu MCP Server 与 Nacos 集成后的配置发现、转换和动态更新流程。"
 tags:
   - Dubbo
 categories:

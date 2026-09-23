@@ -1,7 +1,11 @@
 ---
 title: 关于 dubbo-go 社区和我
+type: thoughts
+slug: dubbo-go-community-and-me
+summary: "回顾参与 Dubbo-go 社区的经历、Pixiu 相关贡献和未来期望。"
 tags: []
-categories: []
+categories:
+  - Dubbo
 date: 2026-05-28T11:26:01+08:00
 draft: false
 ---

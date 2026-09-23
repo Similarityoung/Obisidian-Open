@@ -1,8 +1,8 @@
 ---
 title: gRPC 双向流代理设计
-aliases:
-  - Pixiu gRPC 双向流方案
-  - Dubbo-go-Pixiu gRPC Stream 设计
+type: notes
+slug: pixiu-grpc-stream-proxy-design
+summary: "记录 Pixiu 代理 gRPC 一元与流式调用时的监听器、转发和连接生命周期设计。"
 tags:
   - dubbo-go-pixiu
   - grpc

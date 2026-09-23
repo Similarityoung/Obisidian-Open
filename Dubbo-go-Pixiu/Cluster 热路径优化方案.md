@@ -1,3 +1,13 @@
+---
+title: Cluster 热路径优化方案
+type: notes
+slug: pixiu-cluster-hot-path-optimization
+summary: "分析 Pixiu Cluster 请求热路径中的查找、健康过滤和并发问题，并列出优化与验证步骤。"
+date: 2026-04-06
+draft: false
+categories:
+  - Dubbo
+---
 
 # Cluster 热路径优化方案
 

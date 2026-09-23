@@ -1,5 +1,8 @@
 ---
 title: MySQL
+type: notes
+slug: interview-mysql
+summary: "归纳 MySQL 索引、事务和查询相关的常见面试知识点。"
 tags:
   - interview
   - prepare
@@ -7,7 +10,7 @@ tags:
   - mysql
   - database
 categories:
-  - Interview
+  - Backend
 date: 2026-04-02
 draft: false
 ---

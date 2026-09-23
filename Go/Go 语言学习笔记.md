@@ -1,8 +1,8 @@
 ---
 title: Go 语言学习笔记
-aliases:
-  - Golang 学习笔记
-  - Go Notes
+type: notes
+slug: go-language-learning-notes
+summary: "按学习过程记录 Go 的语法、数据结构、并发和模块管理。"
 tags:
   - go
   - 学习笔记
