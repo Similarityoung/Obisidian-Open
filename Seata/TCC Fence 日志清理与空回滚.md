@@ -3,12 +3,10 @@ title: TCC Fence 日志清理与空回滚
 type: notes
 slug: seata-tcc-fence-log-cleanup
 summary: "记录 Seata-go TCC Fence 日志清理及空回滚问题的处理过程。"
-tags:
-  - pr
-categories:
-  - Seata
 date: 2025-02-21T02:51:10+08:00
 draft: false
+categories:
+  - Seata
 ---
 
 # TCC Fence 日志清理与空回滚

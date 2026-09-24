@@ -3,14 +3,12 @@ title: MCP 授权设计
 type: notes
 slug: pixiu-mcp-authorization-design
 summary: "基于 MCP 授权规范梳理 Pixiu 作为资源服务器时的鉴权流程和实现边界。"
-tags:
-  - Dubbo
-  - learn
-categories:
-  - Dubbo
-  - Go
 date: 2025-07-26T21:56:41+08:00
 draft: false
+categories:
+  - Dubbo
+tags:
+  - mcp
 ---
 
 # MCP 授权设计

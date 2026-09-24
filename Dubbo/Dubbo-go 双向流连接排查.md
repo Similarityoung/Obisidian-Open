@@ -3,15 +3,12 @@ title: Dubbo-go 双向流连接排查
 type: notes
 slug: dubbo-go-bidirectional-stream-connection
 summary: "追踪 Dubbo-go 双向流的关闭流程，并讨论响应体关闭与 TCP 连接复用。"
-tags:
-  - issue
-  - dubbo-go
-  - grpc
-  - 双向流
-categories:
-  - Dubbo
 date: 2025-01-17T17:10:25+08:00
 draft: false
+categories:
+  - Dubbo
+tags:
+  - grpc
 ---
 
 # Dubbo-go 双向流连接排查

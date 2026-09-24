@@ -3,14 +3,10 @@ title: Go 语言学习笔记
 type: notes
 slug: go-language-learning-notes
 summary: "按学习过程记录 Go 的语法、数据结构、并发和模块管理。"
-tags:
-  - go
-  - 学习笔记
-  - 编程语言
-categories:
-  - Go
 date: 2024-08-29T14:09:53+08:00
 draft: false
+categories:
+  - Go
 ---
 
 # Go 语言学习笔记

@@ -3,16 +3,11 @@ title: Harness Engineering 阅读思考
 type: thoughts
 slug: agent-harness-engineering-reflections
 summary: "从 OpenAI 的 Harness Engineering 案例思考智能体完成代码任务所需的环境、反馈与验证。"
-tags:
-  - ai
-  - agent
-  - engineering
-  - tools
-categories:
-  - Agent
 date: 2026-03-12T15:37:13+08:00
 draft: false
 source: https://openai.com/zh-Hans-CN/index/harness-engineering/
+categories:
+  - Agent
 ---
 
 # Harness Engineering 阅读思考

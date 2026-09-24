@@ -3,12 +3,12 @@ title: AI 网关演进设想
 type: thoughts
 slug: pixiu-ai-gateway-vision
 summary: "提出 Pixiu 在 AI 网关、MCP 网关和会话管理方向上的演进设想。"
-tags:
-  - Dubbo
-categories:
-  - Dubbo
 date: 2025-04-04T19:39:21+08:00
 draft: false
+categories:
+  - Dubbo
+tags:
+  - mcp
 ---
 
 # AI 网关演进设想

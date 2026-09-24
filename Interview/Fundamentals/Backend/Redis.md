@@ -3,16 +3,12 @@ title: Redis
 type: notes
 slug: interview-redis
 summary: "归纳 Redis 数据类型、缓存应用与常见运行边界。"
-tags:
-  - interview
-  - prepare
-  - answers
-  - redis
-  - middleware
-categories:
-  - Backend
 date: 2026-04-02
 draft: false
+categories:
+  - Backend
+tags:
+  - interview
 ---
 
 # Redis

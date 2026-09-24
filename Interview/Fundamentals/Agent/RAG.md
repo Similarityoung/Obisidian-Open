@@ -3,14 +3,13 @@ title: RAG
 type: notes
 slug: interview-rag
 summary: "归纳 RAG 的文档处理、检索、生成和评估流程。"
-tags:
-  - interview
-  - ai
-  - milvus
-categories:
-  - Agent
 draft: false
 date: 2026-04-02
+categories:
+  - Agent
+tags:
+  - interview
+  - rag
 ---
 
 # RAG

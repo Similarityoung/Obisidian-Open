@@ -3,13 +3,10 @@ title: Git 约定式提交（Conventional Commits）
 type: notes
 slug: conventional-commits
 summary: "记录约定式提交的消息格式、常见类型和示例。"
-tags:
-  - git
-  - commit
-categories:
-  - Tools
 date: 2024-09-17T16:57:35+08:00
 draft: false
+categories:
+  - Engineering
 ---
 
 # Git 约定式提交（Conventional Commits）

@@ -3,14 +3,12 @@ title: Dubbo Admin 泛化调用链路
 type: notes
 slug: dubbo-admin-generic-invoke
 summary: "记录 Dubbo Admin 从服务元数据和目标实例发起泛化调用的后端链路。"
-tags:
-  - Dubbo
-  - dubbo-admin
-  - 泛化调用
-categories:
-  - Dubbo
 date: 2026-03-29
 draft: false
+categories:
+  - Dubbo
+tags:
+  - dubbo-admin
 ---
 
 # Dubbo Admin 泛化调用链路

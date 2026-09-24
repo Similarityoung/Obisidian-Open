@@ -3,15 +3,12 @@ title: gRPC 双向流代理设计
 type: notes
 slug: pixiu-grpc-stream-proxy-design
 summary: "记录 Pixiu 代理 gRPC 一元与流式调用时的监听器、转发和连接生命周期设计。"
-tags:
-  - dubbo-go-pixiu
-  - grpc
-  - stream
-  - gateway
-categories:
-  - Gateway
 date: 2025-05-27T21:54:03+08:00
 draft: false
+categories:
+  - Dubbo
+tags:
+  - grpc
 ---
 
 # gRPC 双向流代理设计

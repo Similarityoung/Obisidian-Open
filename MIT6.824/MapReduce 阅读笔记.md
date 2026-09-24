@@ -3,13 +3,10 @@ title: MapReduce 阅读笔记
 type: notes
 slug: mit-6-824-mapreduce-paper-notes
 summary: "记录 MapReduce 论文的编程模型、任务调度、容错与性能分析。"
-tags:
-  - MapReduce
-  - paper
-categories:
-  - MIT6.824
 date: 2024-12-29T13:32:58+08:00
 draft: false
+categories:
+  - Distributed Systems
 ---
 
 # MapReduce 阅读笔记

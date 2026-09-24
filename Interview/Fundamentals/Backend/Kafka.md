@@ -3,13 +3,12 @@ title: Kafka
 type: notes
 slug: interview-kafka
 summary: "归纳 Kafka 的分区、有序性、消费语义和性能机制。"
-tags:
-  - interview
-  - kafka
-categories:
-  - Backend
 date: 2026-04-02
 draft: false
+categories:
+  - Backend
+tags:
+  - interview
 ---
 
 # Kafka

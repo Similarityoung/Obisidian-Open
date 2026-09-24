@@ -4,12 +4,12 @@ type: notes
 slug: interview-llm-prompt
 summary: "归纳语言模型生成、采样、提示词与相关能力边界的面试要点。"
 date: 2026-09-20
-tags:
-  - interview
-  - ai
+draft: false
 categories:
   - Agent
-draft: false
+tags:
+  - interview
+  - llm
 ---
 
 # LLM 与 Prompt

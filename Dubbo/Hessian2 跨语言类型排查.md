@@ -3,12 +3,10 @@ title: Hessian2 跨语言类型排查
 type: notes
 slug: dubbo-go-hessian2-cross-language-types
 summary: "分析 Dubbo-go 与 Java 服务互调时的整数参数和 Hessian2 枚举类型问题。"
-tags:
-  - issue
-categories:
-  - Dubbo
 date: 2025-04-03T21:17:51+08:00
 draft: false
+categories:
+  - Dubbo
 ---
 
 # Hessian2 跨语言类型排查

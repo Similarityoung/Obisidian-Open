@@ -3,12 +3,10 @@ title: CSS
 type: notes
 slug: frontend-css
 summary: "记录 CSS 样式引入、字体回退、选择器、伪类和动画的基础用法。"
-tags:
-  - css学习笔记
-categories:
-  - Frontend
 date: 2024-07-01T17:39:44+08:00
 draft: false
+categories:
+  - Frontend
 ---
 
 # CSS

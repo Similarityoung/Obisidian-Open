@@ -3,12 +3,10 @@ title: Markdown 编写规范
 type: notes
 slug: markdown-writing-conventions
 summary: "整理 Markdown 常用格式、表达规则和编辑参考。"
-tags:
-  - md
-categories:
-  - Tools
 date: 2024-09-24T13:19:50+08:00
 draft: false
+categories:
+  - Engineering
 ---
 
 # Markdown 编写规范

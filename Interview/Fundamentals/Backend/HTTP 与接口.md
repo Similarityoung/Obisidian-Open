@@ -3,14 +3,12 @@ title: HTTP 与接口
 type: notes
 slug: interview-http-api
 summary: "归纳 Cookie、Session 与接口幂等性的基础概念和实现边界。"
-tags:
-  - interview
-  - http
-  - idempotency
-categories:
-  - Backend
 date: 2026-04-02
 draft: false
+categories:
+  - Backend
+tags:
+  - interview
 ---
 
 # HTTP 与接口
