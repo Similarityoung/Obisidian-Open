@@ -176,9 +176,3 @@ ServiceProviderMetadata
 ### 给 invoke 设计 dubbo-go client 池
 
 当前实现里每次调用都会新建 dubbo-go instance/client。后续可以设计一个 client 池，把创建和复用抽出来，减少重复初始化开销。
-
----
-
-关联阅读：
-
-- [[Dubbo/Dubbo Admin 应用与实例模型]]

@@ -158,11 +158,6 @@ OpenAI 用一个很小的工程团队，在几个月内做出了一个已经有�
 
 如果这些基础设施没有搭起来，再强的模型也只能在混乱环境里碰运气。
 
-## 相关笔记
-
-- [[Agent/开发范式与框架]]
-- [[Agent/上下文工程]]
-
 ## 原文
 
 - [Harness Engineering（OpenAI）](https://openai.com/zh-Hans-CN/index/harness-engineering/)
