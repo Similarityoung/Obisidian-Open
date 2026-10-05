@@ -5,7 +5,6 @@ slug: generative-software-engineering
 summary: "从简洁 README 的用途说明、使用示例和截图入手，思考工程品味、接口设计与 AI 协作。"
 date: 2026-10-05T13:06:22+08:00
 draft: true
-source: https://linbol.top/videobook/%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86%20%5B03-Raw%EF%BC%8F26%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%EF%BC%8FNJU%5D/book.html
 categories:
   - Engineering
 ---
@@ -18,9 +17,21 @@ categories:
 
 ## 从简洁的 README 学习工程品味
 
-讲师提到，有些维护多年的老项目，README 很短，但看完以后，想继续了解的内容都有清楚的链接可以进入。我认同这种简洁：用途说明、简单使用方式、能展示效果的截图，再加上必要的文档入口，就能让读者知道这个项目是否适合自己、怎样开始使用。
+讲师提到，有些维护多年的老项目，README 很短，但看完以后，想继续了解的内容都有清楚的链接可以进入。我认同这种安排：README 帮助读者了解项目、开始尝试，具体配置和完整功能说明可以放到详细文档里。
 
 阅读这样的 README，可以留意它如何安排第一次使用所需的信息：截图展示了什么效果？安装和使用示例能否让人直接尝试？遇到更复杂的需求，是否容易找到详细说明？
+
+### 一个具体例子：vim-startify
+
+比如 [vim-startify](https://github.com/mhinz/vim-startify#readme)，这是一个 2013 年创建的 Vim / Neovim 启动界面插件。它的 README 很短：先说明插件能展示最近使用的文件、会话和书签，再给出安装与文档入口，接着放一张[启动界面截图](https://github.com/mhinz/vim-startify/blob/master/images/startify-menu.png)，最后是反馈方式。
+
+安装部分给出的 vim-plug 配置示例只有一行：
+
+```vim
+Plug 'mhinz/vim-startify'
+```
+
+需要进一步了解功能和配置，就看 `:h startify`、`:h startify-faq` 或项目 wiki。我觉得这种安排值得学习：先帮助读者知道它有什么用、怎样安装、装完是什么样子，再把具体配置交给详细文档。
 
 ### 把观察变成对 AI 的具体要求
 
