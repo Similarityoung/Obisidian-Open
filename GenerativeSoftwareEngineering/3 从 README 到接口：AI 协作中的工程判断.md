@@ -2,7 +2,7 @@
 title: 3 从 README 到接口：AI 协作中的工程判断
 type: notes
 slug: generative-software-engineering
-summary: "从 curl 的 README 和 pi 的工具接口入手，思考工程品味与 AI 协作。"
+summary: "模型能力越强，工程师的品味越重要。通过阅读成熟项目、比较设计决策，积累对架构、README 和接口的判断。"
 date: 2026-10-05T13:06:22+08:00
 draft: true
 categories:
@@ -11,67 +11,48 @@ categories:
 
 # 3 从 README 到接口：AI 协作中的工程判断
 
-这一讲让我想继续琢磨 README。讲师提到，README 可以很简洁：说明用途，给出简单用法，有必要时放几张截图，再留一个详细文档的入口。我认同这种做法，读者能知道项目做什么、怎样开始，就已经很好了。
+## 模型越强，工程师的品味越重要
 
-## 从 README 学习工程品味
+随着模型能力的提升，工程师的品味会越来越重要。AI 可以快速写出代码，工程师则需要判断采用什么方案、怎样组织模块、接口应该暴露什么。这些选择决定了软件最终的质量。
 
-### 一个具体例子：curl 的 README
+我理解的工程品味，是对这些选择的判断力：看到一个设计，能理解它为什么这样做；面对自己的问题，也能做出合适的取舍。模型越能实现我们的想法，我们对这些想法的判断就越重要。
 
-[curl 的 README](https://github.com/curl/curl/blob/master/README.md) 开头说明它通过 URL 与服务器传输数据，并列出支持的协议。随后，使用方法指向 man page 和 everything curl，安装指向 INSTALL，库的使用指向 libcurl 文档。
+## 从成熟项目中积累经验
 
-curl 的功能很多，README 却很短。它把不同需求的入口列清楚，具体用法交给专门文档。这种取舍值得学：先让读者找到方向，再按需要深入。
+提升品味，我觉得一个很直接的办法是读成熟项目。尤其是那些在 AI 编程普及之前就长期维护的 GitHub 仓库，可以看它的架构、模块划分，也可以从 README 入手，学习作者怎样组织和介绍一个项目。
 
-### 把观察变成对 AI 的要求
+### 从 curl 的 README 看内容取舍
 
-“把 README 写好”太含糊。我更愿意把要求说具体：
+讲师提到，README 可以尽量简洁：介绍用途，写一点简单用法，有必要时加截图，再留一个详细文档的入口。我认同这种安排，读者能理解项目、开始使用，就已经很好了。
 
-> 开头说明用途，给出最简单的使用方式。需要展示效果时放截图，详细参数放到文档里，保留清楚的入口。
+[curl 的 README](https://github.com/curl/curl/blob/master/README.md) 就很短。开头说明它通过 URL 与服务器传输数据，并列出支持的协议；使用、安装和 libcurl 的资料，都有各自的文档入口。
 
-这样，AI 知道要改什么，我也能检查读者是否容易上手。工程品味需要落到这些取舍上。
+curl 的功能很多，README 仍然能保持简洁。我想从中学习的是内容的取舍：哪些信息值得放在最前面，哪些可以交给详细文档。以后写自己的 README，也可以先考虑读者需要知道什么。
 
-课程里的 Virtual Implementation 也可以用在这里：先想自己会怎样写，再对照已有项目，看看它保留了什么、把什么放到了别处。比较以后，我才更容易说清楚自己为什么选择这样的安排。
+### 先想自己会怎么做，再看成熟项目怎么做
 
-## 从 pi 的工具接口看工程判断
+阅读项目时，我想多做一步：遇到一个设计决策，先想如果是自己，会怎样处理，再去看项目的实际做法。这也是我对课程中 Virtual Implementation 的理解。
 
-README 要考虑读者需要知道什么，接口也要考虑调用者需要知道什么。最近发布 1.0 的 pi，正好提供了一个具体例子。
+例如，写 README 时，我会保留哪些内容？划分模块时，我会把哪些职责放在一起？带着自己的方案去对照，差异才更容易引起注意，也更容易追问它背后的理由。
 
-### edit：参数之外，还有行为约定
+比较时，还需要理解项目面对的需求和约束。逐渐积累这些具体决策的经验，遇到相似问题时，才更有依据判断怎样做合适。
 
-pi 1.0 的 [edit 工具](https://github.com/earendil-works/pi/blob/v1.0.0/packages/coding-agent/src/core/tools/edit.ts)接收文件路径 `path` 和修改列表 `edits`，每项包含 `oldText` 与 `newText`。
+## 接口设计仍然需要经验
 
-参数之外，还有几条重要约定：旧文本必须在原文件中唯一匹配，各项修改不能重叠，所有匹配都基于修改前的文件。因此，后一项修改不能依赖前一项刚写入的内容。
+最近发布 1.0 的 pi，可以作为继续观察接口的例子。它的 [edit 工具](https://github.com/earendil-works/pi/blob/v1.0.0/packages/coding-agent/src/core/tools/edit.ts)在成功执行后，通过 `content` 给模型简短的结果说明，通过 `details` 提供差异等数据供日志和界面使用。[结果渲染](https://github.com/earendil-works/pi/blob/v1.0.0/packages/coding-agent/src/core/tools/renderers/edit.ts)也有单独的实现。
 
-我觉得，接口需要把数据含义、失败情况和副作用一起说明。
+这让我注意到，同一个操作的结果可以面向不同的使用者组织。但我现在对怎样设计一个好接口，还没有足够清楚的判断。哪些信息应该暴露，哪些细节应该留在内部，怎样划分职责才方便后续使用和修改，这些都需要更多经验。
 
-### 结果怎样交给模型和界面
+看懂 pi 的这段实现之后，我仍然需要比较其他项目怎样处理类似问题，也需要在自己的项目里尝试。只有见过不同设计，并经历过使用和修改，才更容易理解一个接口的取舍。
 
-edit 的成功结果中，有两个值得关注的字段：
+这也是我想继续学习成熟项目的原因：积累能支撑判断的经验，才能更好地选择 AI 给出的方案。
 
-| 字段 | 内容与用途 |
-|---|---|
-| `content` | 给模型的简短成功说明，包含替换块数和文件路径 |
-| `details` | 给日志和界面的差异数据，包括 `diff`、`patch` 和可选的 `firstChangedLine` |
+## 附录：一个 Git 彩蛋
 
-两类字段的用途也写在 [AgentToolResult 的类型说明](https://github.com/earendil-works/pi/blob/v1.0.0/packages/agent/src/types.ts)里。模型据此继续任务，界面则能直接展示改动。
-
-pi 将 edit 的[渲染代码](https://github.com/earendil-works/pi/blob/v1.0.0/packages/coding-agent/src/core/tools/renderers/edit.ts)单独组织。展示最终结果时，渲染器读取 `details.diff` 等信息。编辑代码负责修改文件并生成结果，展示代码负责呈现结果。调整颜色、折叠或布局，就可以集中在展示部分。
-
-## 接口清楚以后，再让多个 Agent 并行开发
-
-如果让两个 Agent 开发类似的工具，一方负责编辑，一方负责展示，我会先约定匹配规则、结果字段和错误处理，再用一份小文件走通完整过程：文件被修改，模型收到结果，界面显示对应的差异。
-
-例如，`firstChangedLine` 指修改后文件中第一处变化的行号。如果双方对它的理解不同，即使都写成 `number`，跳转位置仍会出错。找不到旧文本、出现多个匹配时如何处理，也需要事先说清楚。
-
-我想练习的工程判断，就是把这些约定想清楚，再交给 AI 实现。分工能否成立，要看双方是否理解同一套接口。
-
-## 后记彩蛋：GitHub 自动关闭 issue
-
-在 PR 的描述正文中，可以通过关闭关键词关联 issue：
+在 PR 的描述中写上：
 
 ```text
 fixed #3
 ```
 
-`#3` 指该仓库编号为 3 的 issue。PR 合并到仓库的默认分支，且仓库启用了关联 PR 合并后自动关闭 issue 的设置时，GitHub 会自动关闭它。`fixes`、`close`、`closes` 等也是支持的关键词。
-
-关闭关键词也可以写在 commit message 中，随提交进入默认分支时触发关闭。普通 PR 评论中的引用不等同于这种关闭关联。具体规则见 [GitHub 官方说明](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)和[自动关闭设置](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/managing-auto-closing-issues)。
+当 PR 合并到默认分支，且仓库启用了自动关闭关联 issue 的设置时，GitHub 会自动关闭该仓库的 issue #3。具体规则见 [GitHub 官方说明](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)和[自动关闭设置](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-auto-closing-issues)。
