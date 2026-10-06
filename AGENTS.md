@@ -20,4 +20,4 @@
 - 元数据写在顶部 YAML，保留已有字段与发布状态；`draft` 用布尔值，`true` 为草稿，`false` 为公开。
 - 公开文章必填 `title`、`type`、`slug`、`summary`、`date`；标题与摘要非空，日期有效。
 - `type` 限 `notes` 或 `thoughts`；`slug` 全局唯一，用小写字母、数字及词间单连字符。栏目与地址由两者决定。
-- `categories`、`tags` 可省略或为空数组；每项须为非空字符串。
+- `categories` 表示所属领域，`tags` 标记具体主题；同一概念统一命名。两者可省略或为空数组，元素须为非空字符串。
