@@ -2,9 +2,9 @@
 title: 3 从 README 到接口：AI 协作中的工程判断
 type: notes
 slug: generative-software-engineering
-summary: "模型能力越强，工程师的品味越重要。通过阅读成熟项目、比较设计决策，积累对架构、README 和接口的判断。"
+summary: 模型能力越强，工程师的品味越重要。
 date: 2026-10-05T13:06:22+08:00
-draft: true
+draft: false
 categories:
   - Engineering
 ---
