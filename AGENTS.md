@@ -1,9 +1,5 @@
 # Repository Guidelines
 
-## 项目结构
-
-这是以中文技术笔记为主的 Obsidian 仓库。`Go/`、`Java/`、`Frontend/`、`Agent/` 等目录按主题组织；`GenerativeSoftwareEngineering/` 保存课程笔记，`Research/` 保存研究记录。`Tools/` 包含写作与工具约定，`_Templates/template.md` 提供新笔记模板。`.obsidian/` 保存编辑器配置，仅在相关配置任务中修改。
-
 ## 笔记行文
 
 - 明确目的，围绕核心问题取舍内容。
@@ -18,25 +14,3 @@
 编辑 Markdown 时，遵循 [Markdown 编写规范](<Tools/Markdown 编写规范.md>)：使用 UTF-8、分级标题、标题后的空行和带语言标记的代码围栏。YAML frontmatter 使用两空格缩进，保留已有字段及 `draft` 状态；新增笔记参考模板。
 
 沿用描述性的中文文件名，如 `Go/包依赖与接口设计.md`。系列笔记保留编号，文件名、frontmatter 的 `title` 和一级标题保持一致。重命名时同步更新相关链接。代码示例遵循相邻笔记的语言约定。
-
-## 本地查看与验证
-
-在 Obsidian 中打开仓库作为 vault，预览修改后的笔记。仓库未配置构建流程、自动测试、覆盖率要求或项目级格式检查工具。提交前运行：
-
-```sh
-git status --short
-git diff --check
-git diff -- 'Go/包依赖与接口设计.md'
-```
-
-分别用于确认变更范围、检查空白错误和审阅目标笔记。新文件另外直接检查内容。确认 frontmatter、标题层级、代码围栏和链接正常；涉及图片时确认显示效果。只验证本次改动涉及的内容。
-
-## 提交与评审
-
-最近历史以 `vault backup: YYYY-MM-DD HH:mm:ss` 自动备份为主。手工提交写清动作与对象，例如 `docs: 精简 README 阅读笔记`；仓库中的 Conventional Commits 笔记是参考资料，并非强制提交格式。
-
-PR 说明修改目的、涉及的笔记和验证结果；存在关联 issue 时附链接，显示效果变化时附截图。遵守 `.gitignore` 中对个人面试记录和本地状态文件的排除规则，提交前检查暂存范围。
-
-## Agent 协作
-
-用中文沟通。先阅读目标笔记及相关约定，沿作者主线进行最小范围修改。仅在影响原意、关键事实或逻辑的缺口上讨论确认；信息充分时直接推进。完成后简述修改内容和检查结果。
