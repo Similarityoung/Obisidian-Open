@@ -10,13 +10,13 @@ description: 增量更新 Learning/ 下的学习画像。用户要求“更新�
 ## 依据怎么算
 
 - 笔记（含 AI 整理）说明学过什么。
-- 笔记中「我的理解」一节、讨论中的回答和实践，说明能讲出来、用得上。
-- 会遗忘，所以每条判断都写确认日期。超过 30 天未确认的，水平描述后标“需复习”。
+- 笔记开头「我的理解」一节、讨论中的回答和实践，说明能讲出来、用得上。
+- 每条判断写确认日期。
 
 ## 步骤
 
 1. 读 `Learning/学习状态.md`，拿到末尾“上次整理”的 commit。
-2. 运行 `git log <commit>..HEAD --name-only --format=` 和 `git status --short`，列出新增或修改的笔记；跳过 `Learning/`、`.claude/`、`.obsidian/`。
+2. 运行 `git log <commit>..HEAD --name-only --format=` 和 `git status --short`，列出新增或修改的笔记；跳过 `Learning/`、`.agent/`、`.claude/`、`.obsidian/`。
 3. 判断每篇笔记属于哪个主题。已在主题页依据中链接过、内容只是小改的笔记，跳过。
 4. 再加上本次对话中用户的回答和实践（如有）。
 5. 只改受影响的主题页：
