@@ -39,4 +39,26 @@ Git 默认人是单线程的，十分钟左右提交一次，每次提交有明�
 
 讲师把 Lab 1 需求直接丢给 Agent，得到一整套教务系统，而他只想要一个学习助手。Agent 过度遵循字面要求，没理解真实意图。解法是 MVP：先只做绝对要的功能，第一版不用数据库，用文件系统，等文件多了再让 Agent 提炼。
 
-来源：[生成式软件工程（NJU）第 4 讲](https://linbol.top/videobook/%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86%20%282%29%20%5B04-Raw%EF%BC%8F26%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%EF%BC%8FNJU%5D/book.html)
+## 拆解案例
+
+大型开源项目怎么把成百上千人拆成能独立推进的小团队。三者的共同点是：按代码边界分块，每块有明确负责人，跨块的事走固定流程。
+
+### Linux 内核：子系统与维护者层级
+
+- 切块：按子系统划分，如网络、内存管理、各类架构支持。`MAINTAINERS` 文件写明每块代码归谁管。
+- 协调：维护者各管一棵代码树，下级维护者的补丁逐级汇入上级，最后由 Linus 拉取合并。这是一条信任链，每一级只审查下一级。
+- 节奏：每 2～3 个月发布一版。开头约两周是合并窗口，之后只接受修复。linux-next 每天合并各子系统的树，提前暴露冲突。
+
+### Chromium：OWNERS 文件
+
+- 切块：按目录划分。每个目录的 `OWNERS` 文件列出有权批准修改的人，子目录默认继承上级。
+- 协调：一次改动涉及几个目录，就要拿到每个目录 owner 的批准。`set noparent` 可以切断继承，`per-file` 可以给特定文件单独指定 owner。
+- 特点：权限和代码结构绑在一起，由代码评审工具强制执行，不靠口头约定。
+
+### Kubernetes：SIG 分工
+
+- 切块：按功能领域成立 SIG（Special Interest Group），如网络、存储、节点。每个 SIG 有章程，写明范围、职责和决策方式；SIG 下的子项目由 OWNERS 负责。
+- 协调：跨多个 SIG 的短期议题成立工作组；较大的改动写 KEP（增强提案），在 SIG 之间达成一致后再做。
+- 特点：SIG 的会议、讨论和设计都公开，方便别的 SIG 了解它在做什么，减少你不知道我在做什么带来的冲突。
+
+来源：[生成式软件工程（NJU）第 4 讲](https://linbol.top/videobook/%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86%20%282%29%20%5B04-Raw%EF%BC%8F26%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%EF%BC%8FNJU%5D/book.html)；[Linux 内核开发流程](https://www.kernel.org/doc/html/latest/process/2.Process.html)；[Chromium Code Reviews](https://chromium.googlesource.com/chromium/src/+/main/docs/code_reviews.md)；[Kubernetes 治理](https://github.com/kubernetes/community/blob/master/governance.md)

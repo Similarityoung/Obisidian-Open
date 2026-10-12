@@ -69,8 +69,8 @@ tags: [learning]
   - 简介：工具返回的大 JSON 只提取必要字段放进上下文，原文留着按需读取。
   - 来源：[[Interview/Fundamentals/Agent/上下文与记忆#上下文压缩|上下文与记忆]]
 - pi 的压缩方式
-  - 简介：待补
-  - 来源：待补
+  - 简介：TODO，写完 pi 学习笔记后补
+  - 来源：TODO
 
 ## 记忆
 
