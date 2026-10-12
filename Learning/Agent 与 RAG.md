@@ -1,10 +1,7 @@
 ---
 title: Agent 与 RAG
-type: notes
-slug: learning-agent-rag
-summary: 学习画像：Agent 架构、上下文工程与 RAG 的已有依据、卡点与下一步。
 date: 2026-10-12
-draft: false
+draft: true
 tags: [learning]
 ---
 
