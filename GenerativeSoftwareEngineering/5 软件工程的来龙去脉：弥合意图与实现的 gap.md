@@ -4,7 +4,7 @@ type: notes
 slug: generative-software-engineering-origins
 summary: 软件工程从诞生起就在弥合意图、规格和实现之间的 gap；AI 让实现变便宜，意图和验收变得更重要。
 date: 2026-10-13T11:20:00+08:00
-draft: true
+draft: false
 categories:
   - Engineering
 ---

@@ -4,7 +4,7 @@ type: notes
 slug: generative-software-engineering-version-control
 summary: Git 的协作方式建立在人类的节奏上，Agent 并发开发后，难点从工具转到任务分解。
 date: 2026-10-12T16:52:00+08:00
-draft: true
+draft: false
 categories:
   - Engineering
 ---
