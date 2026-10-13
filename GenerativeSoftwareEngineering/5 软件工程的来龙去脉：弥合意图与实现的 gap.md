@@ -27,6 +27,12 @@ categories:
 
 软件需求是人拍脑袋想出来的，连提需求的人都没想好 corner case。比如选课系统要求先修课，这是硬约束还是软约束？谁能特批？到毕业前就差这门课时，学校往往会开口子。
 
+```mermaid
+flowchart LR
+    I[intent<br/>想要什么] -->|有 gap| S[spec<br/>架构、接口、约束]
+    S -->|有 gap| M[implementation<br/>真正跑起来的代码]
+```
+
 ### 三条 first principle
 
 - **测试前程序不能运行**：设计阶段只有报告，没有强约束，漂移要到测试才暴露。例子：刷 OJ 时先想了个错的算法就开写，写完跑样例才发现整个算法是错的。
@@ -37,14 +43,54 @@ categories:
 
 Royce 1970 年的论文提出瀑布，是为了批判它。把需求、设计、实现之间的关联画成 DAG，测试失败就要往上追溯，依赖错误设计的实现全部作废，所以发现得越晚，代价越大。
 
+```mermaid
+flowchart TD
+    R1[需求点 1] --> D1[设计 1]
+    R2[需求点 2] --> D1
+    R2 --> D2[设计 2]
+    D1 --> C1[实现 1]
+    D2 --> C2[实现 2]
+    C1 --> T[测试]
+    C2 --> T
+    T -.测试失败, 向上追溯.-> D1
+    D1 -.依赖它的设计和实现全部作废.-> X[返工]
+```
+
 - 瀑布是 BFS：一层铺满再做下一层，最后才测试。
 - MVP 和敏捷是 DFS：先走通优先级最高的一条依赖，每一步都拿到反馈。
 - Do it twice：先做一个会扔掉的 pilot。扔掉的是代码；需求要修正，意图不变。当年代码贵，最多做两遍；现在代码便宜，可以做很多遍。
+
+```mermaid
+flowchart LR
+    subgraph BFS[瀑布 = BFS]
+        direction LR
+        A1[需求全铺开] --> A2[设计全铺开] --> A3[实现全铺开] --> A4[最后测试]
+    end
+    subgraph DFS[MVP／敏捷 = DFS]
+        direction LR
+        B1[挑一条依赖] --> B2[做完它] --> B3[测它] --> B4[拿到反馈] --> B1
+    end
+```
 
 ### 历史上的方法是两条线
 
 - **让反馈更早**：pilot、MVP、敏捷、TDD、QuickCheck（写性质，自动生成用例找反例）。
 - **让语义更确定**：自然语言 → checklist → UML 和 DSL → 编程语言加契约 → 形式化证明（Dafny、Verus）。
+
+```mermaid
+flowchart TD
+    Gap[intent → spec → implementation 的 gap]
+    Gap --> Fast[让反馈更早]
+    Gap --> Clear[让语义更确定]
+    Fast --> F1[pilot / MVP]
+    Fast --> F2[敏捷]
+    Fast --> F3[TDD]
+    Fast --> F4[QuickCheck]
+    Clear --> C1[checklist]
+    Clear --> C2[UML / DSL]
+    Clear --> C3[契约 require/ensure]
+    Clear --> C4[形式化证明]
+```
 
 另外，traceability 把依赖图显式建出来，防御性编程默认前提会被违反。遇到新工具，可以先问：它是让反馈更早，还是让语义更确定？
 
