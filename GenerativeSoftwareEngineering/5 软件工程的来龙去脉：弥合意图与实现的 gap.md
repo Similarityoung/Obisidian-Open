@@ -27,9 +27,7 @@ categories:
 
 软件需求是人拍脑袋想出来的，连提需求的人都没想好 corner case。比如选课系统要求先修课，这是硬约束还是软约束？谁能特批？到毕业前就差这门课时，学校往往会开口子。
 
-![Mermaid：intent、spec 与 implementation 之间的 gap](https://img.simi.host/20261013144052824.png)
-
-![视觉化：intent、spec 与 implementation 之间的 gap](https://img.simi.host/20261013143901693.png)
+![intent、spec 与 implementation 之间的 gap](https://img.simi.host/20261013143901693.png)
 
 ### 三条 first principle
 
@@ -41,26 +39,20 @@ categories:
 
 Royce 1970 年的论文提出瀑布，是为了批判它。把需求、设计、实现之间的关联画成 DAG，测试失败就要往上追溯，依赖错误设计的实现全部作废，所以发现得越晚，代价越大。
 
-![Mermaid：瀑布依赖关系与测试失败后的返工](https://img.simi.host/20261013144053594.png)
-
-![视觉化：瀑布依赖关系与测试失败后的返工](https://img.simi.host/20261013143901695.png)
+![瀑布依赖关系与测试失败后的返工](https://img.simi.host/20261013143901695.png)
 
 - 瀑布是 BFS：一层铺满再做下一层，最后才测试。
 - MVP 和敏捷是 DFS：先走通优先级最高的一条依赖，每一步都拿到反馈。
 - Do it twice：先做一个会扔掉的 pilot。扔掉的是代码；需求要修正，意图不变。当年代码贵，最多做两遍；现在代码便宜，可以做很多遍。
 
-![Mermaid：瀑布 BFS 与 MVP、敏捷 DFS 的对比](https://img.simi.host/20261013144054352.png)
-
-![视觉化：瀑布 BFS 与 MVP、敏捷 DFS 的对比](https://img.simi.host/20261013143901696.png)
+![瀑布 BFS 与 MVP、敏捷 DFS 的对比](https://img.simi.host/20261013143901696.png)
 
 ### 历史上的方法是两条线
 
 - **让反馈更早**：pilot、MVP、敏捷、TDD、QuickCheck（写性质，自动生成用例找反例）。
 - **让语义更确定**：自然语言 → checklist → UML 和 DSL → 编程语言加契约 → 形式化证明（Dafny、Verus）。
 
-![Mermaid：让反馈更早与让语义更确定的两条路径](https://img.simi.host/20261013144055099.png)
-
-![视觉化：让反馈更早与让语义更确定的两条路径](https://img.simi.host/20261013143901697.png)
+![让反馈更早与让语义更确定的两条路径](https://img.simi.host/20261013143901697.png)
 
 另外，traceability 把依赖图显式建出来，防御性编程默认前提会被违反。遇到新工具，可以先问：它是让反馈更早，还是让语义更确定？
 
