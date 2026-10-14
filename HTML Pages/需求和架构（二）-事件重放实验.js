@@ -8,9 +8,9 @@
 
   var events = Object.freeze([
     Object.freeze({ id: 'e1', type: 'plan-bound', label: '绑定 2024 培养方案', planId: '2024' }),
-    Object.freeze({ id: 'e2', type: 'grade-recorded', label: 'MATH101 成绩 75', courseId: 'MATH101', score: 75, credits: 4 }),
-    Object.freeze({ id: 'e3', type: 'grade-recorded', label: 'CS101 成绩 55（不及格）', courseId: 'CS101', score: 55, credits: 4 }),
-    Object.freeze({ id: 'e4', type: 'grade-recorded', label: 'EXT201 成绩 80', courseId: 'EXT201', score: 80, credits: 4 }),
+    Object.freeze({ id: 'e2', type: 'grade-recorded', label: 'MATH101 成绩 75（4 学分）', courseId: 'MATH101', score: 75, credits: 4 }),
+    Object.freeze({ id: 'e3', type: 'grade-recorded', label: 'CS101 成绩 55（4 学分，不及格）', courseId: 'CS101', score: 55, credits: 4 }),
+    Object.freeze({ id: 'e4', type: 'grade-recorded', label: 'EXT201 成绩 80（4 学分）', courseId: 'EXT201', score: 80, credits: 4 }),
     Object.freeze({
       id: 'e5',
       type: 'substitution-approved',
@@ -28,7 +28,7 @@
     Object.freeze({
       id: 'e6',
       type: 'grade-corrected',
-      label: '更正 MATH101：75 → 50',
+      label: '更正 MATH101：75 → 50（4 学分）',
       courseId: 'MATH101',
       previousScore: 75,
       score: 50,
@@ -272,8 +272,8 @@
       setText(document, 'ruleValue', out.selectedRule.label + (out.selectedRule.hypothetical ? ' · 假设' : ''));
       var statusText = out.status === 'indeterminate' ? '不可判定' : (out.current.overallPass ? '课程条件满足' : '课程条件不满足');
       setText(document, 'statusValue', '第 ' + state.step + ' 步 · ' + out.selectedRule.label + ' · ' + statusText);
-      setText(document, 'creditValue', out.current.passedCredits + ' / 至少 ' + rules[out.selectedRule.id].minCredits + ' 学分');
-      setText(document, 'requiredValue', out.current.requiredMet ? '满足（' + (out.current.substitutedRequired ? 'EXT201 替代' : 'CS101 通过') + '）' : '不满足');
+      setText(document, 'creditValue', out.status === 'indeterminate' ? '不可判定' : (out.current.passedCredits + ' / 至少 ' + rules[out.selectedRule.id].minCredits + ' 学分'));
+      setText(document, 'requiredValue', out.status === 'indeterminate' ? '不可判定' : (out.current.requiredMet ? '满足（' + (out.current.substitutedRequired ? 'EXT201 替代' : 'CS101 通过') + '）' : '不满足'));
       setText(document, 'countedValue', out.current.countedCourseIds.length ? out.current.countedCourseIds.join('、') + '（各计一次）' : '无');
       setText(document, 'basisValue', out.appliedEventIds.length ? out.appliedEventIds.join('、') : '无');
       setText(document, 'modeValue', out.selectedRule.mode === 'hypothetical' ? '假设重算，不改变事实' : (out.selectedRule.mode === 'unbound' ? '等待方案绑定' : '适用规则')); 
