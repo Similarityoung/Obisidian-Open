@@ -1,32 +1,16 @@
----
-title: Requirements and Architecture (2): Controlled English
-type: notes
-slug: requirements-architecture-controlled-english
-summary: A controlled-English restatement of the second requirements and architecture lecture. It targets approximately 80 percent ASD-STE100 style similarity and is not a certified compliance text.
-date: 2026-10-14
-draft: true
-categories:
-  - Engineering
-tags:
-  - ASD-STE100
-  - controlled-english
----
-
 # Requirements and Architecture (2): A Controlled-English Reading Text
 
 ## 中文使用说明
 
-这份文本是对课程第二讲的英语整理稿，按原文的十二章组织。它采用接近 ASD-STE100 的短句、主动语态、稳定术语和直接表达。用户提出的“80% ASD-STE100”是风格接近度目标，不是可验证的合规比例，也不是认证文本。本稿没有完成 ASD-STE100 受控词典的逐词审计。
+这份文本整理课程第 7 讲，也是“需求与架构”两讲中的第二讲，按原文的十二章组织。它采用接近 ASD-STE100 的短句、主动语态、稳定术语和直接表达。用户提出的“80% ASD-STE100”是风格接近度目标，不是可验证的合规比例，也不是认证文本。本稿没有完成 ASD-STE100 受控词典的逐词审计。请把课程中的判断、示例和编者说明分开阅读。文中 `[Course point]` 表示课程观点或课堂论证；`[Teaching example]` 表示用于讲解的示例；`[Editorial caveat]` 表示本整理稿的限定或校正。`My understanding` 一节暂留给用户填写，本稿不代写个人理解。
 
-请把课程中的判断、示例和编者说明分开阅读。文中 `[Course point]` 表示课程观点或课堂论证；`[Teaching example]` 表示用于讲解的示例；`[Editorial caveat]` 表示本整理稿的限定或校正。`My understanding` 一节暂留给用户填写，本稿不代写个人理解。
+## My Understanding (For Learner Completion)
 
-## My understanding
-
-待本人补写。此处不代替学习者的个人复述。
+This section remains blank for the learner. Add personal understanding after review.
 
 ## 1. Complexity and Architecture
 
-[Course point] Software always translates intent into a specification and then into an implementation. No translation has only one path. Each choice reduces some possibilities and creates a technical commitment.
+[Course point] Software development moves from intent to a specification and then to an implementation. These steps can follow different paths. Each choice reduces some possibilities and creates a technical commitment.
 
 Architecture starts in a ten-line program. It also appears in a system with millions of lines. Good architecture asks what may change and where that change can go.
 
@@ -56,7 +40,7 @@ A class groups data and operations. An object keeps state. A coroutine keeps its
 
 A useful name can carry prior knowledge. A programmer can think about a transaction or an enrollment rule without reopening every implementation detail.
 
-Steele's “Growing a Language” illustrates this idea. A tiny language may be easy to move but too weak for real work. A very large language may arrive too late. A growing language adds features through stable rules. Extensions must be first-class and composable.
+Steele's “Growing a Language” illustrates this idea. A tiny language may be easy to move but too weak for real work. A very large language may arrive too late. A growing language adds features through stable rules. An extension must be a normal design element. It must use the same composition rules as core features.
 
 Software needs the same property. A team can fix a data exchange rule today and allow a new processing step tomorrow. A team can define an interface today and replace its implementation later. The design fixes collaboration rules and leaves local choices open.
 
@@ -68,7 +52,9 @@ Software needs the same property. A team can fix a data exchange rule today and 
 
 [Course point] The UNIX lesson has three linked rules. Each program should do one thing well. Programs should work together. Programs should handle text streams through a common interface.
 
-Text streams connect people, files, and programs. A person can read a stream. Another program can consume the same stream. Standard input carries input. Standard output carries normal results. Standard error carries diagnostics. A process also returns an exit status.
+Text streams connect people, files, and programs. A person can read a stream. Another program can consume the same stream.
+
+Standard input carries input. Standard output carries normal results. Standard error carries diagnostics. A process also returns an exit status.
 
 These conventions make composition possible. Command options need shared forms. A double hyphen can end option parsing. Machine output should not mix colors with data. A delimiter becomes part of the protocol.
 
@@ -98,13 +84,13 @@ RFC 1958 states that technical change is continuous. The lecture compares the In
 
 Telnet gave way to SSH for secure remote access. FTP and HTTP gained secure successors. SMTP and IMAP still support email. These changes show evolution above stable agreements.
 
-[Editorial caveat] The Internet example does not prove that every system needs many layers. Layers help when responsibilities change independently.
+[Editorial caveat] TCP can fail. HTTPS is not universal. The Internet example does not prove that every system needs many layers. Layers help when responsibilities change independently.
 
 ## 7. From One Page and One SQL Transaction to MVC
 
 [Course point] Early business systems mapped each request to a database transaction and each page to a database view. A course request could read data, check rules, write enrollment, and return a page.
 
-This design worked well for stable CRUD work. It became risky when each page copied business rules. A student page and an administrator page could apply different capacity rules.
+This design worked well for stable CRUD work. CRUD can issue transactions and enforce local rules. It does not by itself preserve every historical fact. It became risky when each page copied business rules. A student page and an administrator page could apply different capacity rules.
 
 Java Web tools changed page construction. Servlets produced HTML from Java. JSP put server code inside an HTML template. JSTL and expression language later reduced script fragments. Templates improved page maintenance. They did not place business rules in the correct module.
 
@@ -136,15 +122,17 @@ An order may move through placement, stock locking, payment, risk review, shippi
 
 A status column can encode stages. Boolean fields can encode more details. Neither representation explains how the current state came from earlier facts. A bug or override can create a record that means both “eligible” and “not eligible.”
 
-[Teaching example] A prerequisite result may change after a later course passes. A direct update must find every affected field. A missed update creates a false current state.
+[Teaching example] A prerequisite result may change after a student passes a later course. A direct update must find every affected field. A missed update creates a false current state.
 
 [Editorial caveat] Event Sourcing is not a universal replacement for CRUD. It can help when history, audit, replay, or dependency analysis has real value. It adds operational costs.
 
 ## 10. Separate Past, Present, and Future
 
-[Course point] Double-entry bookkeeping uses equal and opposite account changes. Assets must equal liabilities plus equity. A balanced entry can still use the wrong account.
+[Course point] Double-entry bookkeeping requires total debit to equal total credit. Debit and credit are accounting directions. They do not always mean an increase or a decrease. Assets equal liabilities plus equity. A balanced entry can still use the wrong account.
 
-Event Sourcing records facts and derives a current view from them. A persistent history records what happened. A command records a desired action. A reducer applies rules and produces a view.
+Event Sourcing records accepted facts and derives a current view from them. A persistent history records what happened. A command records a desired action. A reducer applies rules and produces a view.
+
+A correction adds a new fact. It must not silently erase an earlier accepted fact. An expected future result is not a fact.
 
 The lecture uses “LLM as a Compiler.” A language model proposes accounting actions from source material. Ledger code checks action shape and constraints. Human review checks business meaning.
 
@@ -158,14 +146,14 @@ A replay can recompute a view. It must not repeat an external payment. The syste
 
 [Course point] A student record may contain grades, passed courses, total credits, category credits, and a graduation result. These values do not all have the same status.
 
-A grade and an approved substitution can act as source facts. Passed-course lists can be derived with replacement rules. Category credits can use the passed-course result and the applicable curriculum. Graduation eligibility can combine those results with separate conditions.
+A grade and an approved substitution can act as source facts. Rules derive passed-course lists. Credit calculations use that result and the applicable curriculum. Graduation eligibility combines those results with separate conditions.
 
 The dependency chain should remain visible:
 
 1. Record enrollment, grade, recognition, and approval facts.
 2. Compute passed courses with substitution and duplicate rules.
 3. Compute category credits under a curriculum version.
-4. Check graduation design, asset return, policy, and approval conditions.
+4. Check final project, asset return, policy, and approval conditions.
 5. Produce a graduation conclusion with its input references.
 
 A corrected grade should trigger a new calculation. The system should explain which conclusion changed and why. An approval should record its subject, scope, and reason.
@@ -174,7 +162,9 @@ A corrected grade should trigger a new calculation. The system should explain wh
 
 ## 12. From State Consistency to Computation Correctness
 
-[Course point] The lecture criticizes systems that store many derived fields as independent values. A `can_graduate` flag may become stale when a grade or curriculum changes.
+[Course point] The lecture criticizes systems that store many derived fields as independent values. It calls the issue a “Billion Dollar Mistake.”
+
+[Editorial caveat] This phrase is course rhetoric, not a formal defect claim. A `can_graduate` flag may become stale when a grade or curriculum changes.
 
 SQL can express queries, views, constraints, and materialized views. The wider issue crosses database logic, application logic, caches, and interface state. The system needs an explicit dependency account.
 
@@ -185,6 +175,17 @@ A source of truth contains enough facts to rebuild other information. A cache ma
 This approach changes the central risk. The team spends less effort keeping snapshots equal. The team spends more effort proving calculations. A calculation can run again. A test can check it. An audit can inspect it.
 
 [Editorial caveat] The design still needs rule versions, time boundaries, permissions, and controls for external side effects. “Now comes from the past” is a traceability principle, not a promise that every calculation is correct.
+
+## Task Decomposition Note (Editorial Application)
+
+The following split is an editorial application of the lecture ideas. It is not a claim from the lecture and it is not an ASD-STE100 rule.
+
+- Facts owner: records accepted facts and their evidence.
+- Rule owner: defines the business rules and their versions.
+- Read model writer: builds a query view from facts and rules.
+- Test contracts: check interfaces, invariants, and representative calculations.
+
+Keep ownership explicit. Keep each contract testable. Treat a read model as derived output, not as a new fact.
 
 ## Bilingual Term List / 中英术语表
 
@@ -209,15 +210,15 @@ This approach changes the central risk. The team spends less effort keeping snap
 - persistent history: 持久历史
 - replay: 重放
 - reducer: 归约器；按规则计算状态的程序
-- source of truth: 事实依据；唯一可信来源
+- source of truth: 权威事实依据（按领域界定）
 - rule version: 规则版本
 - external side effect: 外部副作用
 
 ## Use and Source Notes
 
-This text targets approximately 80 percent style similarity to ASD-STE100. That target is qualitative. It is not a compliance percentage, a certification claim, or a full controlled-dictionary audit.
+Style target: approximately 80 percent similarity to ASD-STE100. This target is qualitative. It is not compliance, certification, or a full dictionary audit.
 
-The ASD-STE100 pages used for the style check state that the standard has writing rules and a controlled dictionary. They emphasize short sentences, one topic per sentence, and active voice. The Issue 9 rule material gives 20-word limits for procedural sentences and 25-word limits for descriptive sentences in the relevant list structure.
+The official site identifies Issue 9 (15 January 2025). Part 1 gives 53 writing rules. Part 2 gives about 900 approved words. Rules 5.1 and 6.3 limit procedural and descriptive sentences to 20 and 25 words. Rule 3.6 requires active voice unless a description has an unknown agent.
 
 Official ASD-STE100 sources:
 
@@ -226,10 +227,10 @@ Official ASD-STE100 sources:
 - ASD-STE100 downloads, Issue 9: https://www.asd-ste100.org/STE_downloads.html
 - ASD-STE100 Issue 9 PDF: https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf
 
-Course source files and references:
+Course attribution: Jiang Yanyan. The lecture and slides use CC BY-NC 4.0. This adaptation uses the Linbol videobook for noncommercial study.
 
-- Lecture source: `source.txt`
-- Lecture map: `source-map.json`
+Course references:
+
 - Course lecture: https://jyywiki.cn/GSE/2026/lect7.md
-- Course slides: https://jyywiki.cn/GSE/2026/slides7.html
 - Videobook page: https://linbol.top/videobook/%E9%9C%80%E6%B1%82%E5%92%8C%E6%9E%B6%E6%9E%84%20%282%29%20%5B07-Raw%EF%BC%8F26%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%EF%BC%8FNJU%5D/book.html
+- License: https://creativecommons.org/licenses/by-nc/4.0/
