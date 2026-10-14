@@ -9,7 +9,7 @@ OUT = ROOT / 'HTML Pages/需求和架构（二）-阅读工作台.html'
 
 raw = SOURCE.read_text(encoding='utf-8')
 source_hash = hashlib.sha256(raw.encode('utf-8')).hexdigest()[:12]
-lines = raw.splitlines()
+lines = re.sub(r'<!--.*?-->', '', raw, flags=re.S).splitlines()
 if lines and lines[0].strip() == '---':
     try:
         end = next(i for i, line in enumerate(lines[1:], 1) if line.strip() == '---')
@@ -108,12 +108,20 @@ if current is not None:
     sections.append(current)
 
 assert heading1, 'Markdown title not found'
-assert len(sections) == 18, f'Expected 18 level-2 sections, got {len(sections)}'
+# The reader's own notes stay in Markdown until they contain actual writing.
+sections = [section for section in sections if section['blocks']]
+chapters = [section for section in sections if re.match(r'^\d+\. ', section['title'])]
+assert [int(section['title'].split('.')[0]) for section in chapters] == list(range(1, 13)), 'Expected the 12 lecture chapters in order'
 
 def render_block(block):
     kind, data = block
     if kind == 'p':
-        return f'<p>{inline(data)}</p>'
+        role = ''
+        if data.startswith('**本节问题：**'):
+            role = ' class="chapter-question"'
+        elif data.startswith('**一句话结论：**'):
+            role = ' class="chapter-answer"'
+        return f'<p{role}>{inline(data)}</p>'
     if kind in ('ul', 'ol'):
         items = ''.join(f'<li>{inline(item)}</li>' for item in data)
         return f'<{kind}>{items}</{kind}>'
@@ -124,48 +132,40 @@ def render_block(block):
 
 source_html = []
 toc_html = []
-toc_groups = {
-    1: '总览',
-    2: '总览',
-    3: '总览',
-    4: '第一幕：复杂性与抽象',
-    5: '第一幕：复杂性与抽象',
-    6: '第一幕：复杂性与抽象',
-    7: '第二幕：组合与演化',
-    8: '第二幕：组合与演化',
-    9: '第二幕：组合与演化',
-    10: '第三幕：应用与界面',
-    11: '第三幕：应用与界面',
-    12: '第三幕：应用与界面',
-    13: '第四幕：事实与重算',
-    14: '第四幕：事实与重算',
-    15: '第四幕：事实与重算',
-    16: '参考',
-    17: '参考',
-    18: '参考',
-}
 last_group = None
+chapter_seen = False
 for index, section in enumerate(sections, 1):
-    sid = f'section-{index:02d}-{section["id"]}'
+    chapter = re.match(r'^(\d+)\. (.+)', section['title'])
+    if chapter:
+        chapter_seen = True
+        sid = f'ch{chapter.group(1)}'
+        group = '讲义正文 · 按原文顺序'
+        kind = 'chapter'
+        number = f'<span>{int(chapter.group(1)):02d}</span>'
+        nav_title = chapter.group(2)
+    else:
+        sid = section['id']
+        group = '查阅' if chapter_seen else '先读这里'
+        kind = 'reference' if chapter_seen else 'overview'
+        number = ''
+        nav_title = section['title']
+    section['anchor'] = sid
     rendered_blocks = "\n".join(render_block(block) for block in section['blocks'])
-    empty_note = '<p class="empty-note">本节留给阅读者补充自己的理解。</p>' if not section['blocks'] else ''
     source_html.append(
-        f'<section class="source-section" id="{sid}" data-section="{index}" data-title="{html.escape(section["title"], quote=True)}">\n'
+        f'<section class="source-section {kind}" id="{sid}" data-section="{index}" data-title="{html.escape(section["title"], quote=True)}">\n'
         f'<h2 id="{sid}-title">{inline(section["title"])}</h2>\n'
         + rendered_blocks
-        + empty_note
         + '\n</section>'
     )
-    group = toc_groups[index]
     if group != last_group:
+        if last_group is not None:
+            toc_html.append('</div>')
         toc_html.append(f'<div class="toc-group" data-toc-group="{html.escape(group, quote=True)}"><p>{html.escape(group)}</p>')
         last_group = group
     toc_html.append(
-        f'<a href="#{sid}" data-section-link="{index}"><span>{index:02d}</span>{inline(section["title"])}</a>'
+        f'<a href="#{sid}" data-section-link="{index}">{number}{inline(nav_title)}</a>'
     )
-    next_group = toc_groups.get(index + 1)
-    if next_group != group:
-        toc_html.append('</div>')
+toc_html.append('</div>')
 
 css = r'''
 :root{--paper:#f5f5ef;--paper-2:#ecefe9;--ink:#1f2925;--muted:#64736c;--forest:#1f5548;--forest-deep:#123d34;--accent:#c36d3b;--rule:#d4ddd5;--wash:#e2ece5;--white:#fffef9;--shadow:0 18px 50px rgba(31,85,72,.10);font-family:"Noto Sans SC","Source Han Sans SC","PingFang SC","Hiragino Sans GB",system-ui,sans-serif}
