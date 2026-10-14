@@ -1,3 +1,17 @@
+---
+title: Requirements and Architecture (2): Controlled English
+type: notes
+slug: requirements-architecture-controlled-english
+summary: A controlled-English restatement of lecture 7, the second requirements and architecture lecture. It targets approximately 80 percent ASD-STE100 style similarity and is not a certified compliance text.
+date: 2026-10-14
+draft: true
+categories:
+  - Engineering
+tags:
+  - ASD-STE100
+  - controlled-english
+---
+
 # Requirements and Architecture (2): A Controlled-English Reading Text
 
 ## 中文使用说明
