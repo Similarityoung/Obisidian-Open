@@ -299,23 +299,24 @@ js = r'''
 
 toc = '\n'.join(toc_html)
 content = '\n'.join(source_html)
+display_title = re.sub(r'^\d+\s+', '', heading1).removesuffix('：受控中文')
 template = '''<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="以受控中文稿为唯一正文来源的《需求和架构（二）》交互式阅读工作台。">
+<meta name="description" content="按官方第七讲的12节顺序理解复杂性、抽象、协作规则与可追溯计算。提供中文正文、章节导航、搜索和阅读模式。">
 <title>需求和架构（二）｜阅读工作台</title>
 <style>__CSS__</style>
 </head>
 <body>
+<a class="skip-link" href="#sourceContent">跳到正文</a>
 <!-- 正文由 GenerativeSoftwareEngineering/7 需求和架构（二）：受控中文.md 生成。源文件指纹：__HASH__。不要在本页另写正文。 -->
 <header class="topbar">
   <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">7</span><span>第七讲 / 阅读工作台</span></a>
   <div class="top-actions" aria-label="页面操作">
     <a href="#__OVERVIEW_ANCHOR__">总体认识</a>
     <a href="需求和架构（二）-受控中文.html">正文排版页</a>
-    <a class="accent-link" href="需求和架构（二）-事件重放实验.html">事件重放实验</a>
     <button id="printBtn" type="button">打印</button>
   </div>
 </header>
@@ -324,26 +325,26 @@ template = '''<!doctype html>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
       <p class="sidebar-label">章节导航</p>
-      <div class="search-wrap"><label for="search">搜索正文</label><input id="search" type="search" placeholder="例如：事件、依赖、抽象" autocomplete="off"><p class="search-status" id="searchStatus" aria-live="polite">输入关键词，按章节筛选</p></div>
+      <div class="search-wrap"><label for="search">搜索正文</label><div class="search-field"><input id="search" type="search" placeholder="例如：抽象、规则" aria-label="搜索正文" autocomplete="off"><button id="clearSearch" type="button" hidden>清除</button></div><p class="search-status" id="searchStatus" aria-live="polite">输入关键词，按章节筛选</p></div>
       <button class="mobile-menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="toc">显示目录</button>
       <nav class="toc" id="toc" aria-label="正文目录">__TOC__</nav>
-      <div class="side-note"><p>正文来自同一份中文稿。这里增加的是导航、搜索、进度和打印。</p><a href="需求和架构（二）-自测.html">打开自测</a><a href="需求和架构（二）-受控中文.html">打开完整排版页</a></div>
+      <div class="side-note">读完再试：<a href="需求和架构（二）-事件重放实验.html">事件实验</a><a href="需求和架构（二）-自测.html">自测</a></div>
     </div>
   </aside>
   <main>
     <header class="hero">
-      <p class="eyebrow">需求与架构（二） · 先看主线，再读例子</p>
+      <p class="eyebrow">生成式软件工程 · 第七讲</p>
       <h1>__TITLE__</h1>
-      <p class="hero-lede">这堂课要回答：需求变化时，系统应该改哪里？它先讲复杂性和抽象，再讲共同协作规则，最后讲事实、规则和派生结果怎样组成一条可追溯的计算路径。</p>
-      <div class="hero-meta"><span>__CHAPTER_COUNT__ 个讲义章节</span><span>一份正文，两个补充页面</span><span id="progressText">0%</span></div>
+      <div class="hero-meta"><a href="https://jyywiki.cn/GSE/2026/lect7.md" target="_blank" rel="noreferrer">对照官方讲义</a><span>沿用原文的 __CHAPTER_COUNT__ 节顺序</span><span id="progressText">阅读位置 0%</span></div>
+      <div class="reading-controls"><button id="summaryBtn" type="button" aria-pressed="false" aria-controls="sourceContent">只看问题与结论</button><span id="summaryStatus" aria-live="polite">全文阅读 · 问题、结论、解释与例子</span></div>
     </header>
     <div id="sourceContent" class="source-content">__CONTENT__</div>
-    <p class="no-results" id="noResults">没有匹配的章节。请换一个关键词。</p>
+    <p class="no-results" id="noResults" hidden>没有匹配的章节。请换一个关键词，或清除搜索继续阅读。</p>
     <aside class="workbench-note" aria-label="交互补充">
-      <p><strong>交互补充：</strong>需要步进重放事件或做题时，请打开独立页面。它们不是正文的第二个版本。</p>
-      <p><a href="需求和架构（二）-事件重放实验.html">事件重放实验</a>　<a href="需求和架构（二）-自测.html">章节自测</a>　<a href="需求和架构（二）-受控中文.html">受控中文排版页</a></p>
+      <p><strong>读完再验证：</strong>事件实验对应第 10—11 节，观察成绩更正怎样改变当前结果。自测只覆盖部分主题。两者都是补充，不替代正文。</p>
+      <p><a href="需求和架构（二）-事件重放实验.html">打开事件重放实验</a>　<a href="需求和架构（二）-自测.html">打开 6 道自测</a></p>
     </aside>
-    <footer class="source-footer">正文来源：<code>GenerativeSoftwareEngineering/7 需求和架构（二）：受控中文.md</code>。本页的排版和交互不改变正文含义。</footer>
+    <footer class="source-footer">本页和<a href="需求和架构（二）-受控中文.html">正文排版页</a>由同一份中文稿生成，正文相同；本页额外提供导航、搜索和阅读模式。来源和表达原则见正文末尾。</footer>
   </main>
 </div>
 <script>__JS__</script>
@@ -351,7 +352,7 @@ template = '''<!doctype html>
 </html>
 '''
 html_output = (template.replace('__CSS__', css).replace('__JS__', js).replace('__TOC__', toc)
-               .replace('__CONTENT__', content).replace('__TITLE__', inline(heading1))
+               .replace('__CONTENT__', content).replace('__TITLE__', inline(display_title))
                .replace('__HASH__', source_hash).replace('__OVERVIEW_ANCHOR__', overview_anchor)
                .replace('__CHAPTER_COUNT__', str(len(chapters))))
 OUT.write_text(html_output, encoding='utf-8')
@@ -368,25 +369,26 @@ controlled_template = '''<!doctype html>
 <title>受控中文｜需求和架构（二）</title>
 <style>__CSS__</style>
 </head>
-<body>
+<body class="static-page">
+<a class="skip-link" href="#sourceContent">跳到正文</a>
 <!-- 正文由 GenerativeSoftwareEngineering/7 需求和架构（二）：受控中文.md 生成。源文件指纹：__HASH__。 -->
 <header class="topbar">
-  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">7</span><span>生成式软件工程 / 受控中文正文</span></a>
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">7</span><span>第七讲 / 中文正文</span></a>
   <div class="top-actions"><a class="accent-link" href="需求和架构（二）-阅读工作台.html">返回阅读工作台</a></div>
 </header>
 <div class="layout" id="top">
   <aside class="sidebar"><div class="sidebar-inner"><p class="sidebar-label">正文目录</p><nav class="toc" aria-label="正文目录">__TOC__</nav></div></aside>
   <main>
-    <header class="hero"><p class="eyebrow">中文正文 / 安静阅读</p><h1>__TITLE__</h1><p class="hero-lede">本页只排版受控中文正文。它不增加课程论证；目录、搜索、进度和交互请使用阅读工作台。</p></header>
+    <header class="hero"><p class="eyebrow">生成式软件工程 · 第七讲</p><h1>__TITLE__</h1><div class="hero-meta"><span>正文与阅读工作台完全相同</span><span>本页不含脚本，可直接打印</span></div></header>
     <div id="sourceContent" class="source-content">__CONTENT__</div>
-    <footer class="source-footer">本稿借鉴受控语言的短句、主动表达和术语一致原则，不声称符合 ASD-STE100。来源与边界见正文末尾。</footer>
+    <footer class="source-footer"><a href="需求和架构（二）-阅读工作台.html">返回交互式阅读工作台</a> · 正文来源和表达原则见末尾。</footer>
   </main>
 </div>
 </body>
 </html>
 '''
 controlled_output = (controlled_template.replace('__CSS__', css).replace('__TOC__', toc)
-                     .replace('__CONTENT__', content).replace('__TITLE__', inline(heading1))
+                     .replace('__CONTENT__', content).replace('__TITLE__', inline(display_title))
                      .replace('__HASH__', source_hash).replace('__OVERVIEW_ANCHOR__', overview_anchor)
                      .replace('__CHAPTER_COUNT__', str(len(chapters))))
 CONTROLLED_OUT.write_text(controlled_output, encoding='utf-8')
