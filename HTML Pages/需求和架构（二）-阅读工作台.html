@@ -9,9 +9,9 @@
 :root{--paper:#f5f5ef;--paper-2:#ecefe9;--ink:#1f2925;--muted:#64736c;--forest:#1f5548;--forest-deep:#123d34;--accent:#c36d3b;--rule:#d4ddd5;--wash:#e2ece5;--white:#fffef9;--shadow:0 18px 50px rgba(31,85,72,.10);font-family:"Noto Sans SC","Source Han Sans SC","PingFang SC","Hiragino Sans GB",system-ui,sans-serif}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.85}a{color:var(--forest)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .topbar{position:sticky;top:0;z-index:20;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,4.8rem);border-bottom:1px solid var(--rule);background:rgba(245,245,239,.92);backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:.65rem;color:var(--forest-deep);text-decoration:none;font-weight:800;letter-spacing:.01em}.brand-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--forest);color:var(--forest);font-size:.73rem}.top-actions{display:flex;align-items:center;gap:.4rem}.top-actions a,.top-actions button{border:1px solid transparent;background:transparent;color:var(--muted);padding:.42rem .7rem;text-decoration:none;font-size:.86rem}.top-actions a:hover,.top-actions button:hover{border-color:var(--rule);color:var(--forest);background:var(--white)}.top-actions .accent-link{border-color:var(--forest);color:var(--forest)}
-.progress-track{height:3px;background:var(--rule);position:fixed;top:68px;left:0;right:0;z-index:21}.progress-bar{display:block;height:100%;width:0;background:var(--accent);transition:width .16s ease}.layout{display:grid;grid-template-columns:minmax(220px,286px) minmax(0,920px);gap:0;max-width:1400px;margin:0 auto}.sidebar{border-right:1px solid var(--rule);padding:2.1rem 1.2rem 4rem;min-height:calc(100vh - 71px)}.sidebar-inner{position:sticky;top:96px}.sidebar-label{margin:0 0 .45rem;color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.search-wrap{position:relative;margin:0 0 1.2rem}.search-wrap label{display:block;margin:0 0 .35rem;font-size:.82rem;font-weight:700;color:var(--forest)}.search-wrap input{width:100%;border:1px solid var(--rule);background:var(--white);color:var(--ink);padding:.68rem .75rem;border-radius:2px}.search-wrap input::placeholder{color:#91a099}.search-status{min-height:1.35rem;color:var(--muted);font-size:.78rem;margin:.35rem 0 .7rem}.toc{display:grid;gap:.12rem;max-height:calc(100vh - 260px);overflow:auto;padding-right:.2rem}.toc a{display:flex;align-items:flex-start;gap:.55rem;color:var(--muted);font-size:.85rem;line-height:1.4;text-decoration:none;padding:.4rem .46rem;border-left:2px solid transparent}.toc a span{font-variant-numeric:tabular-nums;color:#9aa8a1;font-size:.72rem;padding-top:.12rem}.toc a:hover,.toc a[aria-current="true"]{color:var(--forest);background:var(--wash);border-left-color:var(--accent)}.toc a.is-hidden{display:none}.side-note{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}.side-note a{display:block;margin:.35rem 0}
-main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem}.hero{position:relative;padding:0 0 3rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}.eyebrow{margin:0 0 .7rem;color:var(--accent);font-size:.77rem;font-weight:800;letter-spacing:.18em}.hero h1{max-width:16ch;margin:0;color:var(--forest-deep);font-size:clamp(2.4rem,5vw,4.6rem);line-height:1.16;letter-spacing:-.055em}.hero-lede{max-width:58ch;margin:1.25rem 0 0;color:var(--muted);font-size:1.02rem}.hero-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:1.4rem 0 0;color:var(--muted);font-size:.82rem}.hero-meta span{display:inline-flex;align-items:center;gap:.4rem}.hero-meta span::before{content:"";width:.45rem;height:.45rem;background:var(--accent);display:inline-block}.source-content{counter-reset:section}.source-section{scroll-margin-top:104px;padding:2.1rem 0 2.5rem;border-bottom:1px solid var(--rule)}.source-section:last-child{border-bottom:0}.source-section h2{display:flex;align-items:baseline;gap:.75rem;margin:0 0 1rem;color:var(--forest);font-size:clamp(1.35rem,2vw,1.8rem);line-height:1.35;letter-spacing:-.025em}.source-section h2::before{content:attr(data-number);display:none}.source-section p,.source-section li{max-width:72ch}.source-section p{margin:.82rem 0}.source-section ul,.source-section ol{padding-left:1.35rem;margin:1rem 0}.source-section li{margin:.38rem 0}.source-section strong{color:var(--forest-deep)}.source-section code{padding:.08em .28em;background:var(--wash);border:1px solid #d5e3d8;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}.source-section a{text-decoration-thickness:1px;text-underline-offset:2px}.workbench-note{margin-top:3rem;padding:1.2rem 1.25rem;border-left:3px solid var(--accent);background:var(--wash);color:#496057;font-size:.9rem}.workbench-note p{margin:.25rem 0}.workbench-note a{font-weight:700}.source-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}
-.no-results{display:none;margin:2rem 0;color:var(--muted)}.no-results.visible{display:block}.searching .source-section{display:none}.searching .source-section.search-hit{display:block}
+.progress-track{height:3px;background:var(--rule);position:fixed;top:68px;left:0;right:0;z-index:21}.progress-bar{display:block;height:100%;width:0;background:var(--accent);transition:width .16s ease}.layout{display:grid;grid-template-columns:minmax(220px,286px) minmax(0,920px);gap:0;max-width:1400px;margin:0 auto}.sidebar{border-right:1px solid var(--rule);padding:2.1rem 1.2rem 4rem;min-height:calc(100vh - 71px)}.sidebar-inner{position:sticky;top:96px}.sidebar-label{margin:0 0 .45rem;color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.search-wrap{position:relative;margin:0 0 1.2rem}.search-wrap label{display:block;margin:0 0 .35rem;font-size:.82rem;font-weight:700;color:var(--forest)}.search-wrap input{width:100%;border:1px solid var(--rule);background:var(--white);color:var(--ink);padding:.68rem .75rem;border-radius:2px}.search-wrap input::placeholder{color:#91a099}.search-status{min-height:1.35rem;color:var(--muted);font-size:.78rem;margin:.35rem 0 .7rem}.toc{display:grid;gap:.12rem;max-height:calc(100vh - 260px);overflow:auto;padding-right:.2rem}.toc-group{margin:.7rem 0 .15rem}.toc-group:first-child{margin-top:0}.toc-group>p{margin:.2rem .45rem .25rem;color:var(--forest);font-size:.72rem;font-weight:800;letter-spacing:.04em}.toc a{display:flex;align-items:flex-start;gap:.55rem;color:var(--muted);font-size:.85rem;line-height:1.4;text-decoration:none;padding:.4rem .46rem;border-left:2px solid transparent}.toc a span{font-variant-numeric:tabular-nums;color:#9aa8a1;font-size:.72rem;padding-top:.12rem}.toc a:hover,.toc a[aria-current="true"]{color:var(--forest);background:var(--wash);border-left-color:var(--accent)}.toc a.is-hidden{display:none}.side-note{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}.side-note a{display:block;margin:.35rem 0}
+main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem}.hero{position:relative;padding:0 0 3rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}.eyebrow{margin:0 0 .7rem;color:var(--accent);font-size:.77rem;font-weight:800;letter-spacing:.18em}.hero h1{max-width:16ch;margin:0;color:var(--forest-deep);font-size:clamp(2.4rem,5vw,4.6rem);line-height:1.16;letter-spacing:-.055em}.hero-lede{max-width:62ch;margin:1.25rem 0 0;color:var(--ink);font-size:1.08rem;line-height:1.75}.hero-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:1.4rem 0 0;color:var(--muted);font-size:.82rem}.hero-meta span{display:inline-flex;align-items:center;gap:.4rem}.hero-meta span::before{content:"";width:.45rem;height:.45rem;background:var(--accent);display:inline-block}.source-content{counter-reset:section}.source-section{scroll-margin-top:104px;padding:2.1rem 0 2.5rem;border-bottom:1px solid var(--rule)}.source-section:last-child{border-bottom:0}.source-section h2{display:flex;align-items:baseline;gap:.75rem;margin:0 0 1rem;color:var(--forest);font-size:clamp(1.35rem,2vw,1.8rem);line-height:1.35;letter-spacing:-.025em}.source-section h2::before{content:attr(data-number);display:none}.source-section h3{margin:1.7rem 0 .45rem;color:var(--forest-deep);font-size:1.04rem;line-height:1.4}.source-section p,.source-section li{max-width:72ch}.source-section p{margin:.82rem 0}.source-section ul,.source-section ol{padding-left:1.35rem;margin:1rem 0}.source-section li{margin:.38rem 0}.source-section strong{color:var(--forest-deep)}.source-section code{padding:.08em .28em;background:var(--wash);border:1px solid #d5e3d8;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}.source-section a{text-decoration-thickness:1px;text-underline-offset:2px}.source-section[data-section="1"]{margin:1rem 0 0;padding:1.6rem 1.5rem 1.8rem;border:1px solid #cbded1;border-left:4px solid var(--accent);background:linear-gradient(135deg,var(--white),var(--wash))}.source-section[data-section="1"] h2{font-size:clamp(1.55rem,2.5vw,2.1rem)}.source-section[data-section="1"] h3{margin-top:1.25rem}.source-section[data-section="2"]{padding-top:1.25rem;padding-bottom:1.25rem}.empty-note{color:var(--muted);font-size:.85rem;font-style:italic;margin:.25rem 0 0!important}.workbench-note{margin-top:3rem;padding:1.2rem 1.25rem;border-left:3px solid var(--accent);background:var(--wash);color:#496057;font-size:.9rem}.workbench-note p{margin:.25rem 0}.workbench-note a{font-weight:700}.source-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}
+.no-results{display:none;margin:2rem 0;color:var(--muted)}.no-results.visible{display:block}.toc-group.is-hidden{display:none}.searching .source-section{display:none}.searching .source-section.search-hit{display:block}
 @media(max-width:940px){.layout{grid-template-columns:230px minmax(0,1fr)}.top-actions a:nth-child(1){display:none}}
 @media(max-width:720px){.topbar{height:60px}.progress-track{top:60px}.top-actions a,.top-actions button{padding:.35rem .45rem;font-size:.78rem}.layout{display:block}.sidebar{border-right:0;border-bottom:1px solid var(--rule);min-height:auto;padding:1rem}.sidebar-inner{position:static}.toc{max-height:none;display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:.2rem}.sidebar.open .toc{display:grid}.side-note{display:none}.mobile-menu{display:block!important;margin:.6rem 0 0;border:1px solid var(--rule);background:var(--white);color:var(--forest);padding:.5rem .7rem}.hero h1{font-size:clamp(2.3rem,11vw,3.5rem)}main{padding-top:2.6rem}.source-section{padding:1.8rem 0 2.1rem}}
 @media(min-width:721px){.mobile-menu{display:none}}
@@ -24,6 +24,7 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <header class="topbar">
   <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">7</span><span>受控中文 / 阅读工作台</span></a>
   <div class="top-actions" aria-label="页面操作">
+    <a href="#section-01-先看主线-变化应该由哪里负责">总体认识</a>
     <a href="需求和架构（二）-受控中文.html">正文排版页</a>
     <a class="accent-link" href="需求和架构（二）-事件重放实验.html">事件重放实验</a>
     <button id="printBtn" type="button">打印</button>
@@ -36,32 +37,44 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
       <p class="sidebar-label">阅读工具</p>
       <div class="search-wrap"><label for="search">搜索正文</label><input id="search" type="search" placeholder="例如：事件、依赖、抽象" autocomplete="off"><p class="search-status" id="searchStatus" aria-live="polite">输入关键词，按章节筛选</p></div>
       <button class="mobile-menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="toc">显示目录</button>
-      <nav class="toc" id="toc" aria-label="正文目录"><a href="#section-01-先看主线-变化应该由哪里负责" data-section-link="1"><span>01</span>先看主线：变化应该由哪里负责？</a>
+      <nav class="toc" id="toc" aria-label="正文目录"><div class="toc-group" data-toc-group="总览"><p>总览</p>
+<a href="#section-01-先看主线-变化应该由哪里负责" data-section-link="1"><span>01</span>先看主线：变化应该由哪里负责？</a>
 <a href="#section-02-我的理解" data-section-link="2"><span>02</span>我的理解</a>
 <a href="#section-03-使用说明" data-section-link="3"><span>03</span>使用说明</a>
+</div>
+<div class="toc-group" data-toc-group="第一幕：复杂性与抽象"><p>第一幕：复杂性与抽象</p>
 <a href="#section-04-1-复杂性与架构" data-section-link="4"><span>04</span>1. 复杂性与架构</a>
 <a href="#section-05-2-抽象与层次" data-section-link="5"><span>05</span>2. 抽象与层次</a>
 <a href="#section-06-3-解空间-固定规则-保留选择" data-section-link="6"><span>06</span>3. 解空间：固定规则，保留选择</a>
+</div>
+<div class="toc-group" data-toc-group="第二幕：组合与演化"><p>第二幕：组合与演化</p>
 <a href="#section-07-4-unix-用共同规则组合工具" data-section-link="7"><span>07</span>4. UNIX：用共同规则组合工具</a>
 <a href="#section-08-5-关系数据库-分开逻辑与存储" data-section-link="8"><span>08</span>5. 关系数据库：分开逻辑与存储</a>
 <a href="#section-09-6-互联网-在变化中保持协作" data-section-link="9"><span>09</span>6. 互联网：在变化中保持协作</a>
+</div>
+<div class="toc-group" data-toc-group="第三幕：应用与界面"><p>第三幕：应用与界面</p>
 <a href="#section-10-7-mvc-为不同变化分配职责" data-section-link="10"><span>10</span>7. MVC：为不同变化分配职责</a>
 <a href="#section-11-8-界面状态-保存来源-计算结果" data-section-link="11"><span>11</span>8. 界面状态：保存来源，计算结果</a>
 <a href="#section-12-9-长流程-仅靠当前状态不够" data-section-link="12"><span>12</span>9. 长流程：仅靠当前状态不够</a>
+</div>
+<div class="toc-group" data-toc-group="第四幕：事实与重算"><p>第四幕：事实与重算</p>
 <a href="#section-13-10-过去-现在与未来" data-section-link="13"><span>13</span>10. 过去、现在与未来</a>
 <a href="#section-14-11-教务系统-让结论保留依据" data-section-link="14"><span>14</span>11. 教务系统：让结论保留依据</a>
 <a href="#section-15-12-从状态一致性到计算正确性" data-section-link="15"><span>15</span>12. 从状态一致性到计算正确性</a>
+</div>
+<div class="toc-group" data-toc-group="参考"><p>参考</p>
 <a href="#section-16-任务分解-先确定共享契约" data-section-link="16"><span>16</span>任务分解：先确定共享契约</a>
 <a href="#section-17-术语表" data-section-link="17"><span>17</span>术语表</a>
-<a href="#section-18-表达原则与来源" data-section-link="18"><span>18</span>表达原则与来源</a></nav>
+<a href="#section-18-表达原则与来源" data-section-link="18"><span>18</span>表达原则与来源</a>
+</div></nav>
       <div class="side-note"><p>正文只来自受控中文稿。这里增加的是导航、搜索、进度和打印。</p><a href="需求和架构（二）-自测.html">打开自测</a><a href="需求和架构（二）-受控中文.html">打开完整排版页</a></div>
     </div>
   </aside>
   <main>
     <header class="hero">
-      <p class="eyebrow">先读受控中文，再用工作台阅读</p>
+      <p class="eyebrow">总览 / 变化归属 / 可追溯计算</p>
       <h1>7 需求和架构（二）：受控中文</h1>
-      <p class="hero-lede">本页不再另写一套教材。它把受控中文稿的同一份正文转换成可搜索、可定位、可打印的阅读界面。</p>
+      <p class="hero-lede">这堂课要回答：需求变化时，系统应该改哪里？把变化放进清楚的边界，保存事实和规则版本，让结果可以解释、重算和审计。</p>
       <div class="hero-meta"><span>18 个正文分节</span><span>12 个课程主题</span><span id="progressText">0%</span></div>
     </header>
     <div id="sourceContent" class="source-content"><section class="source-section" id="section-01-先看主线-变化应该由哪里负责" data-section="1" data-title="先看主线：变化应该由哪里负责？">
@@ -84,7 +97,7 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 </section>
 <section class="source-section" id="section-02-我的理解" data-section="2" data-title="我的理解">
 <h2 id="section-02-我的理解-title">我的理解</h2>
-
+<p class="empty-note">本节留给阅读者补充自己的理解。</p>
 </section>
 <section class="source-section" id="section-03-使用说明" data-section="3" data-title="使用说明">
 <h2 id="section-03-使用说明-title">使用说明</h2>
@@ -249,6 +262,7 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
   $('#menuBtn')?.addEventListener('click', event => {
     const open = sidebar.classList.toggle('open');
     event.currentTarget.setAttribute('aria-expanded', String(open));
+    event.currentTarget.textContent = open ? '隐藏目录' : '显示目录';
   });
   $('#printBtn')?.addEventListener('click', () => window.print());
 
@@ -279,6 +293,9 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
       const link = $(`[data-section-link="${section.dataset.section}"]`);
       link?.classList.toggle('is-hidden', !hit);
       if (hit) hits += 1;
+    });
+    $$('.toc-group').forEach(group => {
+      group.classList.toggle('is-hidden', Boolean(term) && !group.querySelector('a:not(.is-hidden)'));
     });
     document.body.classList.toggle('searching', Boolean(term));
     noResults.classList.toggle('visible', Boolean(term) && hits === 0);
