@@ -10,7 +10,7 @@
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.85}a{color:var(--forest)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .topbar{position:sticky;top:0;z-index:20;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,4.8rem);border-bottom:1px solid var(--rule);background:rgba(245,245,239,.92);backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:.65rem;color:var(--forest-deep);text-decoration:none;font-weight:800;letter-spacing:.01em}.brand-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--forest);color:var(--forest);font-size:.73rem}.top-actions{display:flex;align-items:center;gap:.4rem}.top-actions a,.top-actions button{border:1px solid transparent;background:transparent;color:var(--muted);padding:.42rem .7rem;text-decoration:none;font-size:.86rem}.top-actions a:hover,.top-actions button:hover{border-color:var(--rule);color:var(--forest);background:var(--white)}.top-actions .accent-link{border-color:var(--forest);color:var(--forest)}
 .progress-track{height:3px;background:var(--rule);position:fixed;top:68px;left:0;right:0;z-index:21}.progress-bar{display:block;height:100%;width:0;background:var(--accent);transition:width .16s ease}.layout{display:grid;grid-template-columns:minmax(220px,286px) minmax(0,920px);gap:0;max-width:1400px;margin:0 auto}.sidebar{border-right:1px solid var(--rule);padding:2.1rem 1.2rem 4rem;min-height:calc(100vh - 71px)}.sidebar-inner{position:sticky;top:96px}.sidebar-label{margin:0 0 .45rem;color:var(--muted);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.search-wrap{position:relative;margin:0 0 1.2rem}.search-wrap label{display:block;margin:0 0 .35rem;font-size:.82rem;font-weight:700;color:var(--forest)}.search-wrap input{width:100%;border:1px solid var(--rule);background:var(--white);color:var(--ink);padding:.68rem .75rem;border-radius:2px}.search-wrap input::placeholder{color:#91a099}.search-status{min-height:1.35rem;color:var(--muted);font-size:.78rem;margin:.35rem 0 .7rem}.toc{display:grid;gap:.12rem;max-height:calc(100vh - 260px);overflow:auto;padding-right:.2rem}.toc-group{margin:.7rem 0 .15rem}.toc-group:first-child{margin-top:0}.toc-group>p{margin:.2rem .45rem .25rem;color:var(--forest);font-size:.72rem;font-weight:800;letter-spacing:.04em}.toc a{display:flex;align-items:flex-start;gap:.55rem;color:var(--muted);font-size:.85rem;line-height:1.4;text-decoration:none;padding:.4rem .46rem;border-left:2px solid transparent}.toc a span{font-variant-numeric:tabular-nums;color:#9aa8a1;font-size:.72rem;padding-top:.12rem}.toc a:hover,.toc a[aria-current="true"]{color:var(--forest);background:var(--wash);border-left-color:var(--accent)}.toc a.is-hidden{display:none}.side-note{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}.side-note a{display:block;margin:.35rem 0}
-main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem}.hero{position:relative;padding:0 0 3rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}.eyebrow{margin:0 0 .7rem;color:var(--accent);font-size:.77rem;font-weight:800;letter-spacing:.18em}.hero h1{max-width:16ch;margin:0;color:var(--forest-deep);font-size:clamp(2.4rem,5vw,4.6rem);line-height:1.16;letter-spacing:-.055em}.hero-lede{max-width:62ch;margin:1.25rem 0 0;color:var(--ink);font-size:1.08rem;line-height:1.75}.hero-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:1.4rem 0 0;color:var(--muted);font-size:.82rem}.hero-meta span{display:inline-flex;align-items:center;gap:.4rem}.hero-meta span::before{content:"";width:.45rem;height:.45rem;background:var(--accent);display:inline-block}.source-content{counter-reset:section}.source-section{scroll-margin-top:104px;padding:2.1rem 0 2.5rem;border-bottom:1px solid var(--rule)}.source-section:last-child{border-bottom:0}.source-section h2{display:flex;align-items:baseline;gap:.75rem;margin:0 0 1rem;color:var(--forest);font-size:clamp(1.35rem,2vw,1.8rem);line-height:1.35;letter-spacing:-.025em}.source-section h2::before{content:attr(data-number);display:none}.source-section h3{margin:1.7rem 0 .45rem;color:var(--forest-deep);font-size:1.04rem;line-height:1.4}.source-section p,.source-section li{max-width:72ch}.source-section p{margin:.82rem 0}.source-section ul,.source-section ol{padding-left:1.35rem;margin:1rem 0}.source-section li{margin:.38rem 0}.source-section strong{color:var(--forest-deep)}.source-section code{padding:.08em .28em;background:var(--wash);border:1px solid #d5e3d8;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}.source-section a{text-decoration-thickness:1px;text-underline-offset:2px}.source-section[data-section="1"]{margin:1rem 0 0;padding:1.6rem 1.5rem 1.8rem;border:1px solid #cbded1;border-left:4px solid var(--accent);background:linear-gradient(135deg,var(--white),var(--wash))}.source-section[data-section="1"] h2{font-size:clamp(1.55rem,2.5vw,2.1rem)}.source-section[data-section="1"] h3{margin-top:1.25rem}.source-section[data-section="2"]{padding-top:1.25rem;padding-bottom:1.25rem}.empty-note{color:var(--muted);font-size:.85rem;font-style:italic;margin:.25rem 0 0!important}.workbench-note{margin-top:3rem;padding:1.2rem 1.25rem;border-left:3px solid var(--accent);background:var(--wash);color:#496057;font-size:.9rem}.workbench-note p{margin:.25rem 0}.workbench-note a{font-weight:700}.source-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}
+main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem}.hero{position:relative;padding:0 0 3rem;border-bottom:1px solid var(--rule);margin-bottom:1rem}.eyebrow{margin:0 0 .7rem;color:var(--accent);font-size:.77rem;font-weight:800;letter-spacing:.18em}.hero h1{max-width:16ch;margin:0;color:var(--forest-deep);font-size:clamp(2.4rem,5vw,4.6rem);line-height:1.16;letter-spacing:-.055em}.hero-lede{max-width:62ch;margin:1.25rem 0 0;color:var(--ink);font-size:1.08rem;line-height:1.75}.hero-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin:1.4rem 0 0;color:var(--muted);font-size:.82rem}.hero-meta span{display:inline-flex;align-items:center;gap:.4rem}.hero-meta span::before{content:"";width:.45rem;height:.45rem;background:var(--accent);display:inline-block}.source-content{counter-reset:section}.source-section{scroll-margin-top:104px;padding:2.1rem 0 2.5rem;border-bottom:1px solid var(--rule)}.source-section:last-child{border-bottom:0}.source-section h2{display:flex;align-items:baseline;gap:.75rem;margin:0 0 1rem;color:var(--forest);font-size:clamp(1.35rem,2vw,1.8rem);line-height:1.35;letter-spacing:-.025em}.source-section h2::before{content:attr(data-number);display:none}.source-section h3{margin:1.7rem 0 .45rem;color:var(--forest-deep);font-size:1.04rem;line-height:1.4}.source-section p,.source-section li{max-width:72ch}.source-section p{margin:.82rem 0}.source-section ul,.source-section ol{padding-left:1.35rem;margin:1rem 0}.source-section li{margin:.38rem 0}.source-section strong{color:var(--forest-deep)}.source-section code{padding:.08em .28em;background:var(--wash);border:1px solid #d5e3d8;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}.source-section a{text-decoration-thickness:1px;text-underline-offset:2px}.source-section.overview{margin:1rem 0 0;padding:1.6rem 1.5rem 1.8rem;border:1px solid #cbded1;border-left:4px solid var(--accent);background:linear-gradient(135deg,var(--white),var(--wash))}.source-section.overview h2{font-size:clamp(1.55rem,2.5vw,2.1rem)}.source-section.overview h3{margin-top:1.25rem}.source-section.chapter{padding-top:2.5rem}.chapter-question,.chapter-answer{padding:.75rem 1rem;border-left:3px solid var(--accent);background:var(--wash);color:var(--forest-deep)}.chapter-question{margin-top:.3rem!important}.chapter-answer{border-left-color:var(--forest);font-weight:700}.source-section.reference{padding-top:1.6rem}.source-section.reference h2{font-size:1.2rem}.empty-note{color:var(--muted);font-size:.85rem;font-style:italic;margin:.25rem 0 0!important}.workbench-note{margin-top:3rem;padding:1.2rem 1.25rem;border-left:3px solid var(--accent);background:var(--wash);color:#496057;font-size:.9rem}.workbench-note p{margin:.25rem 0}.workbench-note a{font-weight:700}.source-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.78rem}
 .no-results{display:none;margin:2rem 0;color:var(--muted)}.no-results.visible{display:block}.toc-group.is-hidden{display:none}.searching .source-section{display:none}.searching .source-section.search-hit{display:block}
 @media(max-width:940px){.layout{grid-template-columns:230px minmax(0,1fr)}.top-actions a:nth-child(1){display:none}}
 @media(max-width:720px){.topbar{height:60px}.progress-track{top:60px}.top-actions a,.top-actions button{padding:.35rem .45rem;font-size:.78rem}.layout{display:block}.sidebar{border-right:0;border-bottom:1px solid var(--rule);min-height:auto;padding:1rem}.sidebar-inner{position:static}.toc{max-height:none;display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:.2rem}.sidebar.open .toc{display:grid}.side-note{display:none}.mobile-menu{display:block!important;margin:.6rem 0 0;border:1px solid var(--rule);background:var(--white);color:var(--forest);padding:.5rem .7rem}.hero h1{font-size:clamp(2.3rem,11vw,3.5rem)}main{padding-top:2.6rem}.source-section{padding:1.8rem 0 2.1rem}}
@@ -26,40 +26,33 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
   <div class="top-actions"><a class="accent-link" href="需求和架构（二）-阅读工作台.html">返回阅读工作台</a></div>
 </header>
 <div class="layout" id="top">
-  <aside class="sidebar"><div class="sidebar-inner"><p class="sidebar-label">正文目录</p><nav class="toc" aria-label="正文目录"><div class="toc-group" data-toc-group="总览"><p>总览</p>
-<a href="#section-01-先看主线-变化应该由哪里负责" data-section-link="1"><span>01</span>先看主线：变化应该由哪里负责？</a>
-<a href="#section-02-我的理解" data-section-link="2"><span>02</span>我的理解</a>
-<a href="#section-03-使用说明" data-section-link="3"><span>03</span>使用说明</a>
+  <aside class="sidebar"><div class="sidebar-inner"><p class="sidebar-label">正文目录</p><nav class="toc" aria-label="正文目录"><div class="toc-group" data-toc-group="先读这里"><p>先读这里</p>
+<a href="#先看主线-变化应该由哪里负责" data-section-link="1">先看主线：变化应该由哪里负责？</a>
+<a href="#使用说明" data-section-link="2">使用说明</a>
 </div>
-<div class="toc-group" data-toc-group="第一幕：复杂性与抽象"><p>第一幕：复杂性与抽象</p>
-<a href="#section-04-1-复杂性与架构" data-section-link="4"><span>04</span>1. 复杂性与架构</a>
-<a href="#section-05-2-抽象与层次" data-section-link="5"><span>05</span>2. 抽象与层次</a>
-<a href="#section-06-3-解空间-固定规则-保留选择" data-section-link="6"><span>06</span>3. 解空间：固定规则，保留选择</a>
+<div class="toc-group" data-toc-group="讲义正文 · 按原文顺序"><p>讲义正文 · 按原文顺序</p>
+<a href="#ch1" data-section-link="3"><span>01</span>复杂性与架构</a>
+<a href="#ch2" data-section-link="4"><span>02</span>抽象与层次</a>
+<a href="#ch3" data-section-link="5"><span>03</span>解空间：固定规则，保留选择</a>
+<a href="#ch4" data-section-link="6"><span>04</span>UNIX：用共同规则组合工具</a>
+<a href="#ch5" data-section-link="7"><span>05</span>关系数据库：分开逻辑与存储</a>
+<a href="#ch6" data-section-link="8"><span>06</span>互联网：在变化中保持协作</a>
+<a href="#ch7" data-section-link="9"><span>07</span>MVC：为不同变化分配职责</a>
+<a href="#ch8" data-section-link="10"><span>08</span>界面状态：保存来源，计算结果</a>
+<a href="#ch9" data-section-link="11"><span>09</span>长流程：仅靠当前状态不够</a>
+<a href="#ch10" data-section-link="12"><span>10</span>过去、现在与未来</a>
+<a href="#ch11" data-section-link="13"><span>11</span>教务系统：让结论保留依据</a>
+<a href="#ch12" data-section-link="14"><span>12</span>从状态一致性到计算正确性</a>
 </div>
-<div class="toc-group" data-toc-group="第二幕：组合与演化"><p>第二幕：组合与演化</p>
-<a href="#section-07-4-unix-用共同规则组合工具" data-section-link="7"><span>07</span>4. UNIX：用共同规则组合工具</a>
-<a href="#section-08-5-关系数据库-分开逻辑与存储" data-section-link="8"><span>08</span>5. 关系数据库：分开逻辑与存储</a>
-<a href="#section-09-6-互联网-在变化中保持协作" data-section-link="9"><span>09</span>6. 互联网：在变化中保持协作</a>
-</div>
-<div class="toc-group" data-toc-group="第三幕：应用与界面"><p>第三幕：应用与界面</p>
-<a href="#section-10-7-mvc-为不同变化分配职责" data-section-link="10"><span>10</span>7. MVC：为不同变化分配职责</a>
-<a href="#section-11-8-界面状态-保存来源-计算结果" data-section-link="11"><span>11</span>8. 界面状态：保存来源，计算结果</a>
-<a href="#section-12-9-长流程-仅靠当前状态不够" data-section-link="12"><span>12</span>9. 长流程：仅靠当前状态不够</a>
-</div>
-<div class="toc-group" data-toc-group="第四幕：事实与重算"><p>第四幕：事实与重算</p>
-<a href="#section-13-10-过去-现在与未来" data-section-link="13"><span>13</span>10. 过去、现在与未来</a>
-<a href="#section-14-11-教务系统-让结论保留依据" data-section-link="14"><span>14</span>11. 教务系统：让结论保留依据</a>
-<a href="#section-15-12-从状态一致性到计算正确性" data-section-link="15"><span>15</span>12. 从状态一致性到计算正确性</a>
-</div>
-<div class="toc-group" data-toc-group="参考"><p>参考</p>
-<a href="#section-16-任务分解-先确定共享契约" data-section-link="16"><span>16</span>任务分解：先确定共享契约</a>
-<a href="#section-17-术语表" data-section-link="17"><span>17</span>术语表</a>
-<a href="#section-18-表达原则与来源" data-section-link="18"><span>18</span>表达原则与来源</a>
+<div class="toc-group" data-toc-group="查阅"><p>查阅</p>
+<a href="#任务分解-先确定共享契约" data-section-link="15">任务分解：先确定共享契约</a>
+<a href="#术语表" data-section-link="16">术语表</a>
+<a href="#表达原则与来源" data-section-link="17">表达原则与来源</a>
 </div></nav></div></aside>
   <main>
-    <header class="hero"><p class="eyebrow">唯一正文来源 / 中文受控表达</p><h1>7 需求和架构（二）：受控中文</h1><p class="hero-lede">本页只排版受控中文正文。它不增加课程论证；目录、搜索、进度和交互请使用阅读工作台。</p></header>
-    <div id="sourceContent" class="source-content"><section class="source-section" id="section-01-先看主线-变化应该由哪里负责" data-section="1" data-title="先看主线：变化应该由哪里负责？">
-<h2 id="section-01-先看主线-变化应该由哪里负责-title">先看主线：变化应该由哪里负责？</h2>
+    <header class="hero"><p class="eyebrow">中文正文 / 安静阅读</p><h1>7 需求和架构（二）：受控中文</h1><p class="hero-lede">本页只排版受控中文正文。它不增加课程论证；目录、搜索、进度和交互请使用阅读工作台。</p></header>
+    <div id="sourceContent" class="source-content"><section class="source-section overview" id="先看主线-变化应该由哪里负责" data-section="1" data-title="先看主线：变化应该由哪里负责？">
+<h2 id="先看主线-变化应该由哪里负责-title">先看主线：变化应该由哪里负责？</h2>
 <h3>问题</h3>
 <p>这份内容讨论一个贯穿软件开发的问题：需求会变化，系统中的结果又相互依赖。我们怎样知道一项变化应该改哪里？怎样避免同一条规则被写在多个页面、多个字段和多个服务中？怎样在结果变化后说明依据，并重建受影响的结果？</p>
 <p>课程先区分两类复杂性。选课容量、先修课和审批是业务本身的困难，架构不能消除它们。重复数据、复制规则和手工同步是实现带来的额外困难，架构可以减少它们。需求和架构的共同任务，是明确哪些决定现在必须固定，哪些选择可以留给未来。</p>
@@ -76,19 +69,15 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <ul><li>第一幕（第 1—3 章）：先理解复杂性、抽象和解空间，回答“为什么不能把所有决定混在一起”。</li><li>第二幕（第 4—6 章）：看 UNIX、关系数据库和互联网怎样用共同规则支持局部变化，回答“不同部分怎样一起工作”。</li><li>第三幕（第 7—9 章）：把边界带到 MVC、界面状态和长流程，回答“哪些是输入，哪些是派生结果”。</li><li>第四幕（第 10—12 章）：用事实、规则版本和重放处理记账与教务，回答“结果怎样重建、解释和审计”。</li></ul>
 <p>阅读每章时，先问三个问题：它处理哪种变化？哪项决定放在哪个边界？结果怎样验证或重建？事件重放实验用于观察“事实 → 规则 → 结果”的变化；它不代表所有系统都应采用事件溯源。</p>
 </section>
-<section class="source-section" id="section-02-我的理解" data-section="2" data-title="我的理解">
-<h2 id="section-02-我的理解-title">我的理解</h2>
-<p class="empty-note">本节留给阅读者补充自己的理解。</p>
-</section>
-<section class="source-section" id="section-03-使用说明" data-section="3" data-title="使用说明">
-<h2 id="section-03-使用说明-title">使用说明</h2>
+<section class="source-section overview" id="使用说明" data-section="2" data-title="使用说明">
+<h2 id="使用说明-title">使用说明</h2>
 <p>本稿用中文整理课程第 7 讲，即“需求和架构”的第二讲。正文保留十二个主题，不是视频逐句转录。“我的理解”暂留空，由本人阅读后补充。</p>
 <p>这里的“受控中文”指一种写法：一句只讲一个主要意思，直接说明谁做什么，同一概念使用同一术语。它借鉴受控语言的表达原则，不是新的语言标准。</p>
 <p>ASD-STE100 是英语技术写作标准。本稿不使用英文正文，也不声称符合该标准。你提出的“80%”作为清晰、简短、一致的风格目标，不作为合规比例。</p>
 <p>正文用三个标签区分内容：<strong>课程观点</strong>复述课堂论证；<strong>教学示例</strong>说明具体用法；<strong>编者说明</strong>限定适用范围。技术名称和代码标识保留必要的原名，解释使用中文。</p>
 </section>
-<section class="source-section" id="section-04-1-复杂性与架构" data-section="4" data-title="1. 复杂性与架构">
-<h2 id="section-04-1-复杂性与架构-title">1. 复杂性与架构</h2>
+<section class="source-section chapter" id="ch1" data-section="3" data-title="1. 复杂性与架构">
+<h2 id="ch1-title">1. 复杂性与架构</h2>
 <p><strong>课程观点：</strong> 软件开发从意图出发，形成规约，再形成实现。意图说明要解决什么问题。规约明确行为和约束。实现把规约变成程序。</p>
 <p>这条路径不是唯一的。每次选择都会排除一些可能性，也会留下需要维护的承诺。例如，“方便学生选课”可以采用先到先得，也可以采用志愿排序。</p>
 <p>十行程序也有架构。大型系统同样有架构。区别不在于是否画过架构图，而在于代码作出了哪些决定。设计时要问：什么可能变化？变化应该由哪一部分负责？</p>
@@ -97,8 +86,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>需求工作减少对意图的误解。架构工作减少规约和实现中的无谓选择。“容量为 100”仍然不够明确：候补是否占名额？预留名额何时释放？谁可以特批？每项承诺都需要测试和维护。</p>
 <p><strong>编者说明：</strong> 布鲁克斯用这两类复杂性区分业务本身的困难与表达方式带来的困难。附带复杂性并不次要。团队通常可以通过更清楚的边界减少它。</p>
 </section>
-<section class="source-section" id="section-05-2-抽象与层次" data-section="5" data-title="2. 抽象与层次">
-<h2 id="section-05-2-抽象与层次-title">2. 抽象与层次</h2>
+<section class="source-section chapter" id="ch2" data-section="4" data-title="2. 抽象与层次">
+<h2 id="ch2-title">2. 抽象与层次</h2>
 <p><strong>课程观点：</strong> 人不能同时追踪一个大型程序的全部细节。抽象和分层把整体拆成可以逐层检查的部分。</p>
 <p>戴克斯特拉提醒程序员尊重人的认知限制。结构化程序设计使用顺序、选择和重复，让程序的推理过程更容易掌握。</p>
 <ul><li>枚举：检查有限的情况和分支。</li><li>归纳：用归纳法说明重复过程。</li><li>抽象：让调用者依赖接口承诺，不必展开内部过程。</li></ul>
@@ -107,8 +96,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>类把数据和操作组织在一起。对象可以保存状态。子程序通过调用和返回组织控制流。协程可以保存执行位置，暂停后再继续运行。</p>
 <p><strong>教学示例：</strong> 底层提供链表操作，中层提供离散事件模拟，上层描述车间中的机器和订单。上层可以使用业务概念，不必同时追踪指针、等待队列和模拟时钟。</p>
 </section>
-<section class="source-section" id="section-06-3-解空间-固定规则-保留选择" data-section="6" data-title="3. 解空间：固定规则，保留选择">
-<h2 id="section-06-3-解空间-固定规则-保留选择-title">3. 解空间：固定规则，保留选择</h2>
+<section class="source-section chapter" id="ch3" data-section="5" data-title="3. 解空间：固定规则，保留选择">
+<h2 id="ch3-title">3. 解空间：固定规则，保留选择</h2>
 <p><strong>课程观点：</strong> 好的架构不必预先选定所有未来功能。它应当定义共同规则，让一类解决方案可以继续生长。这类允许的方案构成解空间。</p>
 <p>一个明确的名称可以承载已有知识。讨论“事务”或“选课资格”时，程序员不必每次重新展开全部实现细节。</p>
 <p>斯蒂尔关于“让语言生长”的演讲说明了这种设计。语言太小，容易移植，却可能无法完成实际工作。语言一开始就做得太大，又可能迟迟无法交付。可生长的语言通过稳定规则增加能力，扩展与核心能力遵守相同的组合规则。</p>
@@ -116,8 +105,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>阅读经典设计时，可以问两个问题：它让使用者保留了哪些选择？它用什么规则保证这些选择能够一起工作？</p>
 <p><strong>编者说明：</strong> 解空间不是推迟所有决定的理由。团队仍要确定输入、输出、错误、权限和组合语义。没有明确契约，使用者得到的不是自由，而是猜测。</p>
 </section>
-<section class="source-section" id="section-07-4-unix-用共同规则组合工具" data-section="7" data-title="4. UNIX：用共同规则组合工具">
-<h2 id="section-07-4-unix-用共同规则组合工具-title">4. UNIX：用共同规则组合工具</h2>
+<section class="source-section chapter" id="ch4" data-section="6" data-title="4. UNIX：用共同规则组合工具">
+<h2 id="ch4-title">4. UNIX：用共同规则组合工具</h2>
 <p><strong>课程观点：</strong> UNIX 的三条原则相互依赖：一个程序做好一件事；程序之间可以协作；程序通过共同接口处理文本流。</p>
 <p>文本流连接人、文件和程序。人可以阅读输出，文件可以保存输出，下一个程序也可以读取同一份输出。中间结果可以单独检查。</p>
 <ul><li>标准输入承载输入数据。</li><li>标准输出承载正常结果。</li><li>标准错误承载诊断信息。</li><li>退出状态表示执行结果。</li></ul>
@@ -125,16 +114,16 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p><strong>教学示例：</strong> 用户把 JSON 数据交给 <code>jq</code> 提取字段，再把结果交给 <code>fzf</code> 选择。选择结果仍可交给另一个命令。设计者提供组合规则，不必预先实现所有用途。</p>
 <p><strong>编者说明：</strong> 文本不自动等于安全、明确的协议。发送方和接收方仍须约定编码、字段、分隔符和退出状态。文件名或字段中出现换行时，简单按行切分可能出错。</p>
 </section>
-<section class="source-section" id="section-08-5-关系数据库-分开逻辑与存储" data-section="8" data-title="5. 关系数据库：分开逻辑与存储">
-<h2 id="section-08-5-关系数据库-分开逻辑与存储-title">5. 关系数据库：分开逻辑与存储</h2>
+<section class="source-section chapter" id="ch5" data-section="7" data-title="5. 关系数据库：分开逻辑与存储">
+<h2 id="ch5-title">5. 关系数据库：分开逻辑与存储</h2>
 <p><strong>课程观点：</strong> 科德提出的关系模型，减少了物理存储变化对数据使用者的影响。应用描述逻辑关系，数据库管理存储和执行。</p>
 <p>图书馆可以记录读者、馆藏和借阅关系。同一组事实可以回答两个问题：某位读者借了哪些书？某册书由谁借走？应用不必为这两个问题各维护一份独立事实。</p>
 <p>数据库可以调整索引、数据页或扫描顺序，而不改变查询的问题本身。SQL 提供描述关系和查询的语言。事务组织需要整体处理的状态变化。视图提供当前数据的某种查询结果。</p>
 <p>灵活的接口往往会发展出一门语言。UNIX 命令解释器和 SQL 都有语法、语义和组合规则。使用者可以在规则内表达新的需求。</p>
 <p><strong>编者说明：</strong> 关系数据库不能消除业务复杂性。数据库可以执行约束、协调更新，但团队仍须定义实体、时间、权限和例外。隐藏物理存储，也不表示查询和事务没有性能成本。</p>
 </section>
-<section class="source-section" id="section-09-6-互联网-在变化中保持协作" data-section="9" data-title="6. 互联网：在变化中保持协作">
-<h2 id="section-09-6-互联网-在变化中保持协作-title">6. 互联网：在变化中保持协作</h2>
+<section class="source-section chapter" id="ch6" data-section="8" data-title="6. 互联网：在变化中保持协作">
+<h2 id="ch6-title">6. 互联网：在变化中保持协作</h2>
 <p><strong>课程观点：</strong> 互联网提供连接能力，不预先规定所有上层应用。不同层承担不同责任。</p>
 <ul><li>应用层表达应用所需的通信。</li><li>传输层提供相应的交付性质。</li><li>IP 层跨网络传递数据报。</li><li>链路层在相邻设备之间传递数据。</li></ul>
 <p>如果各层遵守接口，一层可以变化，而不必重写全部其他层。网络可以更换硬件和路径，应用仍然使用原有协议。</p>
@@ -142,8 +131,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>安全远程访问逐渐使用 SSH 替代 Telnet。文件传输和网页访问发展出更安全的方式。SMTP 和 IMAP 仍承担电子邮件通信。共同协议允许局部演化，不要求整个系统同时重建。</p>
 <p><strong>编者说明：</strong> TCP 连接仍会失败。并非所有通信都使用 HTTPS。互联网的例子也不表示所有系统都需要很多层。只有当职责会独立变化时，分层才有明确价值。</p>
 </section>
-<section class="source-section" id="section-10-7-mvc-为不同变化分配职责" data-section="10" data-title="7. MVC：为不同变化分配职责">
-<h2 id="section-10-7-mvc-为不同变化分配职责-title">7. MVC：为不同变化分配职责</h2>
+<section class="source-section chapter" id="ch7" data-section="9" data-title="7. MVC：为不同变化分配职责">
+<h2 id="ch7-title">7. MVC：为不同变化分配职责</h2>
 <p><strong>课程观点：</strong> 早期业务系统可以把一次请求映射成一次数据库事务，把页面看作数据的一种呈现。一次选课请求读取数据、检查规则、写入记录，再返回页面。</p>
 <p>这种结构适合许多稳定的增删改查业务。增删改查可以配合事务和局部规则，但不会自动保存全部业务历史。当每个页面复制规则时，风险就开始增加。学生入口和管理员入口可能采用不同的容量判断。</p>
 <p>Java 网页工具改善了页面生成。Servlet 在 Java 代码中生成 HTML。JSP 允许在 HTML 模板中嵌入服务端代码。JSTL 和表达式语言进一步减少脚本片段。模板更容易维护，不等于业务规则已经有统一归属。</p>
@@ -152,8 +141,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p><strong>教学示例：</strong> 课表从列表改成日历，主要改变视图。容量规则变化，应由模型负责。新增管理员入口，应复用已有业务能力，并检查权限。</p>
 <p><strong>编者说明：</strong> MVC 是关注点分离的思路，不是一种固定框架或文件夹结构。具体边界取决于业务和技术。模型也不只是数据库表。</p>
 </section>
-<section class="source-section" id="section-11-8-界面状态-保存来源-计算结果" data-section="11" data-title="8. 界面状态：保存来源，计算结果">
-<h2 id="section-11-8-界面状态-保存来源-计算结果-title">8. 界面状态：保存来源，计算结果</h2>
+<section class="source-section chapter" id="ch8" data-section="10" data-title="8. 界面状态：保存来源，计算结果">
+<h2 id="ch8-title">8. 界面状态：保存来源，计算结果</h2>
 <p><strong>课程观点：</strong> 搜索词、展开的菜单、悬停效果和选中的标签，都影响界面。它们未必属于业务数据库，但仍然是程序状态。</p>
 <p>可以把关系写成：<strong>界面 = 渲染（业务模型，界面状态）</strong>。是否需要持久保存，和是否需要认真建模，是两个问题。</p>
 <p>MVVM 把展示状态和行为组织进视图模型。以课程筛选为例，程序保存查询词，再根据课程列表和查询词计算可见课程。不必把筛选结果再作为独立状态保存一份。</p>
@@ -161,16 +150,16 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>React 根据当前属性和状态描述界面。状态更新请求后续渲染，每次渲染读取当次状态快照。由这些输入计算出的课程列表，不必再变成另一个状态字段。</p>
 <p><strong>编者说明：</strong> React 不等于 MVVM。两者处理相近的状态依赖问题，但机制不同。不要把框架名称直接当作架构结论。</p>
 </section>
-<section class="source-section" id="section-12-9-长流程-仅靠当前状态不够" data-section="12" data-title="9. 长流程：仅靠当前状态不够">
-<h2 id="section-12-9-长流程-仅靠当前状态不够-title">9. 长流程：仅靠当前状态不够</h2>
+<section class="source-section chapter" id="ch9" data-section="11" data-title="9. 长流程：仅靠当前状态不够">
+<h2 id="ch9-title">9. 长流程：仅靠当前状态不够</h2>
 <p><strong>课程观点：</strong> MVC 和增删改查适合许多局部操作。当业务跨越较长时间，并涉及多项规则时，只保存当前状态往往不够。</p>
 <p>订单可能经历下单、锁库存、付款、风控、发货、退款和对账。教务流程可能同时涉及学分、毕业设计、资产归还和审批。</p>
 <p>一个状态字段可以表示阶段，一组布尔字段可以表示更多细节。但这些字段本身不能解释：当前结果来自哪些历史事实？错误或手工覆盖可能让不同字段相互矛盾。</p>
 <p><strong>教学示例：</strong> 学生通过后续课程后，先修课成绩被更正。系统需要重新检查相关课程、学分和结论。如果只直接修改部分字段，遗漏的字段就会保留错误状态。</p>
 <p><strong>编者说明：</strong> 事件溯源不是增删改查的通用替代品。只有历史、审计或重建视图确实有价值时，才值得承担它的存储和运维成本。依赖分析仍需显式建模；事件溯源不会自动生成依赖图。</p>
 </section>
-<section class="source-section" id="section-13-10-过去-现在与未来" data-section="13" data-title="10. 过去、现在与未来">
-<h2 id="section-13-10-过去-现在与未来-title">10. 过去、现在与未来</h2>
+<section class="source-section chapter" id="ch10" data-section="12" data-title="10. 过去、现在与未来">
+<h2 id="ch10-title">10. 过去、现在与未来</h2>
 <p><strong>课程观点：</strong> 复式记账要求每笔交易的借方合计等于贷方合计。借和贷是记账方向，不固定等于增加和减少。账本还需维护“资产 = 负债 + 所有者权益”的关系。</p>
 <p>借贷平衡只能检查一部分错误。分录即使金额平衡，也可能使用错误科目。原始凭证和业务分类仍需审查。</p>
 <p>事件溯源保存已接受的事实记录，再按规则计算当前视图。应当分清三个对象：</p>
@@ -181,8 +170,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>重放可以重新计算内部视图，不能再次付款、发通知或扣费。要复现某个历史结果，系统还须保留当时使用的规则版本和外部输入。</p>
 <p><strong>编者说明：</strong> 事件溯源把事实、视图和预期分开，但不消除本质复杂性。主要问题从修补多份状态，转向正确计算和管理历史。它也不会自动发现全部依赖关系。</p>
 </section>
-<section class="source-section" id="section-14-11-教务系统-让结论保留依据" data-section="14" data-title="11. 教务系统：让结论保留依据">
-<h2 id="section-14-11-教务系统-让结论保留依据-title">11. 教务系统：让结论保留依据</h2>
+<section class="source-section chapter" id="ch11" data-section="13" data-title="11. 教务系统：让结论保留依据">
+<h2 id="ch11-title">11. 教务系统：让结论保留依据</h2>
 <p><strong>课程观点：</strong> 学生记录可能包括成绩、已通过课程、总学分、分类学分和毕业结论。这些数据不能都被当成可以独立修改的事实。</p>
 <p>成绩记录和课程替代审批可以作为输入事实。规则从这些输入计算已通过课程，再按适用培养方案计算学分。毕业资格还要汇合其他条件，不能只看学分。</p>
 <p>计算过程应当可以检查：</p>
@@ -190,8 +179,8 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>成绩更正应触发当前派生结果的重算。历史审核结论应保留当时的输入和规则版本；新计算可以将它标为待复核，但不能静默覆盖。审批记录应说明对象、范围和理由，不能把某门课的豁免扩展成所有条件都通过。</p>
 <p><strong>编者说明：</strong> 满足课程条件，不等于满足全部毕业条件。没有依据的“已批准”字段会隐藏依赖关系。缓存的计算结果需要明确的失效规则和重建方式。</p>
 </section>
-<section class="source-section" id="section-15-12-从状态一致性到计算正确性" data-section="15" data-title="12. 从状态一致性到计算正确性">
-<h2 id="section-15-12-从状态一致性到计算正确性-title">12. 从状态一致性到计算正确性</h2>
+<section class="source-section chapter" id="ch12" data-section="14" data-title="12. 从状态一致性到计算正确性">
+<h2 id="ch12-title">12. 从状态一致性到计算正确性</h2>
 <p><strong>课程观点：</strong> 课堂批评把许多派生字段当成独立值保存的做法，并用“十亿美元级错误”强调它的代价。</p>
 <p><strong>编者说明：</strong> 这是课堂修辞，不是数据库领域的正式缺陷名称。例如，成绩或培养方案变化后，一个独立保存的“可毕业”标记就可能过期。</p>
 <p>SQL 可以表达查询、视图、约束和物化视图。更大的问题跨越数据库、应用逻辑、缓存和界面状态。系统必须明确这些部分之间的计算依赖。</p>
@@ -200,18 +189,18 @@ main{min-width:0;padding:clamp(2.4rem,5vw,5.4rem) clamp(1.25rem,5vw,5.8rem) 6rem
 <p>这种做法改变了主要风险。团队减少对多份快照的反复同步，转而检查计算是否正确。同样输入可以重跑，测试可以检查结果，审计可以追查依据。</p>
 <p><strong>编者说明：</strong> 系统仍需处理规则版本、时间边界、权限和外部副作用。“现在由过去计算而来”是可追溯原则，不是计算必然正确的保证。</p>
 </section>
-<section class="source-section" id="section-16-任务分解-先确定共享契约" data-section="16" data-title="任务分解：先确定共享契约">
-<h2 id="section-16-任务分解-先确定共享契约-title">任务分解：先确定共享契约</h2>
+<section class="source-section reference" id="任务分解-先确定共享契约" data-section="15" data-title="任务分解：先确定共享契约">
+<h2 id="任务分解-先确定共享契约-title">任务分解：先确定共享契约</h2>
 <p><strong>编者说明：</strong> 以下是对课程思想的应用，不是课堂原话，也不是 ASD-STE100 的规则。</p>
 <ul><li>事实负责人：记录已接受的事实及其依据。</li><li>规则负责人：定义业务规则及其版本。</li><li>查询视图负责人：按事实和规则构建查询结果。</li><li>测试负责人：检查接口、始终应成立的约束和典型计算。</li></ul>
 <p>每部分都要有明确的输入和输出。并行开发前，先确定共享字段、错误情况和可执行的验收样例。查询视图是派生结果，不是另一份独立事实。</p>
 </section>
-<section class="source-section" id="section-17-术语表" data-section="17" data-title="术语表">
-<h2 id="section-17-术语表-title">术语表</h2>
+<section class="source-section reference" id="术语表" data-section="16" data-title="术语表">
+<h2 id="术语表-title">术语表</h2>
 <ul><li>意图：希望解决的问题或达到的目标。</li><li>规约：对程序行为、输入输出和约束的明确约定。</li><li>实现：落实规约的程序及相关机制。</li><li>本质复杂性：业务问题本身包含的困难。</li><li>附带复杂性：表示和实现方式额外增加的困难。</li><li>解空间：在共同约束下允许采用的一组方案。</li><li>组合：按共同规则把多个能力连接起来。</li><li>关系模型：用关系表达数据及其逻辑联系的模型。</li><li>事务：将相关数据库操作作为一个工作单元处理的机制。</li><li>模型：表达领域知识和业务操作的部分。</li><li>视图：向使用者呈现数据和结果的部分。</li><li>控制器：接收输入并组织业务调用的部分。</li><li>界面状态：影响展示和交互的状态。</li><li>视图模型：组织展示状态和行为的对象。</li><li>派生状态：由其他输入按规则计算出的结果。</li><li>数据依赖：某个结果需要哪些输入的关系。</li><li>事实记录：系统已接受的业务记录，仍需来源和权限依据。</li><li>事件：表示已经发生之事的记录。</li><li>命令：对系统提出的期望动作。</li><li>持久历史：保存后可供查询或重放的历史记录。</li><li>重放：重新处理已有事件，计算内部状态。</li><li>归约器：按规则依次处理事件、计算状态的程序。</li><li>投影：从事实计算出的特定视图。</li><li>权威事实依据：在明确领域内，其他结果所依赖的事实来源。</li><li>规则版本：标识一组确定规则的版本。</li><li>外部副作用：付款、发通知等改变外部世界的操作。</li></ul>
 </section>
-<section class="source-section" id="section-18-表达原则与来源" data-section="18" data-title="表达原则与来源">
-<h2 id="section-18-表达原则与来源-title">表达原则与来源</h2>
+<section class="source-section reference" id="表达原则与来源" data-section="17" data-title="表达原则与来源">
+<h2 id="表达原则与来源-title">表达原则与来源</h2>
 <p>本稿借鉴 ASD-STE100 的短句、主动表达和术语一致原则。中文正文不适用英文受控词典的逐词检查，也不直接套用英文句子的词数上限。本稿不作合规或认证声明。</p>
 <p>参考的第 9 版标准发布于 2025 年 1 月 15 日。英文标准第 5.1 条和第 6.3 条分别限制步骤句和描述句的词数。第 3.6 条要求优先使用主动语态，描述中动作执行者未知时有例外。这里借鉴其清晰表达的目的，不把英文规则机械移植到中文。</p>
 <p>标准参考：</p>
