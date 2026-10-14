@@ -68,5 +68,3 @@ Git 默认人是单线程的，十分钟左右提交一次，每次提交有明�
 - 切块：按功能领域成立 SIG（Special Interest Group），如网络、存储、节点。每个 SIG 有章程，写明范围、职责和决策方式；SIG 下的子项目由 OWNERS 负责。
 - 协调：跨多个 SIG 的短期议题成立工作组；较大的改动写 KEP（增强提案），在 SIG 之间达成一致后再做。
 - 特点：SIG 的会议、讨论和设计都公开，方便别的 SIG 了解它在做什么，减少你不知道我在做什么带来的冲突。
-
-来源：[生成式软件工程（NJU）第 4 讲](https://linbol.top/videobook/%E8%BD%AF%E4%BB%B6%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86%20%282%29%20%5B04-Raw%EF%BC%8F26%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%EF%BC%8FNJU%5D/book.html)；[Linux 内核开发流程](https://www.kernel.org/doc/html/latest/process/2.Process.html)；[Chromium Code Reviews](https://chromium.googlesource.com/chromium/src/+/main/docs/code_reviews.md)；[Kubernetes 治理](https://github.com/kubernetes/community/blob/master/governance.md)

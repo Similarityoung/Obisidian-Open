@@ -87,4 +87,3 @@ AI 修改代码的速度远超文档与测试的更新。对策是以 spec 和�
 
 教科书对所有读者做同一种有损压缩。借助 AI，可以直接阅读原文，压缩成适合自己的版本。
 
-来源：[生成式软件工程（NJU）第 5 讲](https://linbol.top/videobook/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%9A%84%E6%9D%A5%E9%BE%99%E5%8E%BB%E8%84%89%20%5B05-Raw%EF%BC%8F26%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%EF%BC%8FNJU%5D/book.html)
