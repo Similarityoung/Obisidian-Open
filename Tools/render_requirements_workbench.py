@@ -124,18 +124,48 @@ def render_block(block):
 
 source_html = []
 toc_html = []
+toc_groups = {
+    1: '总览',
+    2: '总览',
+    3: '总览',
+    4: '第一幕：复杂性与抽象',
+    5: '第一幕：复杂性与抽象',
+    6: '第一幕：复杂性与抽象',
+    7: '第二幕：组合与演化',
+    8: '第二幕：组合与演化',
+    9: '第二幕：组合与演化',
+    10: '第三幕：应用与界面',
+    11: '第三幕：应用与界面',
+    12: '第三幕：应用与界面',
+    13: '第四幕：事实与重算',
+    14: '第四幕：事实与重算',
+    15: '第四幕：事实与重算',
+    16: '参考',
+    17: '参考',
+    18: '参考',
+}
+last_group = None
 for index, section in enumerate(sections, 1):
     sid = f'section-{index:02d}-{section["id"]}'
     rendered_blocks = "\n".join(render_block(block) for block in section['blocks'])
+    empty_note = '<p class="empty-note">本节留给阅读者补充自己的理解。</p>' if not section['blocks'] else ''
     source_html.append(
         f'<section class="source-section" id="{sid}" data-section="{index}" data-title="{html.escape(section["title"], quote=True)}">\n'
         f'<h2 id="{sid}-title">{inline(section["title"])}</h2>\n'
         + rendered_blocks
+        + empty_note
         + '\n</section>'
     )
+    group = toc_groups[index]
+    if group != last_group:
+        toc_html.append(f'<div class="toc-group" data-toc-group="{html.escape(group, quote=True)}"><p>{html.escape(group)}</p>')
+        last_group = group
     toc_html.append(
         f'<a href="#{sid}" data-section-link="{index}"><span>{index:02d}</span>{inline(section["title"])}</a>'
     )
+    next_group = toc_groups.get(index + 1)
+    if next_group != group:
+        toc_html.append('</div>')
 
 css = r'''
 :root{--paper:#f5f5ef;--paper-2:#ecefe9;--ink:#1f2925;--muted:#64736c;--forest:#1f5548;--forest-deep:#123d34;--accent:#c36d3b;--rule:#d4ddd5;--wash:#e2ece5;--white:#fffef9;--shadow:0 18px 50px rgba(31,85,72,.10);font-family:"Noto Sans SC","Source Han Sans SC","PingFang SC","Hiragino Sans GB",system-ui,sans-serif}
