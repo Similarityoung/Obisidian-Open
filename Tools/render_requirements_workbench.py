@@ -126,11 +126,12 @@ source_html = []
 toc_html = []
 for index, section in enumerate(sections, 1):
     sid = f'section-{index:02d}-{section["id"]}'
+    rendered_blocks = "\n".join(render_block(block) for block in section['blocks'])
     source_html.append(
-        f'<section class="source-section" id="{sid}" data-section="{index}" data-title="{html.escape(section["title"], quote=True)}">'
-        f'<h2 id="{sid}-title">{inline(section["title"])}</h2>'
-        + ''.join(render_block(block) for block in section['blocks'])
-        + '</section>'
+        f'<section class="source-section" id="{sid}" data-section="{index}" data-title="{html.escape(section["title"], quote=True)}">\n'
+        f'<h2 id="{sid}-title">{inline(section["title"])}</h2>\n'
+        + rendered_blocks
+        + '\n</section>'
     )
     toc_html.append(
         f'<a href="#{sid}" data-section-link="{index}"><span>{index:02d}</span>{inline(section["title"])}</a>'
@@ -203,8 +204,8 @@ js = r'''
 })();
 '''
 
-toc = ''.join(toc_html)
-content = ''.join(source_html)
+toc = '\n'.join(toc_html)
+content = '\n'.join(source_html)
 template = '''<!doctype html>
 <html lang="zh-CN">
 <head>
