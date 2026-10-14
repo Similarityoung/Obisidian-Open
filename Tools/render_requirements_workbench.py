@@ -128,7 +128,7 @@ for index, section in enumerate(sections, 1):
     sid = f'section-{index:02d}-{section["id"]}'
     source_html.append(
         f'<section class="source-section" id="{sid}" data-section="{index}" data-title="{html.escape(section["title"], quote=True)}">'
-        f'<h2>{inline(section["title"])}</h2>'
+        f'<h2 id="{sid}-title">{inline(section["title"])}</h2>'
         + ''.join(render_block(block) for block in section['blocks'])
         + '</section>'
     )
