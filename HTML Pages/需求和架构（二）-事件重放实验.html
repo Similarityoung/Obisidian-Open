@@ -10,8 +10,8 @@
 <body>
   <a class="skip-link" href="#main">跳到重放内容</a>
   <header class="topbar">
-    <div class="brand"><span>GSE</span><span class="slash">/</span><span>第 11 章 · 事件重放</span></div>
-    <div class="top-meta">只读教学切片 · 本地计算</div>
+    <div class="brand"><span>生成式软件工程</span><span>第 11 章 · 事件重放</span></div>
+    <div class="top-meta">只读教学内容 · 浏览器内计算</div>
   </header>
   <main id="main" class="page-shell">
     <section class="intro" aria-labelledby="pageTitle">
@@ -25,7 +25,7 @@
       <div id="loadingMessage" class="loading-message">正在加载教学切片……</div>
       <noscript><p class="no-js">本页需要启用 JavaScript 才能重放事件。脚本只改变本地教学切片，不写入服务器或业务数据。</p></noscript>
       <div class="section-heading">
-        <div><p class="kicker">Replay / Reducer</p><h2 id="replayTitle">从历史到当前视图</h2></div>
+        <div><p class="kicker">事件重放与状态归约</p><h2 id="replayTitle">从历史到当前视图</h2></div>
         <span id="testStatus" class="test-status" aria-live="polite">等待断言</span>
       </div>
 
@@ -39,13 +39,13 @@
         <div class="button-cluster">
           <button type="button" data-action="previous">← 上一步</button>
           <button type="button" data-action="next">下一步 →</button>
-          <button type="button" data-action="reset">重置到 e0</button>
-          <button type="button" class="accent-button" data-action="append-correction">追加 e6 更正</button>
+          <button type="button" data-action="reset">重置到起点 e0</button>
+          <button type="button" class="accent-button" data-action="append-correction">追加更正事件 e6</button>
         </div>
       </div>
 
       <div class="rule-strip">
-        <div><p class="kicker">Rule selection</p><h3>选择用于重算的规则</h3><p class="rule-help">同一组事实可以按另一版本重算；假设版本不会变成适用事实，也不会覆盖历史决定。</p></div>
+        <div><p class="kicker">规则选择</p><h3>选择用于重算的规则</h3><p class="rule-help">同一组事实可以按另一版本重算；假设版本不会变成适用事实，也不会覆盖历史决定。</p></div>
         <div class="rule-buttons" role="group" aria-label="规则版本">
           <button type="button" data-rule-id="2024" aria-pressed="true"><b>2024 原方案</b><small>≥ 8 学分 · CS101 或替代</small></button>
           <button type="button" data-rule-id="2025" aria-pressed="false"><b>2025 假设方案</b><small>≥ 12 学分 · 仅作重算</small></button>
@@ -54,12 +54,12 @@
 
       <div class="replay-grid">
         <section class="history-column" aria-labelledby="historyTitle">
-          <div class="column-heading"><p class="kicker">Past / facts</p><h3 id="historyTitle">事件历史</h3><span>灰色事件尚未纳入当前步</span></div>
+          <div class="column-heading"><p class="kicker">过去 · 事实</p><h3 id="historyTitle">事件历史</h3><span>灰色事件尚未纳入当前步</span></div>
           <ol id="eventList" class="event-list"></ol>
           <div class="history-note"><b>如何读：</b>事件不会被静默删除。e6 是更正事实；它改变当前推导，但不会改写 e5 的历史记录。</div>
         </section>
         <section class="computed-column" aria-labelledby="computedTitle">
-          <div class="column-heading"><p class="kicker">Now / derived view</p><h3 id="computedTitle">当前计算</h3><span>由已纳入事件按所选规则推导</span></div>
+          <div class="column-heading"><p class="kicker">现在 · 派生视图</p><h3 id="computedTitle">当前计算</h3><span>由已纳入事件按所选规则推导</span></div>
           <dl class="summary-grid">
             <div><dt>方案绑定</dt><dd id="bindingValue">—</dd></div>
             <div><dt>规则</dt><dd id="ruleValue">—</dd></div>
@@ -79,17 +79,17 @@
 
       <div class="evidence-grid">
         <section class="evidence-block" aria-labelledby="decisionTitle">
-          <div class="column-heading"><p class="kicker">Decision evidence</p><h3 id="decisionTitle">既有决定与复核</h3></div>
+          <div class="column-heading"><p class="kicker">决定依据</p><h3 id="decisionTitle">既有决定与复核</h3></div>
           <ul id="decisionList" class="plain-list"></ul>
         </section>
         <section class="evidence-block warning-block" aria-labelledby="warningTitle">
-          <div class="column-heading"><p class="kicker">Boundary / warning</p><h3 id="warningTitle">边界提示</h3></div>
+          <div class="column-heading"><p class="kicker">边界提示</p><h3 id="warningTitle">边界提示</h3></div>
           <ul id="warningList" class="plain-list"></ul>
         </section>
       </div>
 
       <footer class="module-foot">
-        <p><b>不执行外部操作：</b>本页只在浏览器内对固定事件数组做 <code>reduce</code> 式计算。没有写库、发通知、重复收费或其他业务副作用。</p>
+        <p><b>不执行外部操作：</b>本页只在浏览器内对固定事件数组执行归约计算。没有写库、发通知、重复收费或其他业务副作用。</p>
         <p><b>结论范围：</b>“课程条件满足”只回答本切片中的课程条件。它不是完整毕业结论。</p>
       </footer>
     </section>
