@@ -108,7 +108,7 @@ if current is not None:
     sections.append(current)
 
 assert heading1, 'Markdown title not found'
-assert len(sections) == 17, f'Expected 17 level-2 sections, got {len(sections)}'
+assert len(sections) == 18, f'Expected 18 level-2 sections, got {len(sections)}'
 
 def render_block(block):
     kind, data = block
@@ -241,7 +241,7 @@ template = '''<!doctype html>
       <p class="eyebrow">先读受控中文，再用工作台阅读</p>
       <h1>__TITLE__</h1>
       <p class="hero-lede">本页不再另写一套教材。它把受控中文稿的同一份正文转换成可搜索、可定位、可打印的阅读界面。</p>
-      <div class="hero-meta"><span>17 个正文分节</span><span>12 个课程主题</span><span id="progressText">0%</span></div>
+      <div class="hero-meta"><span>18 个正文分节</span><span>12 个课程主题</span><span id="progressText">0%</span></div>
     </header>
     <div id="sourceContent" class="source-content">__CONTENT__</div>
     <p class="no-results" id="noResults">没有匹配的章节。请换一个关键词。</p>
