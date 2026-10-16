@@ -26,10 +26,10 @@ SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 ALLOWED_TYPE = {"notes", "thoughts"}
 
 # Learning/ 是学习画像，不发布到博客；
-# Interview/ 下的 Records/、准备清单等是私人面经，但 Fundamentals/ 和 Algorithms/ 是知识点笔记，要发布；
+# Interview/ 是私人面经，不检查；
+# InterviewPrep/ 是面试准备的知识点笔记，要检查；
 # _Templates/ 含占位符，不是真实文档
-EXEMPT_DIRS = {"Learning", "_Templates"}
-EXEMPT_INTERVIEW_SUBDIRS = {"Records"}  # Interview/ 下这些子目录不检查
+EXEMPT_DIRS = {"Learning", "Interview", "_Templates"}
 
 
 def is_exempt(path: Path) -> bool:
@@ -37,20 +37,7 @@ def is_exempt(path: Path) -> bool:
         rel = path.relative_to(REPO_ROOT)
     except ValueError:
         rel = path
-    if not rel.parts:
-        return False
-    # 整体豁免的目录
-    if rel.parts[0] in EXEMPT_DIRS:
-        return True
-    # Interview/ 需要看子目录：Fundamentals 和 Algorithms 要检查，其他不检查
-    if rel.parts[0] == "Interview":
-        if len(rel.parts) == 1:
-            return True  # Interview 根目录的文件（如准备清单）不检查
-        subdir = rel.parts[1]
-        if subdir in {"Fundamentals", "Algorithms"}:
-            return False  # 这两个子目录要检查
-        return True  # 其他子目录（如 Records）不检查
-    return False
+    return rel.parts and rel.parts[0] in EXEMPT_DIRS
 
 
 def staged_md_files() -> list[Path]:
