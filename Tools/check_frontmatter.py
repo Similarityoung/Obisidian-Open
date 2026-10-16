@@ -25,8 +25,9 @@ FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 ALLOWED_TYPE = {"notes", "thoughts"}
 
-# Learning/ 是学习画像，不受发布字段约束；_Templates/ 含占位符，不是真实文档
-EXEMPT_DIRS = {"Learning", "_Templates"}
+# Learning/ 是学习画像，Interview/ 是私人面经，均不发布到博客，不受发布字段约束；
+# _Templates/ 含占位符，不是真实文档
+EXEMPT_DIRS = {"Learning", "Interview", "_Templates"}
 
 
 def is_exempt(path: Path) -> bool:
