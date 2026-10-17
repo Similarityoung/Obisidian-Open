@@ -4,7 +4,7 @@ type: notes
 slug: generative-software-engineering-agent-native
 summary: 一次回答解决不了问题，就让 Agent 在工作区上反复迁移；每次迁移都由 CI 检查，把工程经验写成环境中可执行的约束。
 date: 2026-10-15T00:36:00+08:00
-draft: true
+draft: false
 categories:
   - Engineering
 ---
