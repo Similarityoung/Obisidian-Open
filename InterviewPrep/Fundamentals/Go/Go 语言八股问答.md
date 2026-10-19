@@ -31,7 +31,7 @@ tags:
 - Go goroutine：初始栈小，由 runtime 调度，阻塞 I/O 时 runtime 会让其他 goroutine 继续运行。
 - 成本关系：进程切换涉及地址空间等资源切换；线程切换依赖内核调度；goroutine 调度成本更低。
 
-
+![image.png](https://img.simi.host/20261019223447124.png)
 
 ## 2. GMP 中为什么需要 P
 
