@@ -49,11 +49,21 @@ tags:
 
 ### 回答
 
+#### 使用
+
 Go 的 `map` 是内置哈希表，key 必须是可比较类型，查询、插入、删除平均复杂度接近 O(1)。`map` 是引用类型，`make` 会初始化底层哈希结构；具体底层结构属于 runtime 实现细节，新版本 Go 已经从老的 bucket/overflow 设计演进到 SwissTable 风格实现。并发方面，多个 goroutine 同时读写同一个普通 `map` 需要加锁或用其他同步方式，典型做法是 `map + sync.RWMutex`；读多写少、key 稳定的缓存场景可以考虑 `sync.Map`。
+
+#### 细节
 
 Go 1.24 以后，内置 map 改成了基于 Swiss Table 的实现。底层由一个 directory 管理一个或多个 table，每个 table 又由多个 group 组成，每个 group 有 8 个 key/value slot 和一组 control bytes。查找时通过 hash 高位定位 table 和 probing 位置，再利用 hash 的低 7 位快速筛选 group 中的候选 slot。
 
 map 本身不是并发安全的，并发写、读写可能导致 runtime fatal，一般需要通过 Mutex/RWMutex 或 sync.Map 来保证并发安全。
 
+#### 扩容
+
 扩容时不会简单对整个 map 一次性翻倍，而是针对单个 table 进行 grow；当 table 达到一定规模时会 split 成多个 table，通过 directory 和 hash 前缀选择对应 table，从而把扩容成本限制在局部。
+
+#### 跟 sync.Map 的区别
+
+普通 `map` 是 Go 内置哈希表，类型安全、性能直接，适合大多数业务场景；并发读写时需要自己用 `Mutex`、`RWMutex` 或 channel 做同步。`sync.Map` 是标准库提供的并发安全 map，所有操作方法可以被多个 goroutine 同时调用，适合读多写少、key 写入后反复读取，或者多个 goroutine 操作互不重叠 key 的场景。它的 API 基于 `any`，类型约束和复合业务不变量要靠调用方维护。
 
