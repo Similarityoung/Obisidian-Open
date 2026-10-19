@@ -67,3 +67,5 @@ map 本身不是并发安全的，并发写、读写可能导致 runtime fatal�
 
 普通 `map` 是 Go 内置哈希表，类型安全、性能直接，适合大多数业务场景；并发读写时需要自己用 `Mutex`、`RWMutex` 或 channel 做同步。`sync.Map` 是标准库提供的并发安全 map，所有操作方法可以被多个 goroutine 同时调用，适合读多写少、key 写入后反复读取，或者多个 goroutine 操作互不重叠 key 的场景。它的 API 基于 `any`，类型约束和复合业务不变量要靠调用方维护。
 
+
+
