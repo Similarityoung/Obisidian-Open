@@ -11,7 +11,7 @@ tags:
   - interview
 ---
 
-# Go 语言八股问答
+# Go
 
 ![Google Chrome 2026-10-18 16.11.59.png](https://img.simi.host/20261018163645836.png)
 
