@@ -1,0 +1,8 @@
+# DSH 学习插件：Host 工具 + skills + Web 学习面板。
+# vaultPath 指向当前 Obsidian 仓库；换仓库时改这里。
+- insert:
+    - id: dsh-learner
+      name: '@local/dsh-learner'
+      config:
+        vaultPath: '/Users/similarityyoung/Documents/Obsidian/Obsidian-Open'
+        learningDir: 'Learning'
