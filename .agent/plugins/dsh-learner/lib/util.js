@@ -189,11 +189,11 @@ export function splitTableRow(line) {
 }
 
 export function renderTable(rows) {
-  const header = '| 概念 | 掌握度 | 证据 | 下次复习 |'
-  const separator = '| --- | --- | --- | --- |'
+  const header = '| 概念 | 掌握度 | 证据 |'
+  const separator = '| --- | --- | --- |'
   const body = rows.map(
     (row) =>
-      `| ${[row.concept, row.level, row.evidence, row.nextReview]
+      `| ${[row.concept, row.level, row.evidence]
         .map((cell) => String(cell || '').replace(/\|/g, '\\|'))
         .join(' | ')} |`,
   )
