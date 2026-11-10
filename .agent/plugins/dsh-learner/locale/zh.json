@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "学习",
-    "description": "把 Learning/ 中的学习者画像接进 Agent：学情看板、诊断式教学、学习记录与笔记检索。"
+    "title": "学习看板",
+    "description": "把 Learning/ 的学习状态接入 Agent：左侧看板、概念掌握度和按需读取的学习上下文。"
   }
 }

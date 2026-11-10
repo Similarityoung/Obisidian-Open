@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "把 Learning/ 学习者画像接入 DSH：学情看板、诊断式教学、学习记录与笔记检索。",
+  "description": "把 Learning/ 学习状态接入 DSH：左侧学习看板、概念掌握度和按需读取的学习上下文。",
   "icon": "./icon.svg",
   "exports": {
     ".": "./index.js",
@@ -18,7 +18,6 @@
     "locale/*.json",
     "icon.svg",
     "lib/**/*.js",
-    "skills/**/*.md",
     "README.md"
   ],
   "dsh": {

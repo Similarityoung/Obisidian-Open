@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Learning",
-    "description": "Brings the learner profile in Learning/ into the agent: learning dashboard, diagnostic teaching, session records, and note search."
+    "title": "Learning dashboard",
+    "description": "Brings the learning state in Learning/ into the agent: a left-side dashboard, concept mastery, and on-demand learning context."
   }
 }

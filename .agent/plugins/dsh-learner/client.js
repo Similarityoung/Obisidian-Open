@@ -60,11 +60,10 @@ window.__ModuleLoader__.load({
       empty: { fontSize: '12px', color: 'var(--dsw-alias-label-secondary)', padding: '4px 0' },
       bars: { display: 'flex', gap: '8px', alignItems: 'flex-end', height: '84px', paddingTop: '6px' },
       barWrap: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', minWidth: 0 },
-      bar: { width: '100%', maxWidth: '40px', borderRadius: '5px 5px 2px 2px', background: 'var(--dsw-alias-brand-primary)', opacity: 0.82, minHeight: '2px' },
+      bar: { width: '100%', maxWidth: '40px', borderRadius: '5px 5px 2px 2px', minHeight: '2px' },
       barLabel: { fontSize: '10px', color: 'var(--dsw-alias-label-secondary)' },
       footnote: { marginTop: '8px', fontSize: '11px', color: 'var(--dsw-alias-label-secondary)', lineHeight: 1.6 },
       error: { border: '1px solid var(--dsw-alias-state-error-primary)', borderRadius: '10px', padding: '12px 14px', color: 'var(--dsw-alias-state-error-primary)', fontSize: '12px', whiteSpace: 'pre-wrap' },
-      toc: { display: 'flex', flexDirection: 'column', gap: '2px' },
       pillRow: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' },
       pill: { fontSize: '11px', padding: '4px 8px', borderRadius: '999px', background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-secondary)' },
     }
@@ -124,25 +123,21 @@ window.__ModuleLoader__.load({
       const max = Math.max(1, ...Object.values(byLevel || {}))
       return h(
         'div',
-        null,
-        h(
-          'div',
-          { style: S.bars },
-          Object.entries(byLevel || {}).map(([level, count]) =>
-            h(
-              'div',
-              { key: level, style: S.barWrap },
-              h('div', {
-                style: {
-                  ...S.bar,
-                  background: barColor(level),
-                  height: `${Math.max(2, Math.round((count / max) * 64))}px`,
-                },
-                title: `${level}: ${count}`,
-              }),
-              h('div', { style: S.barLabel }, level),
-              h('div', { style: { ...S.barLabel, color: 'var(--dsw-alias-label-primary)' } }, String(count)),
-            ),
+        { style: S.bars },
+        Object.entries(byLevel || {}).map(([level, count]) =>
+          h(
+            'div',
+            { key: level, style: S.barWrap },
+            h('div', {
+              style: {
+                ...S.bar,
+                background: barColor(level),
+                height: `${Math.max(2, Math.round((count / max) * 64))}px`,
+              },
+              title: `${level}: ${count}`,
+            }),
+            h('div', { style: S.barLabel }, level),
+            h('div', { style: { ...S.barLabel, color: 'var(--dsw-alias-label-primary)' } }, String(count)),
           ),
         ),
       )
@@ -156,8 +151,7 @@ window.__ModuleLoader__.load({
       const load = React.useCallback(async () => {
         setRefreshing(true)
         try {
-          const next = await readState()
-          setState(next)
+          setState(await readState())
           setError('')
         } catch (err) {
           setError(String(err?.message || err))
@@ -179,7 +173,7 @@ window.__ModuleLoader__.load({
         }
       }, [load])
 
-      const concepts = state?.concepts || { total: 0, byLevel: {}, due: [], weak: [] }
+      const concepts = state?.concepts || { total: 0, byLevel: {}, low: [] }
       const focus = state?.currentFocus || []
       const sessions = state?.recentSessions || []
       const lowCount = ['L0', 'L1', 'L2'].reduce(
@@ -196,15 +190,13 @@ window.__ModuleLoader__.load({
           h(
             'div',
             null,
-            h('h1', { style: S.title }, '学习'),
-            h('div', { style: S.subtitle }, '来自 Learning/ 的学习者模型 · 讲解前先看这里'),
+            h('h1', { style: S.title }, '学习看板'),
+            h('div', { style: S.subtitle }, '来自 Learning/ 的学习状态'),
           ),
           h('button', { type: 'button', style: S.refresh, onClick: load, disabled: refreshing }, refreshing ? '刷新中…' : '刷新'),
         ),
         error ? h('div', { style: S.error }, `读取失败：${error}\n请确认 Learning/学习状态.md 或 Learning/概念掌握.md 存在。`) : null,
-        !error && !state
-          ? h('div', { style: S.empty }, '正在读取学习画像…')
-          : null,
+        !error && !state ? h('div', { style: S.empty }, '正在读取学习画像…') : null,
         state
           ? h(
               React.Fragment,
@@ -213,8 +205,8 @@ window.__ModuleLoader__.load({
                 'div',
                 { style: S.stats },
                 h(Stat, { label: '概念总数', value: concepts.total }),
-                h(Stat, { label: '待复习', value: concepts.due?.length || 0 }),
-                h(Stat, { label: '最近学习', value: sessions.length }),
+                h(Stat, { label: '当前重点', value: focus.length }),
+                h(Stat, { label: '低掌握度', value: lowCount }),
               ),
               h(
                 'div',
@@ -239,18 +231,18 @@ window.__ModuleLoader__.load({
                   ),
                   h(
                     Card,
-                    { title: `待复习 ${concepts.due?.length ? `（${concepts.due.length}）` : ''}` },
-                    concepts.due?.length
-                      ? concepts.due.slice(0, 8).map((item, index) =>
+                    { title: `低掌握度概念 ${concepts.low?.length ? `（${concepts.low.length}）` : ''}` },
+                    concepts.low?.length
+                      ? concepts.low.slice(0, 10).map((item, index) =>
                           h(Row, {
                             key: `${item.topic}-${item.concept}-${index}`,
                             title: `${item.topic} / ${item.concept}`,
                             note: item.evidence,
                             badge: item.level || '未分级',
-                            last: index === Math.min(concepts.due.length, 8) - 1,
+                            last: index === Math.min(concepts.low.length, 10) - 1,
                           }),
                         )
-                      : h(Empty, null, '暂无到期复习。学完一次后会自动排入。'),
+                      : h(Empty, null, '当前没有 L0-L2 的概念。'),
                   ),
                 ),
                 h(
@@ -263,8 +255,8 @@ window.__ModuleLoader__.load({
                     h(
                       'div',
                       { style: S.pillRow },
+                      h('span', { style: S.pill }, `概念 ${concepts.total}`),
                       h('span', { style: S.pill }, `低掌握度 ${lowCount}`),
-                      h('span', { style: S.pill }, `学习记录 ${sessions.length}`),
                     ),
                   ),
                   h(
@@ -279,7 +271,7 @@ window.__ModuleLoader__.load({
                             last: index === sessions.length - 1,
                           }),
                         )
-                      : h(Empty, null, '还没有学习记录。用 learn skill 学完一次会自动出现在这里。'),
+                      : h(Empty, null, '还没有学习记录。'),
                   ),
                 ),
               ),
@@ -294,127 +286,12 @@ window.__ModuleLoader__.load({
     }
 
     function apply(ctx) {
-      function ComposerEntry() {
-        const open = () => {
-          try {
-            ctx.layout.selectPanel(PANEL)
-          } catch (error) {
-            console.error('[dsh-learner] 打开学习面板失败', error)
-          }
-        }
-        return h(
-          'button',
-          {
-            type: 'button',
-            onClick: open,
-            title: '打开学习面板',
-            style: {
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              border: '1px solid var(--dsw-alias-border-l1)',
-              background: 'var(--dsw-alias-bg-layer-1)',
-              color: 'var(--dsw-alias-label-secondary)',
-              borderRadius: '999px',
-              padding: '3px 9px',
-              fontSize: '11px',
-              cursor: 'pointer',
-              lineHeight: 1.5,
-            },
-          },
-          h(Icon, { size: 13 }),
-          '学习',
-        )
-      }
-
-      function FloatingButton() {
-        const open = () => {
-          try {
-            ctx.layout.selectPanel(PANEL)
-          } catch (error) {
-            console.error('[dsh-learner] 打开学习面板失败', error)
-          }
-        }
-        return h(
-          'button',
-          {
-            type: 'button',
-            onClick: open,
-            title: '打开学习面板',
-            'aria-label': '打开学习面板',
-            style: {
-              position: 'fixed',
-              right: '24px',
-              bottom: '92px',
-              width: '38px',
-              height: '38px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid var(--dsw-alias-border-l1)',
-              background: 'var(--dsw-alias-bg-overlay)',
-              color: 'var(--dsw-alias-brand-primary)',
-              borderRadius: '999px',
-              boxShadow: '0 6px 20px rgba(0,0,0,.18)',
-              cursor: 'pointer',
-              zIndex: 40,
-            },
-          },
-          h(Icon, { size: 18 }),
-        )
-      }
-
-      function FooterAction(props) {
-        const open = () => {
-          try {
-            ctx.layout.selectPanel(PANEL)
-          } catch (error) {
-            console.error('[dsh-learner] 打开学习面板失败', error)
-          }
-        }
-        return h(
-          'button',
-          {
-            type: 'button',
-            onClick: open,
-            title: '学习',
-            'aria-label': '学习',
-            style: {
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              border: 0,
-              background: 'transparent',
-              color: 'var(--dsw-alias-label-secondary)',
-              borderRadius: '7px',
-              padding: '6px',
-              fontSize: '12px',
-              cursor: 'pointer',
-            },
-          },
-          h(Icon, { size: 16 }),
-          props?.wide ? '学习' : null,
-        )
-      }
-
       ctx.slots.inject('sidebar.panellist', () =>
         ctx.slots.register({ name: 'sidebar.panellist', id: PANEL, order: 8, label: () => '学习' }, Icon),
       )
       ctx.slots.inject('main', () => ctx.slots.register({ name: 'main', key: PANEL }, Panel))
-      ctx.slots.inject('conversation.composer.dock', () =>
-        ctx.slots.register({ name: 'conversation.composer.dock', id: 'learner-entry', order: 5 }, ComposerEntry),
-      )
-      ctx.slots.inject('sidebar.footer.action', () =>
-        ctx.slots.register({ name: 'sidebar.footer.action', id: 'learner-footer', order: 0, label: () => '学习' }, FooterAction),
-      )
-      ctx.slots.inject('shell.overlay', () =>
-        ctx.slots.register({ name: 'shell.overlay', id: 'learner-fab', order: 30, label: () => '学习' }, FloatingButton),
-      )
-      ctx.slots.inject('settings.section', () =>
-        ctx.slots.register({ name: 'settings.section', id: PANEL, order: 30, label: () => '学习' }, Panel),
-      )
     }
 
-    return { isPlugin: true, inject: ['slots', 'layout'], apply }
+    return { isPlugin: true, inject: ['slots'], apply }
   },
 })
